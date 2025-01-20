@@ -1,0 +1,300 @@
+{
+  "listings": [
+    {
+      "id": 1,
+      "title": "Cozy Apartment in City Center",
+      "price": 120,
+      "location": "New York",
+      "maxGuests": 4,
+      "rating": 4.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Luxury Villa with Pool",
+      "price": 300,
+      "location": "Los Angeles",
+      "maxGuests": 4,
+      "rating": 4.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Suyash n City Center",
+      "price": 120,
+      "location": "New York",
+      "maxGuests": 4,
+      "rating": 8.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "london Villa with Pool",
+      "price": 300,
+      "location": "Los Angeles",
+      "maxGuests": 4,
+      "rating": 9.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "nikhil Apartment in City Center",
+      "price": 120,
+      "location": "New York",
+      "maxGuests": 4,
+      "rating": 7.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque. blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Luxury Villa with Pool",
+      "price": 300,
+      "location": "Los Angeles",
+      "maxGuests": 4,
+      "rating": 8.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Cozy Apartment in City Center",
+      "price": 120,
+      "location": "New York",
+      "maxGuests": 4,
+      "rating": 6.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Luxury Villa with Pool",
+      "price": 300,
+      "location": "Los Angeles",
+      "maxGuests": 4,
+      "rating": 9.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Cozy Apartment in City Center",
+      "price": 120,
+      "location": "New York",
+      "maxGuests": 4,
+      "rating": 8.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Luxury Villa with Pool",
+      "price": 300,
+      "location": "Los Angeles",
+      "maxGuests": 4,
+      "rating": 5.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Cozy Apartment in City Center",
+      "price": 120,
+      "location": "New York",
+      "maxGuests": 4,
+      "rating": 8.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Luxury Villa with Pool",
+      "price": 300,
+      "location": "Los Angeles",
+      "maxGuests": 4,
+      "rating": 8.2,
+      "description": "Lorem ipsum odor amet, consectetuer adipiscing elit. Vitae finibus cubilia massa libero tincidunt molestie. Scelerisque potenti donec; arcu fusce mauris nec. At mattis rhoncus ante facilisis sem. Facilisi risus luctus semper proin consequat. Augue tristique lectus pulvinar nullam ut. Elementum sem dis fermentum habitant litora a aliquet neque.Netus ipsum blandit primis ligula ligula gravida elit. Magnis ridiculus in fringilla facilisi tortor eleifend quam in. Accumsan curabitur donec, purus amet at eu. Eu interdum facilisi hac scelerisque neque ullamcorper massa dictum. Proin proin bibendum nec rhoncus dui odio. Sagittis maximus efficitur at ut hendrerit quam mollis felis. Taciti felis nisl vehicula orci ligula ornare arcu tellus. Urna odio porttitor ridiculus lacinia vulputate litora. Magna augue ex ullamcorper litora adipiscing adipiscing nascetur.",
+      "image": "https://via.placeholder.com/400/771796",
+      "extraInfo": " lorem extraInfo extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lorem extraInfo lore mollis",
+      "photos": [
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796",
+        "https://via.placeholder.com/400/771796"
+      ]
+    }
+  ],
+  "bookings": [
+    {
+      "_id": 1,
+      "listingId": 1,
+      "checkIn": "2021-06-01",
+      "checkOut": "2021-06-05",
+      "guests": 2,
+      "price": 120,
+      "totalPrice": 480,
+      "place": {
+        "id": 1,
+        "title": "Shubham Villa with Pool",
+        "description": "Luxury Villa with Pool",
+        "photos": [
+          "https://via.placeholder.com/100/771796",
+          "https://via.placeholder.com/200/771796",
+          "https://via.placeholder.com/200/771796",
+          "https://via.placeholder.com/200/771796"
+        ]
+      }
+    },
+    {
+      "_id": 2,
+      "listingId": 2,
+      "price": 120,
+      "checkIn": "2021-06-01",
+      "checkOut": "2021-06-05",
+      "guests": 2,
+      "totalPrice": 1200,
+      "place": {
+        "id": 2,
+        "title": "Luxury Villa with Pool",
+        "description": "Luxury Villa with Pool",
+        "photos": [
+          "https://via.placeholder.com/100/771796",
+          "https://via.placeholder.com/400/771796",
+          "https://via.placeholder.com/400/771796",
+          "https://via.placeholder.com/400/771796"
+        ]
+      }
+    },
+    {
+      "_id": 3,
+      "listingId": 2,
+      "checkIn": "2025-06-01",
+      "checkOut": "2025-08-05",
+      "guests": 3,
+      "totalPrice": 12000,
+      "price": 34120,
+      "place": {
+        "id": 2,
+        "title": "Luxury Villa with Pool",
+        "description": "Luxury Villa with Pool",
+        "photos": [
+          "https://via.placeholder.com/100/771796",
+          "https://via.placeholder.com/400/771796",
+          "https://via.placeholder.com/400/771796",
+          "https://via.placeholder.com/400/771796"
+        ]
+      }
+    }
+  ],
+  "hosted": [
+    {
+      "id": 1,
+      "title": "Cozy Apartment in City Center",
+      "description": "Cozy Apartment in City Center"
+    },
+    {
+      "id": 2,
+      "title": "Luxury Villa with Pool",
+      "description": "Luxury Villa with Pool"
+    },
+    {
+      "id": 3,
+      "title": "Cozy adsada City Center",
+      "description": "Cozy adsadsdadadad Apartment in City Center"
+    }
+  ]
+}
