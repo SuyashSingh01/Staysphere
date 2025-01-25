@@ -1,5 +1,7 @@
 const BASE_URL = "https://localhost:4000/api/v1";
 
+// add all the correct routes that are available in pdf except for chat routes
+
 // AUTH ENDPOINTS
 export const authApis = {
   SENDOTP_API: BASE_URL + "/auth/sendotp",
@@ -11,9 +13,13 @@ export const authApis = {
 
 // PROFILE ENDPOINTS
 export const profileEndpoints = {
-  GET_USER_DETAILS_API: BASE_URL + "/profile/getUserDetails",
-  GET_USER_ENROLLED_placeS_API: BASE_URL + "/profile/getEnrolledplaces",
-  GET_INSTRUCTOR_DATA_API: BASE_URL + "/profile/instructorDashboard",
+  GET_PROFILE_API: BASE_URL + "/profile/getProfile",
+  UPDATE_PROFILE_API: BASE_URL + "/profile/updateProfile",
+  UPDATE_PROFILE_IMAGE_API: BASE_URL + "/profile/updateProfileImage",
+  UPDATE_PASSWORD_API: BASE_URL + "/profile/updatePassword",
+  UPDATE_EMAIL_API: BASE_URL + "/profile/updateEmail",
+  UPDATE_PHONE_API: BASE_URL + "/profile/updatePhone",
+  //   add other
 };
 
 // Booking ENDPOINTS
@@ -24,13 +30,16 @@ export const booking = {
 };
 
 // Place ENDPOINTS
-export const userApis = {
+export const listingApis = {
   GET_ALL_PLACE_API: BASE_URL + "/place/getAllplaces",
   GET_PLACE_DETAILS_API: BASE_URL + "/place/getplaceDetails",
 
   //   add other
 };
 
+export const userApis = {
+  //   add other
+};
 // RATINGS AND REVIEWS
 export const review = {
   REVIEWS_DETAILS_API: BASE_URL + "/place/getReviews",

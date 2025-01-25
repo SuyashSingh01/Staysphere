@@ -1,11 +1,12 @@
-import React, { lazy, Suspense } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import Lottie from "lottie-react";
 import Layout from "./components/Layout";
+import React, { lazy, Suspense } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import PrivateRoute from "./components/PrivateRoute.jsx";
-import paymentsuccess from "./assets/check02_gifAnthony Fessy.gif";
+import { Routes, Route, useLocation } from "react-router-dom";
+// import paymentsuccess from "./assets/check02_gifAnthony Fessy.gif";
+import animationData from "./assets/animation/success.json";
 
-// Lazy load all pages and components
 const HomePage = lazy(() => import("./pages/HomePage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -195,10 +196,9 @@ function App() {
             element={
               <PrivateRoute>
                 <PageWrapper>
-                  <img
-                    src={paymentsuccess}
-                    alt="success"
-                    className="w-full justify-center"
+                  <Lottie
+                    animationData={animationData}
+                    style={{ width: "300px", height: "300px" }}
                   />
                 </PageWrapper>
               </PrivateRoute>

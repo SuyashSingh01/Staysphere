@@ -153,5 +153,3 @@ For any queries or feedback, please contact the project maintainer:
 - # **Email:** singhsuyash045@gmail.com
 
 # Staysphere
-
-> > > > > > > 6b263b45787846d14ade8eaa4fcc5a964903c2b2

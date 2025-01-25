@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import { addBooking } from "../Redux/slices/BookingSlice";
+import { booking } from "../services/api.urls";
+import { bookYourPlace } from "../services/operations/bookplace";
 
 const ConfirmAndPay = () => {
   const params = useParams();
@@ -35,16 +37,27 @@ const ConfirmAndPay = () => {
     try {
       // add  the booking in the backend
       dispatch(addBooking({ ...booking }));
-      toast.success("Booking Confirmed");
+      // add the logic for payment after the booking has been added  to the backend
+
+      bookYourPlace(
+        token,
+        booking?.place,
+        BookingDetails,
+        userDetails,
+        navigate,
+        dispatch
+      );
+      // toast.success("Booking Confirmed");
+
       navigate("/paymentsuccess");
       setTimeout(() => {
-      navigate('/')}, 3000);
-
+        navigate("/");
+      }, 3000);
     } catch (e) {
       console.error(e.message);
       toast.error(e.message);
     }
-  }
+  };
   // Calculate the number of nights
   const date1 = new Date(checkin);
   const date2 = new Date(checkout);
@@ -151,7 +164,8 @@ const ConfirmAndPay = () => {
           <div>
             <h2 className="text-lg font-medium">Cancellation policy</h2>
             <p className="mt-4 text-sm text-gray-600">
-              Free cancellation before {checkin}. After that, the reservation is non-refundable.
+              Free cancellation before {checkin}. After that, the reservation is
+              non-refundable.
             </p>
           </div>
 
@@ -172,8 +186,12 @@ const ConfirmAndPay = () => {
               alt="Listing Thumbnail"
               className="h-40 w-60 object-cover rounded-md"
             />
-            <h2 className="text-lg font-medium mt-4">{placeDetail?.title || "No title available"}</h2>
-            <p className="text-gray-600">{placeDetail?.location || "No location provided"}</p>
+            <h2 className="text-lg font-medium mt-4">
+              {placeDetail?.title || "No title available"}
+            </h2>
+            <p className="text-gray-600">
+              {placeDetail?.location || "No location provided"}
+            </p>
           </div>
 
           {/* Price Details */}
