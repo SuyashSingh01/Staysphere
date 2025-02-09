@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import React, { memo, useState } from "react";
 import { auth, googleProvider } from "../utility/Firebase";
 import { useSelector, useDispatch } from "react-redux";
 import { setToken, setLoading, setUserData } from "../Redux/slices/AuthSlice";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import Spinner from "../components/common/Spinner";
-import { GoogleLogin } from "react-google-login";
-import { apiConnector } from "../services/apiConnector";
+import { signInWithPopup } from "firebase/auth";
+import { request } from "../services/apiConnector";
+import { authApis } from "../services/api.urls.js";
+import { Flex, notification } from "antd";
+import { LoadingSpinner } from "../components/Wrapper/PageWrapper.jsx";
+// import { GoogleLogin } from "react-google-login";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -15,26 +15,12 @@ const Login = () => {
   const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
+
   const handleFormData = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-  // const handleLoginSuccess = async (response) => {
-  //   console.log("Google Login Success:", response);
-  //   const { tokenId } = response;
-
-  //   await fetch("http://localhost:4000/login", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ tokenId }),
-  //   });
-  // };
-
-  // const handleLoginFailure = (error) => {
-  //   console.error("Google Login Failed:", error);
-  // };
 
   // Your Firebase initialization file
 
@@ -45,28 +31,44 @@ const Login = () => {
       const token = await user.getIdToken(); // Firebase token
 
       // Send the token to your backend for verification
-      const response = await fetch("http://localhost:4000/api/v1/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firebaseToken: token }),
+      const { data, success } = await request("POST", authApis.LOGIN_API, {
+        firebaseToken: token,
       });
+      console.log("data", data.data);
 
-      const { data, success } = await response.json();
-      if (success) {
-        console.log("Login/Signup successful:", data.user);
+      if (data.success) {
+        notification.success({
+          message: data?.message + " " + data?.data?.user?.name,
+          duration: 1,
+        });
+        console.log("Login/Signup successful:", data?.data.user);
 
-        dispatch(setToken(data?.token));
-        dispatch(setUserData(data?.user));
+        const userDetails = {
+          name: data?.data?.user?.name,
+          email: data?.data.user.email,
+          uid: data?.data.user?.uid,
+          role: data?.data.user?.role || "user",
+        };
+        dispatch(setToken(data?.data?.token));
+        dispatch(setUserData(userDetails));
 
-        localStorage.setItem("token", JSON.stringify(data?.token));
-        localStorage.setItem("user", JSON.stringify(data?.user));
-        toast.success(`Account Logged In  ${data.user.name}`);
-        console.log("datauser", data?.user?._id);
+        localStorage.setItem("token", JSON.stringify(data?.data?.token));
+        localStorage.setItem("user", JSON.stringify(data?.data?.user._id));
+        console.log("datauser", data?.data?.user?._id);
+
         navigate("/account");
       } else {
-        console.error("Error:", data.message);
+        console.error("Error:", data?.message);
+        notification.info({
+          message: data?.message,
+          duration: 1,
+        });
       }
     } catch (error) {
+      notification.error({
+        message: "Google Sign-In failed" + error.message,
+        duration: 1,
+      });
       console.error("Google Sign-In failed:", error);
     }
   }
@@ -82,46 +84,48 @@ const Login = () => {
       (formData.password !== undefined && formData.password.length < 6) ||
       !isValid
     ) {
-      toast.error("Password  and Email  should be valid");
+      notification.error({
+        message: "Invalid Email or Password",
+        duration: 1,
+      });
       return;
     }
     console.log("loginData:", formData);
     dispatch(setLoading(true));
     try {
-      // const response = await signInWithEmailAndPassword(
-      //   auth,
-      //   formData.email,
-      //   formData.password
-      // );
-      const response = await apiConnector(
-        "POST",
-        "http://localhost:4000/api/v1/login",
-        { formData, token }
-      );
+      const { data } = await request("POST", authApis.LOGIN_API, {
+        email: formData.email,
+        password: formData.password,
+        token,
+      });
 
-      console.log("Loginresponseresponse: ", response);
+      console.log("Login response: ", data);
 
       const userDetails = {
-        name: response?.user?.name,
-        email: formData.email,
-        uid: response?.user?.uid,
+        name: data.data?.user?.name,
+        email: data?.data.user.email,
+        uid: data?.data.user?.uid,
+        role: data?.data.user?.role,
       };
-      dispatch(setToken(response?.user?.refreshToken));
-
+      dispatch(setToken(data?.data?.token));
       dispatch(setUserData(userDetails));
       setFormData({ email: "", password: "" });
-      localStorage.setItem(
-        "token",
-        JSON.stringify(response.user?.refreshToken)
-      );
-      localStorage.setItem("user", JSON.stringify(userDetails));
-      toast.success(`Login Success:${response.user.email}`);
       console.log("uid", user);
+
+      localStorage.setItem("token", JSON.stringify(data?.data?.token));
+      localStorage.setItem("user", JSON.stringify(userDetails));
+      notification.success({
+        message: `Account Logged In: ${data?.data.user.name}`,
+        duration: 1,
+      });
       navigate("/account");
 
       // clear the form data
     } catch (error) {
-      toast.error("Couldn't Login\n", error.message);
+      notification.error({
+        message: "Login Failed: " + error.message,
+        duration: 1,
+      });
       console.error("error", error.message);
     }
     dispatch(setLoading(false));
@@ -130,10 +134,10 @@ const Login = () => {
   return (
     <div className="mt-4 flex grow items-center justify-around p-4 md:p-0">
       {loading ? (
-        <Spinner />
+        <LoadingSpinner />
       ) : (
         <div className="mb-40">
-          <h1 className="mb-4 text-center text-4xl">Login</h1>
+          <h1 className="mb-4 text-center text-4xl">Staysphere Login </h1>
           <form className="mx-auto max-w-md" onSubmit={handleFormSubmit}>
             <input
               name="email"
@@ -151,23 +155,25 @@ const Login = () => {
               onChange={handleFormData}
               // {...register("password", { required: true })}
             />
-            <button className="primary my-4">Login</button>
+            <button className="primary my-4 text-xl">Login</button>
           </form>
-          {/* <GoogleLogin
-            clientId={clientId}
-            buttonText="Login with Google"
-            onSuccess={handleLoginSuccess}
-            onFailure={handleLoginFailure}
-            cookiePolicy={"single_host_origin"}
-          /> */}
-          <button
-            type="button"
-            className="mt-6 rounded-[8px] bg-primary py-[8px] px-[12px] font-medium text-white"
-            onClick={handleGoogleSignIn}
-          >
-            Sign In with Google
-          </button>
 
+          <Flex justify="space-around" align="center">
+            <button
+              type="button"
+              className="my-6 rounded-[8px] bg-primary py-[6px] px-[12px]  text-white"
+              onClick={handleGoogleSignIn}
+            >
+              Sign In with Google
+            </button>
+            <button
+              type="button"
+              className="my-6 rounded-[8px] bg-primary py-[6px] px-[12px]  text-white"
+              onClick={() => navigate("/forgot-password")}
+            >
+              Forgot Password
+            </button>
+          </Flex>
           <div className="mb-4 flex w-full items-center gap-4">
             <div className="h-0 w-1/2 border-[1px]"></div>
             <p className="small -mt-1">or</p>
@@ -186,4 +192,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default memo(Login);

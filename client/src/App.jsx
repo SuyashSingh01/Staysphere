@@ -1,12 +1,17 @@
 import Lottie from "lottie-react";
+import React, { lazy } from "react";
 import Layout from "./components/Layout";
-import React, { lazy, Suspense } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import { AnimatePresence } from "framer-motion";
+import { ACCOUNT_TYPE } from "./constants/constants.js";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import { Routes, Route, useLocation } from "react-router-dom";
-// import paymentsuccess from "./assets/check02_gifAnthony Fessy.gif";
 import animationData from "./assets/animation/success.json";
+import UpdatePassword from "./components/Auth/Updatepassword.jsx";
+import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
+import { PageWrapper } from "./components/Wrapper/PageWrapper.jsx";
 
+// lazy loading pages
 const HomePage = lazy(() => import("./pages/HomePage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
@@ -20,38 +25,17 @@ const SingleBookedPlace = lazy(() => import("./pages/SingleBookedPlace.jsx"));
 const PlaceDetail = lazy(() =>
   import("./components/PlaceDetail/PlaceDetail.jsx")
 );
+const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
 const ConfirmAndPay = lazy(() => import("./pages/ConfirmAndPay.jsx"));
 const BookingRequest = lazy(() =>
   import("./components/common/BookingRequest.jsx")
 );
 const FavouritePlaces = lazy(() => import("./pages/FavouritePlaces.jsx"));
-
-// Loading fallback component
-const LoadingSpinner = () => (
-  <div className="flex items-center justify-center h-screen">
-    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
-  </div>
-);
-
-const pageTransition = {
-  initial: { opacity: 0, x: -100 },
-  animate: { opacity: 1, x: 0 },
-  exit: { opacity: 0, x: 100 },
-};
-
-const PageWrapper = ({ children }) => (
-  <motion.div
-    initial={pageTransition.initial}
-    animate={pageTransition.animate}
-    exit={pageTransition.exit}
-    transition={{ duration: 0.5 }}
-  >
-    <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
-  </motion.div>
-);
+const Chat = lazy(() => import("./components/Chat/Chat.jsx"));
 
 function App() {
   const location = useLocation();
+  const { user } = useSelector((state) => state.auth);
 
   return (
     <AnimatePresence mode="wait">
@@ -60,9 +44,9 @@ function App() {
           <Route
             index
             element={
-              <PageWrapper>
-                <HomePage />
-              </PageWrapper>
+              // <PageWrapper>
+              <HomePage />
+              // </PageWrapper>
             }
           />
           <Route
@@ -82,103 +66,27 @@ function App() {
             }
           />
           <Route
+            path="/forgot-password"
+            element={
+              <PageWrapper>
+                <ForgotPassword />
+              </PageWrapper>
+            }
+          />
+          <Route
+            path="/update-password/:token"
+            element={
+              <PageWrapper>
+                <UpdatePassword />
+              </PageWrapper>
+            }
+          />
+          <Route
             path="/place/:id"
             element={
               <PageWrapper>
                 <PlaceDetail />
               </PageWrapper>
-            }
-          />
-
-          {/* Protected Routes */}
-          <Route
-            path="/account"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <ProfilePage />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account/liked-place"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <FavouritePlaces />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account/places"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <HostedPlaces />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account/notification"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <Notification />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account/places/new"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <HostPlacesFormPage />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account/hosted/bookings"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <BookingRequest />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account/places/:id"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <HostPlacesFormPage />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account/bookings"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <BookingsPage />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/account/bookings/:id"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <SingleBookedPlace />
-                </PageWrapper>
-              </PrivateRoute>
             }
           />
           <Route
@@ -205,14 +113,124 @@ function App() {
             }
           />
           <Route
-            path="*"
+            path="/account/bookings/:id"
             element={
-              <PageWrapper>
-                <NotFoundPage />
-              </PageWrapper>
+              <PrivateRoute>
+                <PageWrapper>
+                  <SingleBookedPlace />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <Chat />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          {/* Only accessible to Host in first Layout */}
+          {"host" === ACCOUNT_TYPE.HOST && (
+            <>
+              <Route
+                path="/account/places/new"
+                element={
+                  <PrivateRoute>
+                    <PageWrapper>
+                      <HostPlacesFormPage />
+                    </PageWrapper>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/account/places"
+                element={
+                  <PrivateRoute>
+                    <PageWrapper>
+                      <HostedPlaces />
+                    </PageWrapper>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/account/hosted/bookings"
+                element={
+                  <PrivateRoute>
+                    <PageWrapper>
+                      <BookingRequest />
+                    </PageWrapper>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/account/places/:id"
+                element={
+                  <PrivateRoute>
+                    <PageWrapper>
+                      <HostPlacesFormPage />
+                    </PageWrapper>
+                  </PrivateRoute>
+                }
+              />
+            </>
+          )}
+        </Route>
+        {/* ---------------Second layout for Dashboard----------------------------- */}
+
+        <Route
+          path="/account"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        >
+          <Route
+            index
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <ProfilePage />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="liked-place"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <FavouritePlaces />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="bookings"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <BookingsPage />
+                </PageWrapper>
+              </PrivateRoute>
             }
           />
         </Route>
+        {/*----------------------- Protected Routes -------------------*/}
+
+        {/* ---------------------------------------------------- */}
+
+        <Route
+          path="*"
+          element={
+            <PageWrapper>
+              <NotFoundPage />
+            </PageWrapper>
+          }
+        />
       </Routes>
     </AnimatePresence>
   );

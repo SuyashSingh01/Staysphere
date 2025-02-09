@@ -13,14 +13,14 @@ export const auth = async (req, res, next) => {
     // console.log(req.body.token);
     // console.log("cookies",req.cookies.tokenname);
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
+    console.log("Requested client", req.body);
     console.log("Header: ", req.header("Authorization"));
     const token =
       req.body?.token ||
-      req.cookies?.tokenname ||
+      req.cookies?.token ||
       req.header("Authorization")?.replace("Bearer ", "");
 
-    console.log("token", token);
+    console.log("token->", token);
 
     if (!token || token == undefined)
       return res.status(401).json({

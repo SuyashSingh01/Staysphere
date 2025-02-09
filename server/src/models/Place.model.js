@@ -12,7 +12,7 @@ const placeschema = new mongoose.Schema(
     },
     host: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "User",
     },
     image: [
       {
@@ -41,18 +41,24 @@ const placeschema = new mongoose.Schema(
       type: String,
       // required: true,
     },
-    amenities: {
+    amenities: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    rules: {
       type: String,
       required: true,
     },
-    rules: {
+    type: {
       type: String,
       required: true,
     },
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "review",
+        ref: "Review",
       },
     ],
   },

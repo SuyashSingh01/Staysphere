@@ -1,9 +1,8 @@
-import React, {useState } from 'react';
+import React, { useState } from "react";
 
-const PlaceGallery = ({place}) => {
-
+const PlaceGallery = ({ place }) => {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
-  // console.log('place',place);
+  console.log("placeGallery", place);
   if (showAllPhotos) {
     return (
       <div className=" fixed inset-0 z-10 overflow-auto bg-white text-white">
@@ -28,11 +27,11 @@ const PlaceGallery = ({place}) => {
               Close photos
             </button>
           </div>
-          {place?.photos?.length > 0 &&
-            place.photos.map((photo, index) => (
+          {place?.length > 0 &&
+            place.map((photo, index) => (
               <div key={index} className="max-w-full">
                 {/* <Image src={photo} /> */}
-                <img src={photo} alt="" />
+                <img src={photo} alt="Staysphere" />
               </div>
             ))}
         </div>
@@ -45,12 +44,12 @@ const PlaceGallery = ({place}) => {
       <div className="h-[400px] max-h-[450px] grid-cols-4 gap-2 overflow-hidden rounded-[12px] md:grid">
         {/* column 1 */}
         <div className="col-span-2 overflow-hidden">
-          {place.photos?.[0] && (
+          {place[0] && (
             <div className="h-full w-full overflow-hidden bg-red-200">
               <img
                 onClick={() => setShowAllPhotos(true)}
                 className="h-full w-full cursor-pointer object-cover"
-                src={place.photos[0]}
+                src={place[0]}
                 alt=""
               />
             </div>
@@ -60,25 +59,25 @@ const PlaceGallery = ({place}) => {
         <div className="col-span-1 overflow-hidden">
           {/* row grid inside column 2 */}
           <div className="grid h-full grid-rows-2 gap-2">
-            {place.photos?.[1] && (
+            {place[1] && (
               // row 1
               <div className="bg-gray-200">
                 <img
                   onClick={() => setShowAllPhotos(true)}
                   className="h-full w-full cursor-pointer object-cover"
-                  src={place.photos[1]}
+                  src={place[1]}
                   alt=""
                 />
               </div>
             )}
 
-            {place.photos?.[2] && (
+            {place[2] && (
               // row 2
               <div className="bg-gray-200">
                 <img
                   onClick={() => setShowAllPhotos(true)}
                   className="h-full w-full cursor-pointer object-cover"
-                  src={place.photos[2]}
+                  src={place[2]}
                   alt=""
                 />
               </div>
@@ -89,25 +88,25 @@ const PlaceGallery = ({place}) => {
         <div className="col-span-1 overflow-hidden">
           {/* row grid inside column 3 */}
           <div className="grid h-full grid-rows-2 gap-2">
-            {place.photos?.[3] && (
+            {place[3] && (
               // row 1
               <div className="h-full bg-gray-200">
                 <img
                   onClick={() => setShowAllPhotos(true)}
                   className="h-full w-full cursor-pointer object-cover"
-                  src={place.photos[3]}
+                  src={place[3]}
                   alt=""
                 />
               </div>
             )}
 
-            {place.photos?.[4] && (
+            {place[4] && (
               // row 2
               <div className="h-full bg-gray-200">
                 <img
                   onClick={() => setShowAllPhotos(true)}
                   className="h-full w-full cursor-pointer object-cover"
-                  src={place.photos[4]}
+                  src={place[4]}
                   alt=""
                 />
               </div>

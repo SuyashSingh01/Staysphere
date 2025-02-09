@@ -9,6 +9,6 @@ const router = express.Router();
 // router.post('/createNewsletter',createNewsletter);
 // router.delete('/deleteNewsletter/:newsletterId',deleteNewsletter);
 
-router.post("/contact", contactUsController);
+router.post("/reach/contact", contactUsController);
 
 export default router;

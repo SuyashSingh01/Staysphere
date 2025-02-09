@@ -1,23 +1,27 @@
-import bcrypt from "bcrypt";
+import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-// import { OAuth2Client } from "google-auth-library";
 import { config } from "dotenv";
+import OTP from "../../models/Otp.model.js";
 import User from "../../models/User.model.js";
 import Profile from "../../models/Profile.model.js";
-import firebaseAuth from "../../utils/verifygooglefauthToken.js";
 import { JsonResponse } from "../../utils/jsonResponse.js";
-import OTP from "../../models/Otp.model.js";
+import firebaseAuth from "../../utils/verifygooglefauthToken.js";
+import { generateToken } from "../../utils/utlitity.js";
+import mailSender from "../../utils/sendEmail.js";
+import { passwordUpdated } from "../../mailTemplate/passwordChange.js";
+import mongoose from "mongoose";
+import { createVerification } from "../../utils/sendOtp.js";
 config();
+// import { OAuth2Client } from "google-auth-library";
 
 // const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 // const client = new OAuth2Client(GOOGLE_CLIENT_ID);
-
 // const firebaseApp = initializeApp({
 //   credential: admin.credential.cert(
 //     JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
 //   ),
 // });
-
 // const firebaseAuth = getAuth(firebaseApp);
 
 class AuthController {
@@ -34,6 +38,7 @@ class AuthController {
       }
       if (firebaseToken) {
         const decodedToken = await firebaseAuth.verifyIdToken(firebaseToken);
+        console.log("Verified token", decodedToken);
         const { uid, email, name, picture } = decodedToken;
         // console.log("decodedToken: ", decodedToken);
 
@@ -50,7 +55,7 @@ class AuthController {
 
         // Create a profile for the user
         const profile = await Profile.create({
-          username: name,
+          name,
           profilepic: picture,
           // Add any other default details you want
         });
@@ -66,11 +71,12 @@ class AuthController {
           // No password for Google signups
           otherdetails: profile._id,
         });
-        const token = jwt.sign(
-          { id: uid, email: email, role: user.role, name: name },
-          process.env.JWT_SECRET,
-          { expiresIn: "24h" }
-        );
+        const token = generateToken({
+          id: uid,
+          email: email,
+          role: user.role,
+          name: name,
+        });
         console.log("user", user);
         return JsonResponse(res, {
           status: 200,
@@ -84,7 +90,11 @@ class AuthController {
       } else {
         // Handle traditional signup
         if (!name || !email || !password) {
-          return res.status(400).json({ message: "Please fill all fields" });
+          return JsonResponse(res, {
+            status: 400,
+            message: "Please provide name, email and password",
+            success: false,
+          });
         }
 
         const existUser = await User.findOne({ email });
@@ -96,13 +106,11 @@ class AuthController {
             data: [],
           });
         }
-
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
-
         // Create a profile for the user
         const profile = await Profile.create({
-          username: name,
+          name,
           otherDetails: null,
         });
 
@@ -112,9 +120,16 @@ class AuthController {
           email,
           password: hashedPassword,
           role,
-          googleId,
           otherdetails: profile._id,
         });
+        // Generate JWT token
+        const token = generateToken({
+          id: newUser._id,
+          email: newUser.email,
+          role: newUser.role,
+          name: newUser.name,
+        });
+
         res.cookie("token", token, {
           expires: new Date(Date.now() + 24 * 3600000),
           httpOnly: true,
@@ -133,6 +148,7 @@ class AuthController {
         status: 500,
         message: "Server error in Signup  user",
         success: false,
+        data: [],
         error: err.message,
       });
     }
@@ -140,7 +156,7 @@ class AuthController {
 
   async login(req, res) {
     try {
-      const { firebaseToken } = req.body;
+      const { firebaseToken, email, password } = req.body;
       if (firebaseToken) {
         // Verify Firebase token
         const decodedToken = await firebaseAuth.verifyIdToken(firebaseToken);
@@ -148,18 +164,40 @@ class AuthController {
 
         // Check if user already exists in the database
         let user = await User.findOne({ googleId: uid });
+
         if (!user) {
           // If not, create a new user
-          return res.status(404).json({
-            message: "Google account is not registered",
+          return JsonResponse(res, {
+            status: 400,
+            message: "User not found with Google account",
             success: false,
+            data: [],
           });
         }
-        const token = jwt.sign(
-          { id: uid, email: email, role: user.role, name: name },
-          process.env.JWT_SECRET,
-          { expiresIn: "24h" }
-        );
+        const profileupdate = await Promise.all([
+          Profile.findOneAndUpdate(
+            { _id: user.otherdetails },
+            {
+              name: name,
+              profilepic: picture,
+            },
+            { new: true }
+          ),
+          User.findOneAndUpdate(
+            { googleId: uid },
+            {
+              name: name,
+            },
+            { new: true }
+          ),
+        ]);
+
+        const token = generateToken({
+          id: uid,
+          email: email,
+          role: user.role,
+          name: name,
+        });
 
         return JsonResponse(res, {
           message: "Google login successful",
@@ -168,6 +206,7 @@ class AuthController {
           data: {
             token,
             user,
+            profileupdate,
           },
         });
 
@@ -204,57 +243,64 @@ class AuthController {
         // });
       } else {
         // Handle traditional login
+
         if (!email || !password) {
-          return res.status(400).json({
-            message: "Please provide email and password",
+          return JsonResponse(res, {
+            status: 400,
+            message: "Email and password are required",
             success: false,
+            data: [],
           });
         }
-
         // Check if the user exists
         const user = await User.findOne({ email });
         if (!user) {
-          return res.status(404).json({
+          return JsonResponse(res, {
+            status: 404,
             message: "User not found",
             success: false,
           });
         }
-        if (user.googleId != null) {
-          return res.status(404).json({
-            message:
-              "User is registered with google account try to login with google account",
-            success: false,
-          });
-        }
+        // check whether the user is already authenticated or not
+        // if (user.googleId != null) {
+        //   return JsonResponse(res, {
+        //     status: 400,
+        //     message:
+        //       "User is registered with google account try to login with google account",
+        //     success: false,
+        //     data: [],
+        //   });
+        // }
 
         // Compare password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-          return res.status(401).json({
+          return JsonResponse(res, {
+            status: 400,
             message: "Invalid credentials",
             success: false,
           });
         }
 
         // Create a JWT token
-        const token = jwt.sign(
-          { id: user._id, email: user.email, role: user.role },
-          process.env.JWT_SECRET,
-          { expiresIn: "24h" }
-        );
-        // set the cookie to the token
-        res.cookie("token", token, options).status(200).json({
-          success: true,
-          token,
-          user,
-          message: `User Login Success`,
-        });
+        const token = generateToken({ id: user._id, email: email });
 
-        return res.status(200).json({
+        // set the cookie to the token
+        const options = {
+          expires: new Date(Date.now() + 24 * 3600000),
+          httpOnly: true,
+        };
+
+        res.cookie("token", token, options);
+
+        return JsonResponse(res, {
+          status: 200,
           message: "Login successful",
           success: true,
-          token,
-          data: user,
+          data: {
+            user,
+            token,
+          },
         });
       }
     } catch (err) {
@@ -262,94 +308,276 @@ class AuthController {
       return JsonResponse(res, {
         message: "Internal server error occurred during login",
         success: false,
+        data: [],
         error: err.message,
+      });
+    }
+  }
+
+  // Implementation for forgot password
+  async forgotPassword(req, res) {
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ email: email });
+      if (!user) {
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message: `This Email: ${email} is not Registered With Us Enter a Valid Email `,
+        });
+      }
+      const token = crypto.randomBytes(20).toString("hex");
+
+      const updatedDetails = await User.findOneAndUpdate(
+        { email: email },
+        {
+          token: token,
+          resetPasswordExpires: Date.now() + 3600000,
+        },
+        { new: true }
+      );
+      console.log("DETAILS", updatedDetails);
+
+      const url = `http://localhost:5173/update-password/${token}`;
+
+      await mailSender(
+        email,
+        "Password Reset STAYSPHERE",
+
+        passwordUpdated(
+          updatedDetails.email,
+          `Password updated successfully for ${updatedDetails.name}`,
+          `Your Link for Password Reset is ${url}. Please click this url to reset your password.`
+        )
+      );
+      JsonResponse(res, {
+        title: "Check Your Email Address for Reset Password",
+        status: 200,
+        success: true,
+        message:
+          "Email Sent Successfully, Please Check Your Email to Continue Further",
+      });
+    } catch (error) {
+      return JsonsResponse(res, {
+        status: 500,
+        error: error.message,
+        success: false,
+        message: `Some Error in Sending the Reset Message`,
+      });
+    }
+  }
+
+  // Implementation for password reset
+  async resetPassword(req, res) {
+    try {
+      const { token } = req.params || req.body;
+      const { password, confirmPassword } = req.body;
+
+      console.log("TOKEN", token);
+      if (confirmPassword !== password) {
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message: "Password and Confirm Password Does not Match",
+        });
+      }
+      const userDetails = await User.findOne({ token: token });
+      if (!userDetails) {
+        return JsonResponse(res, {
+          status: 404,
+          success: false,
+          message: "Token is Invalid",
+        });
+      }
+      if (userDetails.resetPasswordExpires <= Date.now()) {
+        return JsonResponse(res, {
+          status: 404,
+          success: false,
+          message: `Token is Expired, Please Regenerate Your Token`,
+        });
+      }
+      const encryptedPassword = await bcrypt.hash(password, 10);
+      await User.findOneAndUpdate(
+        { token: token },
+        { password: encryptedPassword },
+        { new: true }
+      );
+      JsonResponse(res, {
+        title: "Password Reset Successful",
+        status: 200,
+        success: true,
+        message: `Password Reset Successful`,
+      });
+    } catch (error) {
+      return JsonResponse(res, {
+        title: error.message,
+        status: 500,
+        error: error.message,
+        success: false,
+        message: `Some Error in Updating the Password`,
       });
     }
   }
   // Host Authentication
   async hostRegister(req, res) {
-    const { email, phone, role } = req.body;
-    const profile = await Profile.findOne(phone);
-    const user = await User.findOne({
-      otherDetails: new mongoose.Model.ObjectId(profile._id),
-    });
-    if (profile) {
+    try {
+      const { email, phone, role } = req.body;
+      const user = await User.findOne({ email })
+        .populate("otherdetails")
+        .exec();
+
+      console.log("user", user);
       if (user && user?.role == role) {
         return JsonResponse(res, {
+          status: 400,
           message: "User is already registered and Verified with the same role",
           success: false,
           data: user,
         });
       }
-      const updatedUser = await User.findOneAndUpdate(
-        { otherDetails: new mongoose.Model.ObjectId(profile._id) },
-        { role: role || "Host" },
-        { new: true }
-      );
-      return JsonResponse(res, {
-        message: "User role updated successfully",
-        success: true,
-        data: updatedUser,
-      });
-    }
-    // else verify the user number then update the role
-    const otpdata = await createVerification(phone);
-    if (otpdata) {
-      const saveotp = await OTP.create({
-        userId: user._id,
-        phone,
-        otp: otpdata,
-      });
-      return JsonResponse(res, {
-        title: "OTP is Valid only for 5 minutes",
-        message: "OTP sent successfully",
-        success: true,
-        data: otpdata,
-      });
-    }
-    try {
+      // we can also direct check with email in User model and checke whether the user role  is same or not if same then return the user
+      if (user && user.otherdetails.phone == phone) {
+        const updatedUser = await User.findOneAndUpdate(
+          { otherdetails: new mongoose.Types.ObjectId(user._id) },
+          { role: "Host" | role },
+          { new: true }
+        );
+        return JsonResponse(res, {
+          status: 400,
+          message: "User is successfully registered and Verified with role",
+          success: false,
+          data: updatedUser,
+        });
+      }
+
+      // else verify the user number then update the role
+      const otpdata = await createVerification(phone);
+      // const otpdata = 234;
+      console.log("otpsada", otpdata);
+      if (otpdata) {
+        // also post hook to send the email notification
+        const saveotp = await OTP.create({
+          email,
+          userId: user._id,
+          phone,
+          otp: otpdata.toString(),
+        });
+        const token = generateToken({
+          id: user._id,
+          email: email,
+          role: user.role,
+          phone: phone,
+        });
+
+        return JsonResponse(res, {
+          status: 200,
+          title: `OTP sent successfully for role ${role} Verification on phone ${phone} and email ${saveotp?.email}`,
+          message: "OTP is Valid only for 5 minutes",
+          success: true,
+          data: {
+            user,
+            token,
+          },
+        });
+      }
     } catch (err) {
       console.error(err);
       return JsonResponse(res, {
+        status: 500,
         message: "Internal server error occurred during Host registration",
         success: false,
+        data: [],
         error: err.message,
       });
     }
   }
-
-  async forgotPassword(req, res, next) {
-    // Implementation for forgot password
-  }
-
-  async resetPassword(req, res, next) {
-    // Implementation for password reset
-  }
   async hostVerify(req, res) {
     try {
       const { otp, phone } = req.body;
-      const otpdata = await OTP.findOne({ phone: phone, otp: otp });
-      if (otpdata) {
-        const user = await User.findOneAndUpdate(
-          { phone },
-          { $set: { verified: true } },
+      const otpdata = await OTP.findOne({ phone: phone, otp: otp })
+        .sort({ createdAt: -1 })
+        .limit(1);
+      if (otpdata === null) {
+        return JsonResponse(res, {
+          status: 400,
+          title: "Invalid OTP",
+          message: "Invalid OTP",
+          success: false,
+          data: [],
+        });
+      }
+      console.log("otasdata", otpdata);
+      if (otpdata.otp === otp) {
+        const userVerified = await User.findOneAndUpdate(
+          { _id: otpdata.userId },
+          {
+            $set: {
+              isVerified: true,
+              role: "Host",
+            },
+          },
           { new: true }
         );
-        c;
+        const token = generateToken({
+          id: userVerified._id,
+          email: userVerified.email,
+          role: userVerified.role,
+          phone: phone,
+        });
+        res.cookie("token", token, {
+          httpOnly: true,
+          expires: new Date(Date.now() + 24 * 3600000),
+        });
         return JsonResponse(res, {
+          status: 200,
           title: "Host Verified Successfully",
           message: "Host verified successfully",
           success: true,
+          data: {
+            userVerified,
+            token,
+          },
         });
       }
     } catch (err) {
       console.error(err.message);
+      return JsonResponse(res, {
+        status: 500,
+        message: "Internal server error occurred during Host Verification",
+        success: false,
+        data: [],
+        error: err.message,
+      });
     }
   }
 
   async hostLogin(req, res) {
     try {
       const { token } = req.body;
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("decoded token in host", decoded);
+      const user = await User.findOne({ _id: decoded.id });
+      if (!user) {
+        return JsonResponse(res, {
+          status: 400,
+          message: "User not found",
+          success: false,
+        });
+      }
+      if (!user.isVerified) {
+        return JsonResponse(res, {
+          status: 400,
+          message: "User not verified",
+          success: false,
+        });
+      }
+      return JsonResponse(res, {
+        status: 200,
+        message: "Login successful",
+        success: true,
+        data: user,
+      });
     } catch (err) {
       console.error(err.message);
     }

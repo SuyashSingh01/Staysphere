@@ -3,6 +3,7 @@ import { controllers } from "../../controllers/index.controller.js";
 import { authorize } from "../../middleware/authorize.js";
 import { auth } from "../../middleware/auth.js";
 const router = express.Router();
+
 // Host Authentication
 
 router.post(
@@ -11,8 +12,9 @@ router.post(
   authorize("Host"),
   controllers.host.addhostplace
 ); // host place
+
 router.delete(
-  "/host/deletehostplace",
+  "/host/deletehostplace/:placeId",
   auth,
   authorize("Host"),
   controllers.host.deleteHostPlace
@@ -30,7 +32,7 @@ router.get(
   controllers.host.getAllHostPlaces
 ); // All Host place
 router.put(
-  "/host/updatehostplace",
+  "/host/updatehostplace/:id",
   auth,
   authorize("Host"),
   controllers.host.updateHostPlace

@@ -39,17 +39,18 @@ const bookingSlice = createSlice({
       const newCheckOutDate = new Date(newCheckOut);
 
       // Check if the place with same id has an overlapping booking
-      const isOverlapping = state.bookings.some((booking) => {
-        const existingCheckIn = new Date(booking.checkIn);
-        const existingCheckOut = new Date(booking.checkOut);
+      // const isOverlapping = state.bookings.some((booking) => {
+      //   const existingCheckIn = new Date(booking.checkIn);
+      //   const existingCheckOut = new Date(booking.checkOut);
 
-        // Check for overlapping dates for the same place ID
-        return (
-          booking.place === place &&
-          newCheckInDate < existingCheckOut &&
-          newCheckOutDate > existingCheckIn
-        );
-      });
+      //   // Check for overlapping dates for the same place ID
+      //   return (
+      //     booking.place === place &&
+      //     newCheckInDate < existingCheckOut &&
+      //     newCheckOutDate > existingCheckIn
+      //   );
+      // });
+      const isOverlapping = 0;
       // If no overlap, add the booking; otherwise, skip
       if (!isOverlapping) {
         state.bookings.push(action.payload);

@@ -1,14 +1,14 @@
-import { toast } from "react-hot-toast";
-import { booking } from "../api.urls";
-import { apiConnector } from "../../services/apiConnector";
-import apnalogo from "../../assets/images/apnalogo.png";
+import { bookings } from "../api.urls";
+import { request } from "../request";
+// import apnalogo from "../../assets/images/apnalogo.png";
 import { setPaymentLoading } from "../../Redux/slices/BookingSlice";
+import { toast } from "react-toastify";
 
 const {
   BOOKING_PAYMENT_API,
   BOOKING_VERIFY_API,
   SEND_PAYMENT_SUCCESS_EMAIL_API,
-} = booking;
+} = bookings;
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -46,7 +46,7 @@ export async function bookYourPlace(
     }
 
     //initiate the order
-    const orderResponse = await apiConnector(
+    const orderResponse = await request(
       "POST",
       BOOKING_PAYMENT_API,
       { placeId, bookingDetail },
@@ -67,7 +67,7 @@ export async function bookYourPlace(
       order_id: orderResponse.data.message.id,
       name: "Staysphere",
       description: "Thank You for Booking with us",
-      image: apnalogo,
+      // image: apnalogo,
       prefill: {
         name: `${userDetails.name}`,
         email: userDetails.email,
@@ -103,7 +103,7 @@ export async function bookYourPlace(
 
 async function sendPaymentSuccessEmail(response, amount, token) {
   try {
-    await apiConnector(
+    await request(
       "POST",
       SEND_PAYMENT_SUCCESS_EMAIL_API,
       {
@@ -125,7 +125,7 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
   const toastId = toast.loading("Verifying Payment....");
   dispatch(setPaymentLoading(true));
   try {
-    const response = await apiConnector("POST", BOOKING_VERIFY_API, bodyData, {
+    const response = await request("POST", BOOKING_VERIFY_API, bodyData, {
       Authorization: `Bearer ${token}`,
     });
 

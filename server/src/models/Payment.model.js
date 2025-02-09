@@ -11,11 +11,7 @@ const paymentSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    bookingId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Booking",
-      required: true,
-    },
+
     receiptId: {
       type: String,
     },
@@ -34,7 +30,8 @@ const paymentSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      required: true,
+      enum: ["pending", "success", "failed"],
+      default: "pending",
     },
     paymentMethod: {
       type: String,

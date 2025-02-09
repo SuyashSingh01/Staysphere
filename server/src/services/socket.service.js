@@ -33,7 +33,7 @@ class SocketService {
 
         try {
           const chat = await Chat.findOne({ roomId });
-          const messages = chat ? chat.messages : []; // Return empty array if no messages
+          const messages = chat ? chat.messages : [];
           socket.emit("chat_history", messages); // Send chat history to the client
         } catch (error) {
           console.error(

@@ -1,7 +1,21 @@
 import nodemailer from "nodemailer";
-export const isOverlapping = (checkIn, checkOut, start, end) => {
-  return checkIn < end && start < checkOut;
-};
+import { config } from "dotenv";
+import otpTemplate from "../mailTemplate/otpverificationEmail.js";
+config();
+
+export async function sendVerificationEmail(email, otp, role = "User") {
+  try {
+    const mailResponse = await mailSender(
+      email,
+      `Verification Email For Staysphere ${role} `,
+      otpTemplate(otp)
+    );
+    console.log("Email sent successfully: ", mailResponse.response);
+  } catch (error) {
+    console.log("Error occurred while sending email: ", error);
+    throw error;
+  }
+}
 
 const mailSender = async (email, title, body) => {
   try {
@@ -9,17 +23,17 @@ const mailSender = async (email, title, body) => {
       host: process.env.MAIL_HOST,
       auth: {
         user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
+        pass: process.env.MAIL_PASSWORD,
       },
     });
 
     let info = await transporter.sendMail({
-      from: "Blog || Finsweet - by SUYASH SINGH",
+      from: "Staysphere || Admin- SUYASH SINGH",
       to: `${email}`,
       subject: `${title}`,
       html: `${body}`,
     });
-    console.log(info);
+    // console.log("mail:", info);
     return info;
   } catch (error) {
     console.log(error.message);

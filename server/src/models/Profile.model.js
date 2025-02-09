@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 const profileschema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    ref: "User",
   },
-  username: {
+  name: {
     type: String,
     trim: true,
     required: true,
@@ -45,4 +45,4 @@ const profileschema = new mongoose.Schema({
     default: false,
   },
 });
-export default mongoose.model("profile", profileschema);
+export default mongoose.model("Profile", profileschema);

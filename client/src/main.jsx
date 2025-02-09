@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./index.css";
-import Chat from "./components/Chat/chat";
+import ChatModal from "./components/Chat/chatModal";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
 import { ListingsProvider } from "./context/ListingsContext";
@@ -17,6 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <ListingsProvider>
         <BrowserRouter>
           <App />
+          {/* <ChatModal /> */}
           <ToastContainer autoClose={2000} transition={Slide} />
         </BrowserRouter>
       </ListingsProvider>

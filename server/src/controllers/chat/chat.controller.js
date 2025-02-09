@@ -1,5 +1,7 @@
 import Chat from "../../models/Chat.model.js";
 
+// currently we are not using the  this controller as we are
+// directly using the socket service to listen and send the events  to
 class ChatServiceController {
   /**
    * Join a chat room

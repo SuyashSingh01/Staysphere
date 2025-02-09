@@ -68,7 +68,7 @@ export const contactUsEmail = (email, name, message) => {
     <body>
         <div class="container">
             <a href="https://suyashsingh1.vercel.app"><img class="logo"
-                    src="https://i.ibb.co/7Xyj3PC/logo.png" alt=" Logo"></a>
+                    src="https://ibb.co/Mx391nZP" alt=" Logo"></a>
             <div class="message">Contact Form Confirmation</div>
             <div class="body">
                 <p>Dear ${name},</p>

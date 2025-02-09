@@ -20,12 +20,12 @@ const userSchema = new mongoose.Schema(
     },
     otherdetails: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "profile",
+      ref: "Profile",
     },
     bookings: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "booking",
+        ref: "Booking",
       },
     ],
     token: {
@@ -33,19 +33,25 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["Admin", "Host", "Tenant"],
-      default: "Tenant",
+      enum: ["Admin", "Host", "User"],
+      default: "User",
     },
     favourite: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "booking",
+        ref: "Place",
       },
     ],
     review: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "review",
+        ref: "Review",
+      },
+    ],
+    cancelRequest: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Booking",
       },
     ],
     phone: {
@@ -54,6 +60,13 @@ const userSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: false,
+    },
+    isSubscribed: {
+      type: Boolean,
+      default: false,
+    },
+    resetPasswordExpires: {
+      type: Date,
     },
     // social login
     googleId: {

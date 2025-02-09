@@ -67,8 +67,7 @@ export const paymentSuccessEmail = (name, amount, orderId, paymentId) => {
       
       <body>
           <div class="container">
-              <a href="https:"><img class="logo" src="https://i.ibb.co/7Xyj3PC/logo.png"
-                      alt="Logo"></a>
+             <a href="https://suyashsingh1.vercel.app"><img src="https://i.ibb.co/TxcTJnCT/android-chrome-192x192.png" alt="android-chrome-192x192" border="0"></a>
               <div class="message">Booking Payment Confirmation</div>
               <div class="body">
                   <p>Dear ${name},</p>

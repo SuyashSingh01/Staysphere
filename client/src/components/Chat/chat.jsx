@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, memo } from "react";
 import { io } from "socket.io-client";
 import { Input, Button } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import "tailwindcss/tailwind.css";
 const Chat = ({ userId, hostId }) => {
   const socket = useMemo(
     () =>
-      io("http://localhost:3001", {
+      io("http://localhost:4001/", {
         withCredentials: true,
       }),
     []
@@ -132,4 +132,4 @@ const Chat = ({ userId, hostId }) => {
   );
 };
 
-export default Chat;
+export default memo(Chat);

@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import path from "path";
-// import UserFile from "../models/UserFile.js";
+import { JsonResponse } from "../utils/jsonResponse.js";
 
 export async function uploadImageCloudinary(file, folder, quality) {
   const options = {
@@ -32,7 +32,8 @@ export async function localfileupload(req, res) {
     file.mv(folderpath, (err) => {
       console.log(err);
     });
-    res.status(200).json({
+    return JsonResponse(res, {
+      status: 200,
       message: "Local File uploaded successfully",
       success: true,
     });
@@ -43,57 +44,49 @@ export async function localfileupload(req, res) {
 
 // make an routes handler over here for cloudinary uploading
 
-export async function imageupload(req, res, images) {
+export const imageupload = async (images) => {
   try {
-    // const files = await images;
-    const files = req.files.files; // Assuming multiple files are being sent under `files` key in the request
-    console.log("filesin imageupload", files);
+    const files = images.files;
+    console.log("files in imageupload", files);
 
-    if (!files || files.length === 0) {
-      return res.status(400).json({
-        message: "No files uploaded",
-        success: false,
-      });
+    if (!files || files.length === 0 || files.length === 1) {
+      throw new Error(
+        "Image upload error file not found or less than required files"
+      );
     }
-
     // Prepare an array to store uploaded image data
     const uploadedImages = [];
+    await Promise.all(
+      files.map(async (file) => {
+        const types = path.extname(file.name).split(".")[1].toLowerCase();
+        const supportedTypes = ["jpg", "png", "jpeg", "webp"];
+        const checkValidType = supportedTypes.includes(types);
 
-    for (let file of files) {
-      // Validate file type
-      const types = path.extname(file.name).split(".")[1].toLowerCase();
-      const supportedTypes = ["jpg", "png", "jpeg", "webp"];
-      const checkValidType = supportedTypes.includes(types);
-
-      if (!checkValidType) {
-        throw new Error("Invalid type of File Uploaded");
-      }
-
-      // Upload the image to Cloudinary
-      const cloudinaryResponse = await uploadImageCloudinary(
-        file,
-        "Staysphere"
-      );
-      console.log("cloudinaryres: ", cloudinaryResponse);
-
-      // Add the image data to the uploadedImages array
-      uploadedImages.push({
-        mediaurl: cloudinaryResponse.secure_url,
-        publicid: cloudinaryResponse.public_id,
-      });
-    }
-
+        if (!checkValidType) {
+          throw new Error("Invalid type of File Uploaded");
+        }
+        // Upload the image to Cloudinary
+        const cloudinaryResponse = await uploadImageCloudinary(
+          file,
+          "Staysphere"
+        );
+        console.log("cloudinaryres: ", cloudinaryResponse);
+        // Add the image data to the uploadedImages array
+        uploadedImages.push(cloudinaryResponse.secure_url);
+      })
+    );
     // If all files were successfully uploaded and saved
     return uploadedImages;
   } catch (err) {
     console.log(err);
-    return res.status(500).json({
+    return JsonResponse(res, {
+      status: 500,
       message: "Something went wrong",
       error: err.message,
       success: false,
     });
   }
-}
+};
 
 export async function videoupload(req, res) {
   try {

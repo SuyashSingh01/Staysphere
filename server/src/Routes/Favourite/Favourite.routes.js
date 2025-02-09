@@ -5,7 +5,12 @@ import { auth } from "../../middleware/auth.js";
 const router = express.Router();
 
 // Favorites
-router.post("/", auth, controllers.favourite.addFavorite); // Add to favorites
-router.delete("/:id", auth, controllers.favourite.removeFavorite); // Remove from favorites
+router.get("/account/liked-place", auth, controllers.favourite.getFavorite);
+router.post("/add-favorite/:placeID", auth, controllers.favourite.addFavorite); // Add to favorites
+router.delete(
+  "/remove-favorite/:id",
+  auth,
+  controllers.favourite.removeFavorite
+); // Remove from favorites
 
 export default router;

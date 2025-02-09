@@ -1,5 +1,6 @@
 import Review from "../../models/ReviewAndRating.model.js";
 import Place from "../../models/Place.model.js";
+import { JsonResponse } from "../../utils/jsonResponse.js";
 
 class ReviewController {
   async addReview(req, res) {
@@ -8,36 +9,47 @@ class ReviewController {
       const userId = req.user.id;
 
       if (!placeId || !rating) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Missing required fields" });
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message: "Missing required fields",
+          data: null,
+        });
       }
 
       const place = await Place.findById(placeId);
 
       if (!place) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Place not found" });
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message: "Place not found",
+          data: null,
+        });
       }
 
       const review = await Review.create({
         place: placeId,
-        user: userId,
+        postedBy: userId,
         rating,
         comment,
       });
 
-      return res.status(201).json({
+      return JsonResponse(res, {
+        status: 201,
+        title: "Review has been added",
         success: true,
         message: "Review added successfully",
         data: review,
       });
     } catch (err) {
       console.error(err);
-      return res
-        .status(500)
-        .json({ success: false, message: "Server error", error: err.message });
+      return JsonResponse(res, {
+        status: 500,
+        success: false,
+        message: "Server error  occurred while adding review",
+        error: err.message,
+      });
     }
   }
 
@@ -47,16 +59,26 @@ class ReviewController {
       const { placeId } = req.params;
 
       const reviews = await Review.find({ place: placeId }).populate(
-        "user",
-        "name"
+        "postedBy",
+        "name email"
       );
 
-      return res.status(200).json({ success: true, data: reviews });
+      return JsonResponse(res, {
+        status: 201,
+        title: "Reviews fetched",
+        success: true,
+        data: reviews,
+        message: "Reviews fetched successfully",
+      });
     } catch (err) {
       console.error(err);
-      return res
-        .status(500)
-        .json({ success: false, message: "Server error", error: err.message });
+      return JsonResponse(res, {
+        title: "Server error in Getting Review",
+        status: 500,
+        success: false,
+        message: "Server error  while getting reviews",
+        error: err.message,
+      });
     }
   }
 }

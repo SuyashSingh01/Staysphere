@@ -13,9 +13,13 @@ class HostController {
         perks,
         maxGuests,
         extraInfo,
+        type,
       } = req.body;
+
       const hostId = req.user.id;
       const images = req.files;
+
+      console.log("Received Data:", req.body, "Images:", images);
       if (
         !title ||
         !description ||
@@ -23,27 +27,53 @@ class HostController {
         !location ||
         !perks ||
         !maxGuests ||
+        !extraInfo ||
         !images ||
-        !extraInfo
+        !type
       ) {
         return JsonResponse(res, {
           status: 400,
           success: false,
           message: "Missing required fields",
+          data: null,
         });
       }
-      // add the image upload function here
-      const imagesUrls = await imageupload(req, res, images);
 
+      // Check if the place already exists using aggregation
+      const existingPlace = await Place.aggregate([
+        {
+          $match: {
+            placeName: title,
+            placeLocation: location,
+          },
+        },
+        { $limit: 1 },
+      ]);
+
+      if (existingPlace.length > 0) {
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message:
+            "A place with this name and location already exists try different place name",
+          data: null,
+        });
+      }
+
+      // Handle image uploads (Assuming `uploadImages` is a function that returns an array of URLs)
+      const imageUrls = images ? await imageupload(images) : [];
+      console.log("imageurls", imageUrls);
+      // Create the place in the database
       const createdPlace = await Place.create({
         placeName: title,
         placeLocation: location,
         host: hostId,
-        image: imagesUrls,
+        image: imageUrls,
         price,
         description,
         amenities: perks,
         rules: extraInfo,
+        type,
         maxGuests,
       });
 
@@ -54,12 +84,12 @@ class HostController {
         data: createdPlace,
       });
     } catch (err) {
-      console.error(err);
+      console.error("Error creating place:", err);
 
       return JsonResponse(res, {
         status: 500,
         success: false,
-        message: "Server error  occurred while creating place",
+        message: "Server error occurred while creating place",
         error: err.message,
       });
     }
@@ -68,22 +98,26 @@ class HostController {
   // Delete a place by ID
   async deleteHostPlace(req, res) {
     try {
-      const { id } = req.params;
+      const id = req.params.placeId;
       const hostId = req.user.id;
       // check the host id and place id is valid
       if (!id || !hostId) {
         return JsonResponse(res, {
           status: 400,
           success: false,
-          message: "Missing required fields",
+          message: "Missing required fields to delete the place",
         });
       } // check if the place belongs to the host
-      const placeBelongsHost = await Place.findOne({ _id: id, host: hostId });
+      const placeBelongsHost = await Place.findOne({
+        _id: id,
+        host: hostId,
+      });
       if (!placeBelongsHost) {
         return JsonResponse(res, {
           status: 401,
           success: false,
           message: "Place does not belong to host",
+          data: [],
         });
       }
 
@@ -118,7 +152,6 @@ class HostController {
   async getHostPlaceById(req, res) {
     try {
       const { id } = req.params;
-
       const place = await Place.findById(id);
 
       if (!place) {
@@ -150,7 +183,6 @@ class HostController {
   async getAllHostPlaces(req, res) {
     try {
       const hostId = req.user.id;
-
       const places = await Place.find({ host: hostId });
 
       return JsonResponse(res, {
@@ -174,7 +206,6 @@ class HostController {
   async updateHostPlace(req, res) {
     try {
       const { id } = req.params;
-      // const updates = req.body;
       const hostId = req.user.id;
       const images = req.files;
       const {
@@ -185,6 +216,7 @@ class HostController {
         perks,
         maxGuests,
         extraInfo,
+        type,
       } = req.body;
 
       if (
@@ -195,16 +227,18 @@ class HostController {
         !perks ||
         !maxGuests ||
         !images ||
-        !extraInfo
+        !extraInfo ||
+        !type
       ) {
         return JsonResponse(res, {
           status: 400,
           success: false,
-          message: "Missing required fields",
+          message: "Missing required fields for updateHostPlace",
+          data: [],
         });
       }
       // add the image upload function here
-      const imagesUrls = await imageupload(req, res, images);
+      const imagesUrls = await imageupload(images);
 
       const updates = {
         placeName: title,
@@ -216,6 +250,7 @@ class HostController {
         amenities: perks,
         rules: extraInfo,
         maxGuests,
+        type: type,
       };
 
       const updatedPlace = await Place.findOneAndUpdate(

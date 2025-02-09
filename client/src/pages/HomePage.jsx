@@ -1,41 +1,67 @@
-import PlaceCard from '../components/Card/PlaceCard';
-import {useSelector } from 'react-redux';
-import { ListingsContext } from '../context/ListingsContext';
-import { useContext } from 'react';
-import HostedSkeleton from '../components/Skeleton/HostedSkeleton';
+import PlaceCard from "../components/Card/PlaceCard";
+import { useSelector } from "react-redux";
+import { ListingsContext } from "../context/ListingsContext";
+import { useContext, useEffect, useState } from "react";
+import HostedSkeleton from "../components/Skeleton/HostedSkeleton";
+import ListingLoader from "../components/Skeleton/ListingLoader";
 
 const HomePage = () => {
-
   // Access loading state from Redux
   const { loading } = useSelector((state) => state.auth);
   // const {listings }=useSelector((state)=>state.listings);
 
-  const { listingData,searchItem }=useContext(ListingsContext);
-  const listings= [...listingData];
+  const { listingData, searchItem } = useContext(ListingsContext);
+
+  const [listings, setListings] = useState([...listingData]);
+  // const queryParams = new URLSearchParams({
+  //   price,
+  //   placeLocation,
+  //   type,
+  //   availability,
+  // }).toString();
+
+  // Use useEffect to call fetchListings whenever query parameters change
+  // useEffect(() => {
+  // fetchListings();
+  // async function fetchListings() {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:4000/api/v1/listings?${queryParams}`
+  //     );
+  //     setListings(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching listings:", error);
+  //   }
+  // }
+  // fetchListings();
+  // }, [price, placeLocation, type, availability]);
 
   if (loading) {
+    console.log("?TEarstaLoading");
     return (
-      <div className="px-6 grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:px-10 xl:px-[80px] gap-6 mt-2">
-      {new Array (12).map((_, index) => (
-        <HostedSkeleton key={index} />
-      ))}
-    </div>
+      <div className="sm:px-10 xl:px-[80px] px-6 grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 mt-[100px]">
+        {new Array(8).map((_, index) => (
+          <ListingLoader key={index} />
+        ))}
+      </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 justify-items-center py-32 px-4 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-10 ">
+    <div className="grid grid-cols-1 justify-items-center py-32 px-4 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-10 mt-[30px] ">
       {listings && listings.length > 0 ? (
-        listings.filter(
-          (val) => {
+        listings
+          .filter((val) => {
             // console.log(val)
             if (searchItem === "") {
               return val;
-            } else if (val.title.toLowerCase().includes(searchItem.toLowerCase())) {
+            } else if (
+              val.title.toLowerCase().includes(searchItem.toLowerCase())
+            ) {
               return val;
             }
-          }
-        ).map((place, index) => <PlaceCard place={place} key={index} />)
+          })
+          .map((place, index) => <PlaceCard place={place} key={index} />)
       ) : (
         <div className="absolute left-1/2 right-1/2 top-40 flex  w-full -translate-x-1/2 transform flex-col p-10  md:w-1/2">
           <h1 className="text-3xl font-semibold">Result not found!</h1>

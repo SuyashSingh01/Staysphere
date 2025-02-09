@@ -1,15 +1,11 @@
-import React ,{useContext} from 'react';
-import { ListingsContext} from '../../context/ListingsContext';
+import React, { useContext } from "react";
+import { ListingsContext } from "../../context/ListingsContext";
 
 const SearchBar = () => {
+  const context = useContext(ListingsContext);
+  if (!context) return null;
 
-const context=  useContext(ListingsContext);
-if (!context)
-return null;
-
-
-
-const {searchItem,setSearchItem}=context;
+  const { searchItem, setSearchItem } = context;
 
   return (
     <>
@@ -23,10 +19,8 @@ const {searchItem,setSearchItem}=context;
             value={searchItem}
           />
         </div>
-        <div className="bg-blue flex cursor-pointer  items-center bg-primary text-white">
-          <button
-            className="flex rounded-r-full bg-primary py-2 px-4 md:p-2"
-          >
+        <div className="bg-blue flex cursor-pointer  items-center bg-orange-400 -white">
+          <button className="flex rounded-r-full bg-orange-400 py-2 px-4 md:p-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -41,7 +35,7 @@ const {searchItem,setSearchItem}=context;
                 d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
               />
             </svg>
-            <span className="ml-1 hidden md:block" >Search</span>
+            <span className="ml-1 hidden md:block">Search</span>
           </button>
         </div>
       </div>

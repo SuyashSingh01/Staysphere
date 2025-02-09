@@ -3,7 +3,7 @@ import { useState, createContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setListings } from "../Redux/slices/ListingSlice";
 import { setLoading } from "../Redux/slices/AuthSlice";
-import { apiConnector } from "../services/apiConnector";
+import { request } from "../services/apiConnector";
 // import { LISTING } from "../services/index.urls";
 import { listingApis } from "../services/api.urls";
 import { useMemo } from "react";
@@ -20,10 +20,10 @@ export const ListingsProvider = ({ children }) => {
   const fetchedListingData = async () => {
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("GET", listingApis.GET_ALL_PLACE_API);
+      const { data } = await request("GET", listingApis.GET_ALL_LISTINGS_API);
 
-      localStorage.setItem("listings", JSON.stringify(response.data));
-      setlistingData(response.data);
+      localStorage.setItem("listings", JSON.stringify(data.data));
+      setlistingData(data.data);
       dispatch(setListings(listingData));
     } catch (e) {
       console.log(e.message);

@@ -6,11 +6,12 @@ class ListingController {
   // Get all listings with optional filters
   async getAllListings(req, res) {
     try {
-      const all_listings = await Place.find({}, (limit = 30));
+      const all_listings = await Place.find({}).limit(30);
 
       return JsonResponse(res, {
         status: 200,
         success: true,
+        message: "Places are Fetched successfully",
         data: all_listings,
       });
     } catch (err) {
@@ -25,11 +26,11 @@ class ListingController {
   }
   async getTopListings(req, res) {
     try {
-      const { price, location, type, availability } = req.query;
+      const { price, placeLocation, type, availability } = req.query;
 
       const matchQuery = {};
       if (price) matchQuery.price = { $lte: price };
-      if (location) matchQuery.location = location;
+      if (location) matchQuery.placeLocation = placeLocation;
       if (type) matchQuery.type = type;
       if (availability) matchQuery.availability = availability;
 
@@ -73,7 +74,13 @@ class ListingController {
   async getListingById(req, res) {
     try {
       const { id } = req.params;
-
+      if (!id) {
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message: "Please provide a listing ID",
+        });
+      }
       const listing = await Place.findById(id);
 
       if (!listing) {

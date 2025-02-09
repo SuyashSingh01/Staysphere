@@ -6,7 +6,8 @@ import { format } from "date-fns";
 import { toast } from "react-toastify";
 import { addBooking } from "../Redux/slices/BookingSlice";
 import { booking } from "../services/api.urls";
-import { bookYourPlace } from "../services/operations/bookplace";
+import { bookYourPlace } from "../services/apiOperations/bookplace";
+import { handleBookingPayment } from "../components/Booking/payment";
 
 const ConfirmAndPay = () => {
   const params = useParams();
@@ -35,24 +36,27 @@ const ConfirmAndPay = () => {
 
   const bookingHandler = async () => {
     try {
+      await handleBookingPayment();
+      // called the handlebooking route
       // add  the booking in the backend
+      console.log("handllebookingpayement called");
       dispatch(addBooking({ ...booking }));
       // add the logic for payment after the booking has been added  to the backend
 
-      bookYourPlace(
-        token,
-        booking?.place,
-        BookingDetails,
-        userDetails,
-        navigate,
-        dispatch
-      );
+      // bookYourPlace(
+      //   token,
+      //   booking?.place,
+      //   BookingDetails,
+      //   userDetails,
+      //   navigate,
+      //   dispatch
+      // );
       // toast.success("Booking Confirmed");
 
-      navigate("/paymentsuccess");
-      setTimeout(() => {
-        navigate("/");
-      }, 3000);
+      // navigate("/paymentsuccess");
+      // setTimeout(() => {
+      //   navigate("/");
+      // }, 3000);
     } catch (e) {
       console.error(e.message);
       toast.error(e.message);
@@ -68,7 +72,7 @@ const ConfirmAndPay = () => {
   const basePrice = BookingDetails?.price || 0;
   const airbnbFee = Math.floor((5 / 100) * basePrice);
   const taxes = Math.floor((18 / 100) * basePrice);
-  const totalPrice = basePrice + airbnbFee + taxes;
+  const totalPrice = basePrice + 1 + taxes;
 
   // Guard against missing booking details
   if (!booking) {

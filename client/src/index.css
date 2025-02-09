@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbar for Chrome, Safari, Edge */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for IE/Edge */
+.no-scrollbar::-ms-scrollbar {
+  display: none;
+}
 
 @layer base {
   :root {
@@ -47,11 +61,11 @@
   }
 }
 
-input[type='text'],
-input[type='password'],
-input[type='email'],
-input[type='number'],
-input[type='tel'],
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
 textarea {
   @apply my-2 w-full rounded-[10px] border py-2 px-3;
 }

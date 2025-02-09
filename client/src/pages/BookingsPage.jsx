@@ -1,36 +1,48 @@
-import axios from "axios";
 import { Link } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import PlaceImg from "../components/common/PlaceImg.jsx";
 import BookingDates from "../components/common/BookingDates.jsx";
 import Spinner from "../components/common/Spinner.jsx";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoading } from "../Redux/slices/AuthSlice";
+
 import NoTripBookedYet from "../components/common/NoTripBookedYet.jsx";
+import { bookingsApis } from "../services/api.urls.js";
+import { request } from "../services/apiConnector.js";
 
 const BookingsPage = () => {
-  const { loading } = useSelector((state) => state.auth);
+  const [loading, setLoading] = useState(false);
+  const { token } = useSelector((state) => state.auth);
   const { bookings } = useSelector((state) => state.bookings);
-  const [Bookings, setBookings] = useState(bookings || []);
+  const [Bookings, setBookings] = useState([]);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const getBookings = async () => {
-      dispatch(setLoading(true));
-      try {
-        // set the bookings from the backend
-        const { data } = await axios.get("http://localhost:3001/bookings");
-        setBookings(data);
+  const getBookings = async () => {
+    setLoading(true);
 
-        // get the bookings from the redux store
-        // setBookings(bookings);
-      } catch (error) {
-        console.log("Error: ", error.message);
-      }
-      dispatch(setLoading(false));
-    };
+    try {
+      const { data } = await request(
+        "GET",
+        bookingsApis.GET_ALL_BOOKINGS,
+        null,
+        {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      );
+      console.log("BookingData", data);
+      setBookings(data?.data);
+    } catch (error) {
+      console.log("Error: ", error.message);
+      notification.error({
+        message: "Failed to fetch bookings",
+        duration: 1,
+      });
+    }
+    setLoading(false);
+  };
+  useEffect(() => {
     getBookings();
-  }, [dispatch]);
+  }, []);
 
   if (loading) return <Spinner />;
 
@@ -50,15 +62,16 @@ const BookingsPage = () => {
               {/* Place Image */}
               <div className="relative h-40 md:h-52">
                 {booking?.place?.photos?.[0] ? (
-                  <PlaceImg place={booking?.place} className="h-full w-full object-cover" />
+                  <PlaceImg
+                    place={booking?.place}
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   <div className="h-full w-full bg-gray-200 flex items-center justify-center">
                     <span>No Image Available</span>
                   </div>
                 )}
               </div>
-
-
 
               {/* Booking Details */}
               <div className="p-4">
@@ -101,4 +114,4 @@ const BookingsPage = () => {
   );
 };
 
-export default BookingsPage;
+export default memo(BookingsPage);

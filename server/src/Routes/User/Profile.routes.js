@@ -14,5 +14,7 @@ router.get("/account/profile", auth, getProfileById);
 router.put("/account/profileupdate", auth, updateprofileDetails);
 router.put("/account/updateDisplaypic", auth, updateDisplayPicture);
 router.delete("/account/deleteprofile", auth, deleteprofile);
+router.put("/profile/updateEmail", auth, updateEmail);
+router.put("/profile/updatePassword", auth, updatePassword);
 
-module.exports = router;
+export default router;

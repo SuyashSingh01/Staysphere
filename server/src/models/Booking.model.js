@@ -6,10 +6,15 @@ const bookingSchema = new mongoose.Schema({
   adults: Number,
   children: Number,
   roomType: String,
+  amount: Number,
   totalAmount: Number,
-  bookingStatus: String,
+
+  bookingStatus: {
+    type: String,
+    enum: ["available ", "await", "booked", "cancelled"],
+    default: "available",
+  },
   bookingDate: Date,
-  bookingTime: String,
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

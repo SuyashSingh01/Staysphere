@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const reviewRatingSchema = new mongoose.Schema(
   {
-    user: {
+    postedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -16,6 +16,22 @@ const reviewRatingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    extramessage: {
+      type: String,
+    },
+    communication: {
+      type: Number,
+      min: 1,
+      max: 5,
+      required: true,
+    },
+    cleanliness: {
+      type: Number,
+      min: 1,
+      max: 5,
+      required: true,
+    },
+
     rating: {
       type: Number,
       min: 1,

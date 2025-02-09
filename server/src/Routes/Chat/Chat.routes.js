@@ -4,9 +4,11 @@ import { auth } from "../../middleware/auth.js";
 
 const router = express.Router();
 
-// Real-Time Chat  not working properly
+// Real-Time Chat  currently we are not using routes for real-time chat purposes but we can use it in the future
 router.post("/joinRoom", auth, controllers.chatservice.addUserToRoom); // Join a chat room
-// router.post("/sendMessage", auth, controllers.chat.sendmessage); // Send a message
+
+router.post("/sendMessage", auth, controllers.chatservice.saveMessage); // Save a message
+
 router.get(
   "/messages/:roomId",
   auth,
