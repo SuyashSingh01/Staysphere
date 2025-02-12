@@ -1,6 +1,7 @@
-import React from 'react';
+import React from "react";
 
 const Perks = ({ selected, handleFormData }) => {
+  console.log("SSSSS", selected);
   return (
     <div className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6">
       <label
@@ -9,7 +10,7 @@ const Perks = ({ selected, handleFormData }) => {
       >
         <input
           type="checkbox"
-          checked={selected?.includes('wifi')}
+          checked={selected.indexOf("wifi") !== -1}
           name="wifi"
           onChange={handleFormData}
         />
@@ -33,7 +34,7 @@ const Perks = ({ selected, handleFormData }) => {
       <label className="flex cursor-pointer items-center gap-2 rounded-2xl border p-4">
         <input
           type="checkbox"
-          checked={selected.includes('parking')}
+          checked={selected.includes("parking")}
           name="parking"
           onChange={handleFormData}
         />
@@ -57,7 +58,7 @@ const Perks = ({ selected, handleFormData }) => {
       <label className="flex cursor-pointer items-center gap-2 rounded-2xl border p-4">
         <input
           type="checkbox"
-          checked={selected.includes('tv')}
+          checked={selected.includes("tv")}
           name="tv"
           onChange={handleFormData}
         />
@@ -81,7 +82,7 @@ const Perks = ({ selected, handleFormData }) => {
       <label className="flex cursor-pointer items-center gap-2 rounded-2xl border p-4">
         <input
           type="checkbox"
-          checked={selected.includes('radio')}
+          checked={selected.includes("radio")}
           name="radio"
           onChange={handleFormData}
         />
@@ -105,7 +106,7 @@ const Perks = ({ selected, handleFormData }) => {
       <label className="flex cursor-pointer items-center gap-2 rounded-2xl border p-4">
         <input
           type="checkbox"
-          checked={selected.includes('pets')}
+          checked={selected.includes("pets")}
           name="pets"
           onChange={handleFormData}
         />
@@ -129,7 +130,7 @@ const Perks = ({ selected, handleFormData }) => {
       <label className="flex cursor-pointer items-center gap-2 rounded-2xl border p-4">
         <input
           type="checkbox"
-          checked={selected.includes('enterence')}
+          checked={selected.includes("enterence")}
           name="enterence"
           onChange={handleFormData}
         />

@@ -1,18 +1,15 @@
-import React, { useContext } from "react";
+import React, { memo, useMemo } from "react";
 import { useSelector } from "react-redux";
 import PlaceCard from "../components/Card/PlaceCard.jsx";
 import ExploreCard from "../components/common/ExploreCard.jsx";
-import { ListingsContext } from "../context/ListingsContext"
 
 const LikedPlacesPage = () => {
-  const likedPlaces = useSelector((state) => state.listings.favorites); // IDs of liked places
-  // const [likedListings, setLikedListings] = useState(likedPlaces); // Initialize as an empty array
-  const { listingData } = useContext(ListingsContext);
-  const likedListings = listingData.filter((place) => likedPlaces.includes(place.id));
-
+  const likedPlaces = useSelector((state) => state.listings.favorites);
+  const likedListings = useMemo(() => {
+    return likedPlaces ?? []; // Ensure default empty array
+  }, [likedPlaces]);
   return (
     <div className=" min-h-screen bg-gray-50 py-8 px-4 md:px-8 lg:px-16 ">
-
       {likedListings.length > 0 ? (
         <>
           <h1 className="mb-8 text-center text-3xl font-bold text-gray-800">
@@ -25,10 +22,15 @@ const LikedPlacesPage = () => {
           </div>
         </>
       ) : (
-        <ExploreCard title={"Liked Place"} explore={"You haven’t liked any places yet. Explore and add your favorites!"} />
+        <ExploreCard
+          title={"Liked Place"}
+          explore={
+            "You haven’t liked any places yet. Explore and add your favorites!"
+          }
+        />
       )}
     </div>
   );
 };
 
-export default LikedPlacesPage;
+export default memo(LikedPlacesPage);

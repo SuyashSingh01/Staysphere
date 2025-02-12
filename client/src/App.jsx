@@ -133,7 +133,7 @@ function App() {
             }
           />
           {/* Only accessible to Host in first Layout */}
-          {"host" === ACCOUNT_TYPE.HOST && (
+          {user?.role === ACCOUNT_TYPE.HOST && (
             <>
               <Route
                 path="/account/places/new"
@@ -166,7 +166,7 @@ function App() {
                 }
               />
               <Route
-                path="/account/places/:id"
+                path="/account/places/:placeId"
                 element={
                   <PrivateRoute>
                     <PageWrapper>

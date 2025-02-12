@@ -16,7 +16,9 @@ export const isOverlapping = (
 };
 
 export function generateToken(payload) {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" });
+  return jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: "3d",
+  });
 }
 
 export function generatOtp() {

@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useMemo, useState } from "react";
 import { auth, googleProvider } from "../utility/Firebase";
 import { useSelector, useDispatch } from "react-redux";
 import { setToken, setLoading, setUserData } from "../Redux/slices/AuthSlice";
@@ -7,6 +7,7 @@ import { request } from "../services/apiConnector";
 import { authApis } from "../services/api.urls.js";
 import { Flex, notification } from "antd";
 import { LoadingSpinner } from "../components/Wrapper/PageWrapper.jsx";
+import { useNavigate, Link } from "react-router-dom";
 // import { GoogleLogin } from "react-google-login";
 
 const Login = () => {
@@ -54,8 +55,6 @@ const Login = () => {
 
         localStorage.setItem("token", JSON.stringify(data?.data?.token));
         localStorage.setItem("user", JSON.stringify(data?.data?.user._id));
-        console.log("datauser", data?.data?.user?._id);
-
         navigate("/account");
       } else {
         console.error("Error:", data?.message);
@@ -98,7 +97,15 @@ const Login = () => {
         password: formData.password,
         token,
       });
+      console.log("loginDataResponse:", data);
 
+      if (!data.success) {
+        notification.error({
+          message: data?.data?.message,
+          duration: 1,
+        });
+        return;
+      }
       console.log("Login response: ", data);
 
       const userDetails = {
@@ -121,12 +128,12 @@ const Login = () => {
       navigate("/account");
 
       // clear the form data
-    } catch (error) {
+    } catch (e) {
       notification.error({
-        message: "Login Failed: " + error.message,
+        message: "Login Failed: " + e.message,
         duration: 1,
       });
-      console.error("error", error.message);
+      console.error("error", e.message);
     }
     dispatch(setLoading(false));
   };

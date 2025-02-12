@@ -1,9 +1,9 @@
 import React from "react";
 import { Carousel } from "antd";
-import img from "../../assets/pexels-pixabay-533769.jpg";
 
 const contentStyle = {
   margin: 0,
+  padding: 2,
   height: "100px",
   color: "#fff",
   textAlign: "center",
@@ -11,11 +11,10 @@ const contentStyle = {
 
 // const photos = [{img:img},]
 const SwipeImages = ({ photos }) => {
-  console.log("IMAges", photos);
   return (
     <Carousel arrows={true} infinite={false}>
       {photos?.map((image) => (
-        <img src={image} className="w-16 rounded-sm" />
+        <img src={image} className="w-16 rounded-sm" key={image} />
       ))}
     </Carousel>
   );

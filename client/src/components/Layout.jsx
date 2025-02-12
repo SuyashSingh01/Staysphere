@@ -3,8 +3,8 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Navbar from "./Navbar/Navbar.jsx";
 import Footer from "./Footer/Footer.jsx";
-import logo from "../assets/logo.svg";
-import Header from "./Navbar/Header/Header.jsx";
+import stayspherelogo2 from "../assets/logos/stayspherelogo2.png";
+// import Header from "./Navbar/Header/Header.jsx";
 
 import search_icon from "../assets/icons/search-icon-2.svg";
 import search_icon_red from "../assets/icons/search-icon-2-red.svg";
@@ -13,7 +13,7 @@ import heart_icon_red from "../assets/icons/heart-icon-2-red.svg";
 import user_icon from "../assets/icons/user-icon.svg";
 import user_icon_red from "../assets/icons/user-icon-red.svg";
 import airbnb_icon from "../assets/logos/stayspherelogo2.png";
-import airbnb_icon_red from "../assets/logos/stayspherelogo2.png";
+
 import message_icon from "../assets/icons/message-icon.svg";
 import message_icon_red from "../assets/icons/message-icon-red.svg";
 
@@ -53,13 +53,13 @@ const Layout = () => {
 
       {/* Mobile Navigation */}
       <div
-        className={` block sm:hidden fixed bottom-0 w-full h-16 bg-white z-20  items-center justify-center`}
+        className={` block sm:hidden fixed bottom-0 w-full h-16 bg-white z-20  items-center justify-evenly`}
       >
         <div
           className={`${
             currentUser
-              ? "flex justify-between w-full px-6"
-              : "flex gap-[50px] bg-white"
+              ? "flex justify-evenly w-full px-2"
+              : "flex gap-[50px] justify-evenly bg-white"
           }`}
         >
           {/* Eplore Button */}
@@ -89,10 +89,10 @@ const Layout = () => {
           <button
             onClick={() => {
               setSelectedButton("Wishlists");
-              navigate("/wishlist");
+              navigate("/liked");
             }}
-            className={`  bg-white${
-              currentUser ? "" : "hidden"
+            className={`  bg-white ${
+              !currentUser ? "" : "hidden"
             } flex flex-col items-center gap-1 ${
               selectedButton === "Wishlists" ? "opacity-100" : "opacity-60"
             }`}
@@ -116,15 +116,17 @@ const Layout = () => {
               setSelectedButton("Trips");
               navigate("/bookings");
             }}
-            className={`  bg-white${
-              currentUser ? "" : "hidden"
+            className={`  bg-white ${
+              !currentUser ? "" : "hidden"
             } flex flex-col items-center gap-1 ${
               selectedButton === "Trips" ? "opacity-100" : "opacity-60"
             }`}
           >
             <img
-              className={`w-10 h-14`}
-              src={selectedButton === "Trips" ? airbnb_icon_red : airbnb_icon}
+              className={`w-18 h-6`}
+              src={
+                selectedButton === "Trips" ? stayspherelogo2 : stayspherelogo2
+              }
               alt="heart icon"
             />
             <span

@@ -3,15 +3,16 @@ import { createSlice } from "@reduxjs/toolkit";
 const listingSlice = createSlice({
   name: "listings",
   initialState: {
-    listings:localStorage.getItem("listings")? JSON.parse(localStorage.getItem("listings")):[],//Array of Hosted listings
-    favorites: [], // List of favorite listings
-    // currentListing: null, // Current listing being viewed needs to work on this
-   
+    place: {},
+    listings: localStorage.getItem("listings")
+      ? JSON.parse(localStorage.getItem("listings"))
+      : null,
+    favorites: [],
   },
   reducers: {
     setListings(state, action) {
       // Initialize listings
-      state.listings = action.payload; 
+      state.listings = action.payload;
     },
     addFavorite(state, action) {
       if (!state.favorites.includes(action.payload)) {
@@ -25,17 +26,22 @@ const listingSlice = createSlice({
     },
     addListing(state, action) {
       // Add new listing
-      state.listings.push(action.payload); 
+      state.listings.push(action.payload);
     },
     updateListing(state, action) {
       const { id, placeData } = action.payload;
       const index = state.listings.findIndex((listing) => listing.id === id);
-      if (index !== -1) state.listings[index] = { ...state.listings[index], ...placeData };
+      if (index !== -1)
+        state.listings[index] = { ...state.listings[index], ...placeData };
     },
     deleteListing(state, action) {
       state.listings = state.listings.filter(
         (listing) => listing.id !== action.payload
       );
+    },
+    // Add place details
+    addplaceDetail(state, action) {
+      state.place = action.payload;
     },
   },
 });
@@ -47,5 +53,6 @@ export const {
   addListing,
   updateListing,
   deleteListing,
+  addplaceDetail,
 } = listingSlice.actions;
 export default listingSlice.reducer;

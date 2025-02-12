@@ -1,48 +1,96 @@
-import React from 'react';
-import PlaceImg from '../common/PlaceImg.jsx';
+import React from "react";
+import PropTypes from "prop-types";
+// import PlaceImg from "../common/PlaceImg.jsx";
+import SwipeImages from "./SwipeImages.jsx";
+import { addListing, addplaceDetail } from "../../Redux/slices/ListingSlice.js";
+import { useDispatch, useSelector } from "react-redux";
 
-const InfoCard = ({ place, navigate, index, setPlaces }) => {
+import { useDeletePlace } from "../../hooks/host/useMutationDeleteHostedPlace.js";
+import { memo } from "react";
+
+const InfoCard = ({ place, navigate }) => {
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
 
   const editHandler = () => {
-    navigate(`/account/places/${place.id}`, { state: { place } });
-  }
+    dispatch(addplaceDetail(place));
+    navigate(`/account/places/${place?._id}`, { state: { place } });
+  };
+  const deletePlaceMutation = useDeletePlace();
+
   const deletHandler = () => {
-    navigate(`/account/places`);
-    const getHostedlisting = JSON.parse(localStorage.getItem('listings'));
-    const index = getHostedlisting.findIndex(item => item.id === place.id);
-    if (index !== -1) {
-      getHostedlisting.splice(index, 1);
+    if (!token) {
+      console.error("No token found!");
+      return;
     }
-    localStorage.setItem('listings', JSON.stringify(getHostedlisting));
-    setPlaces(getHostedlisting);
+    deletePlaceMutation.mutate({ placeId: place._id, token });
+  };
 
-  }
-  const requestHandler=()=>{
-    navigate('/account/hosted/bookings');
-  }
+  const requestHandler = () => {
+    navigate("/account/hosted/bookings");
+  };
   return (
-    <div className="mx-3 flex flex-col md:flex-row gap-4 rounded-2xl bg-gray-100 p-2 md:p-4 transition-all hover:bg-gray-200 shadow-md" key={index}>
+    <div
+      className="mx-3 flex flex-col md:flex-row gap-4 rounded-2xl bg-gray-100 p-2 md:p-4 transition-all hover:bg-gray-200 shadow-md"
+      key={place?._id}
+    >
+      {/* using swiper */}
+      <div className="h-full max-w-[20rem] rounded-xl object-cover">
+        <SwipeImages photos={place?.image} />
+      </div>
 
-      <PlaceImg place={place} className=' w-full md:w-30 rounded-md' />
-      <div className='flex flex-col gap-2  p-2 md:p-4 rounded-md'>
+      {/* <PlaceImg place={place} className=" w-full md:w-30 rounded-md" /> */}
+      <div className="flex flex-col gap-2  p-2 md:p-4 rounded-md">
         <div className=" w-full">
-          <h2 className="text-lg md:text-2xl font-bold  md:mt-2">{place.title}</h2>
-          <p className="line-clamp-4 mt-2 md:mt-4 py-4 text-sm text-wrap">{place.description}</p>
+          <h2 className="text-lg md:text-2xl font-bold  md:mt-2">
+            {place.placeName}
+          </h2>
+          <p className="line-clamp-4 mt-2 md:mt-4 py-4 text-sm text-wrap">
+            {place.description}
+          </p>
         </div>
-        <div className='mt-8 md:mt-8 my-8 '>
+        <div className="mt-8 md:mt-8 my-8 ">
           <p className="text-sm md:text-base">Max Guests: {place.maxGuests}</p>
           <p className="text-sm md:text-base">Price: {place.price}</p>
-          <p className='text-sm md:text-base'>No. of Booking:{place?.booked}</p>
+          <p className="text-sm md:text-base">
+            No. of Booking : {place?.numberOfBookings}
+          </p>
         </div>
-        <div className='flex flex-wrap gap-2 md:gap-4 '>
-          <button className='bg-primary cursor-pointer rounded-md md:p-2 w-16 md:w-32 text-white' onClick={editHandler}>Edit</button>
-          <button className='bg-primary cursor-pointer rounded-md md:p-2 w-16 md:w-32 text-white' onClick={deletHandler}>Delete</button>
-          <button className='bg-primary cursor-pointer rounded-md md:p-3 w-16 md:w-32 text-white' onClick={requestHandler}>See-Request</button>
-
+        <div className="flex flex-wrap gap-2 md:gap-4 ">
+          <button
+            className="bg-orange-400 active:bg-orange-500  cursor-pointer rounded-md md:p-2 w-16 md:w-32 text-white"
+            onClick={editHandler}
+          >
+            Edit
+          </button>
+          <button
+            className="bg-orange-400 active:bg-orange-500  cursor-pointer rounded-md md:p-2 w-16 md:w-32 text-white"
+            onClick={deletHandler}
+          >
+            {deletePlaceMutation.isLoading ? "Deleting..." : "Delete"}
+          </button>
+          <button
+            className="bg-orange-400 active:bg-orange-500  cursor-pointer rounded-md md:p-3 w-16 md:w-32 text-white"
+            onClick={requestHandler}
+          >
+            See-Request
+          </button>
         </div>
       </div>
     </div>
   );
 };
+InfoCard.propTypes = {
+  place: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    placeName: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    maxGuests: PropTypes.number.isRequired,
+    price: PropTypes.number.isRequired,
+    numberOfBookings: PropTypes.number.isRequired,
+    image: PropTypes.arrayOf(PropTypes.string).isRequired,
+  }).isRequired,
+  navigate: PropTypes.func.isRequired,
+};
 
-export default InfoCard;
+export default memo(InfoCard);

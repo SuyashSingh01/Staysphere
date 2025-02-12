@@ -55,6 +55,14 @@ const placeschema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    maxGuests: {
+      type: Number,
+      required: true,
+    },
+    numberOfBookings: {
+      type: Number,
+      default: 0,
+    },
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,

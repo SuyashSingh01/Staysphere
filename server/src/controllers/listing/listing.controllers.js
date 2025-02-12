@@ -6,14 +6,26 @@ class ListingController {
   // Get all listings with optional filters
   async getAllListings(req, res) {
     try {
-      const all_listings = await Place.find({}).limit(30);
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 8;
+      const skip = (page - 1) * limit;
 
-      return JsonResponse(res, {
-        status: 200,
-        success: true,
-        message: "Places are Fetched successfully",
-        data: all_listings,
+      // Query the database
+      const places = await Place.find().skip(skip).limit(limit);
+      const totalPlaces = await Place.countDocuments();
+      res.status(200).json({
+        places,
+        totalPages: Math.ceil(totalPlaces / limit),
+        currentPage: page,
       });
+      // return JsonResponse(res, {
+      //   status: 200,
+      //   success: true,
+      //   message: "Places are Fetched successfully",
+      //   places,
+      //   totalPages: Math.ceil(totalPlaces / limit),
+      //   currentPage: page,
+      // });
     } catch (err) {
       console.error(err);
       return JsonResponse(res, {

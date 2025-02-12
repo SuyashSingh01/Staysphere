@@ -5,7 +5,7 @@ import { auth } from "../../middleware/auth.js";
 const router = express.Router();
 
 router.post("/checkout", auth, controllers.payment.capturePayment);
-router.post("/verifyPayment", auth, controllers.payment.verifyPayment);
+router.post("/payment/verifyPayment", auth, controllers.payment.verifyPayment);
 // router.post(
 //   "/sendPaymentSuccessEmail",
 //   auth,

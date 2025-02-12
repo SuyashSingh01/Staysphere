@@ -8,6 +8,7 @@ import SearchBar from "../common/SearchBar";
 import logo from "../../assets/logos/stayspherelogo2.png";
 
 import CatNavbar from "./CatNavbar.jsx";
+import { memo } from "react";
 
 const Navbar = () => {
   const [showSearchBar, setShowSearchBar] = useState(true);
@@ -174,12 +175,12 @@ const Navbar = () => {
               type="range"
               min="0"
               max="1000"
-              className="w-full"
+              className="w-full bg-orange-400 active:bg-orange-500 color-orange "
               onChange={(e) => console.log(`Price: $${e.target.value}`)}
             />
             <div className="flex justify-between text-sm text-gray-500 mt-1">
-              <span>$0</span>
-              <span>$1000+</span>
+              <span>₹0</span>
+              <span>₹1000+</span>
             </div>
           </div>
 
@@ -231,4 +232,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default memo(Navbar);

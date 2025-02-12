@@ -1,3 +1,20 @@
+export const types = [
+  "Apartment",
+  "House",
+  "Villa",
+  "Cottage",
+  "Bungalow",
+  "Mansion",
+  "Castle",
+  "Cabin",
+  "Chalet",
+  "Farmhouse",
+  "Townhouse",
+  "Condo",
+  "Loft",
+  "Penthouse",
+];
+
 export const categories = [
   {
     icon: "https://a0.muscache.com/pictures/33dd714a-7b4a-4654-aaf0-f58ea887a688.jpg",

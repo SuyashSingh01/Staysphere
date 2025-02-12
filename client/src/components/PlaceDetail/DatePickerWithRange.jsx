@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { addDays, format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
-import { cn } from '../../utility/utils.js';
-import { Button } from '../../components/common/Button.jsx';
-import { Calendar } from '../common/Calender.jsx';
-import {Popover,PopoverContent,PopoverTrigger,} from '../common/PopOver.jsx';
+import * as React from "react";
+import { addDays, format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "../../utility/utils.js";
+import { Button } from "../../components/common/Button.jsx";
+import { Calendar } from "../common/Calender.jsx";
+import { Popover, PopoverContent, PopoverTrigger } from "../common/PopOver.jsx";
 
-export default function DatePickerWithRange({className, setDateRange }) {
+export default function DatePickerWithRange({ className, setDateRange }) {
   const [date, setDate] = React.useState({
     from: new Date(),
     to: addDays(Date.now(), 5),
@@ -26,7 +26,7 @@ export default function DatePickerWithRange({className, setDateRange }) {
   }, [date]);
 
   return (
-    <div className={cn('grid gap-2', className)}>
+    <div className={cn("grid gap-2", className)}>
       <Popover>
         <PopoverTrigger
           asChild
@@ -34,21 +34,21 @@ export default function DatePickerWithRange({className, setDateRange }) {
         >
           <Button
             id="date"
-            variant={'outline'}
+            variant={"outline"}
             className={cn(
-              'w-[300px] justify-start text-left font-normal ',
-              !date && 'text-muted-foreground',
+              "w-[300px] justify-start text-left font-normal ",
+              !date && "text-muted-foreground"
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, 'LLL dd, y')} -{'>'}{' '}
-                  {format(date.to, 'LLL dd, y')}
+                  {format(date.from, "LLL dd, y")} -{">"}{" "}
+                  {format(date.to, "LLL dd, y")}
                 </>
               ) : (
-                format(date.from, 'LLL dd, y')
+                format(date.from, "LLL dd, y")
               )
             ) : (
               <span className="text-base font-semibold">Pick a date</span>

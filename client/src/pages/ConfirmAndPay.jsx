@@ -1,23 +1,21 @@
-import React from "react";
-import { Select, Button, Input } from "antd";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
+import React, { memo } from "react";
+import { Select, Button, Input, notification } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { format } from "date-fns";
-import { toast } from "react-toastify";
 import { addBooking } from "../Redux/slices/BookingSlice";
-import { booking } from "../services/api.urls";
+import { bookingsApis } from "../services/api.urls";
 import { bookYourPlace } from "../services/apiOperations/bookplace";
 import { handleBookingPayment } from "../components/Booking/payment";
 
 const ConfirmAndPay = () => {
-  const params = useParams();
-  const bookingid = params.id;
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { bookings } = useSelector((state) => state.bookings);
-  const { BookingDetails } = location.state || {};
-  const { placeDetail, booking } = BookingDetails || {};
+  const { place: placeDetail, bookingDetails: booking } = location.state || {};
+
+  const { token, user } = useSelector((state) => state.auth);
+  console.log("BOOKING DETAIL", booking);
 
   // Find the existience we can do it in backend booking
 
@@ -36,30 +34,22 @@ const ConfirmAndPay = () => {
 
   const bookingHandler = async () => {
     try {
-      await handleBookingPayment();
-      // called the handlebooking route
       // add  the booking in the backend
-      console.log("handllebookingpayement called");
+      await handleBookingPayment(token, booking, user);
+      // called the handlebooking route
       dispatch(addBooking({ ...booking }));
-      // add the logic for payment after the booking has been added  to the backend
-
-      // bookYourPlace(
-      //   token,
-      //   booking?.place,
-      //   BookingDetails,
-      //   userDetails,
-      //   navigate,
-      //   dispatch
-      // );
-      // toast.success("Booking Confirmed");
-
-      // navigate("/paymentsuccess");
-      // setTimeout(() => {
-      //   navigate("/");
-      // }, 3000);
+      notification.success({
+        message: "Payment Successful",
+        duration: 1,
+        placement: "Top-left",
+      });
+      navigate("/account/bookings");
     } catch (e) {
       console.error(e.message);
-      toast.error(e.message);
+      notification.error({
+        message: e.message,
+        duration: 1,
+      });
     }
   };
   // Calculate the number of nights
@@ -69,8 +59,8 @@ const ConfirmAndPay = () => {
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) || 0;
 
   // Calculate prices
-  const basePrice = BookingDetails?.price || 0;
-  const airbnbFee = Math.floor((5 / 100) * basePrice);
+  const basePrice = booking?.price || 0;
+  const OurplatformFee = Math.floor((5 / 100) * basePrice);
   const taxes = Math.floor((18 / 100) * basePrice);
   const totalPrice = basePrice + 1 + taxes;
 
@@ -104,7 +94,7 @@ const ConfirmAndPay = () => {
               </div>
               <div className="flex justify-between">
                 <p>Guests</p>
-                <p>{booking?.noOfGuest || "N/A"}</p>
+                <p>{booking?.guests || "N/A"}</p>
               </div>
             </div>
           </div>
@@ -157,7 +147,10 @@ const ConfirmAndPay = () => {
                   minLength={10}
                   maxLength={12}
                 />
-                <Button className="bg-primary" type="primary">
+                <Button
+                  className="bg-orange-400 p-2 active:bg-orange-500"
+                  type="primary"
+                >
                   Add
                 </Button>
               </div>
@@ -175,7 +168,7 @@ const ConfirmAndPay = () => {
 
           {/* Confirm Button */}
           <button
-            className="mx-auto my-8 flex rounded-xl bg-primary py-2 px-10 md:px-14 text-md md:text-lg font-semibold text-white"
+            className="mx-auto my-8 flex rounded-xl bg-orange-400 active:bg-orange-500 py-2 px-10 md:px-14 text-md md:text-lg font-semibold text-white"
             onClick={bookingHandler}
           >
             Confirm and Pay
@@ -186,15 +179,15 @@ const ConfirmAndPay = () => {
         <div className="p-6 rounded-lg">
           <div className="mb-6">
             <img
-              src="https://via.placeholder.com/150"
+              src={placeDetail?.image[0]}
               alt="Listing Thumbnail"
               className="h-40 w-60 object-cover rounded-md"
             />
             <h2 className="text-lg font-medium mt-4">
-              {placeDetail?.title || "No title available"}
+              {placeDetail?.placeName || "No title available"}
             </h2>
             <p className="text-gray-600">
-              {placeDetail?.location || "No location provided"}
+              {placeDetail?.placeLocation || "No location provided"}
             </p>
           </div>
 
@@ -204,13 +197,13 @@ const ConfirmAndPay = () => {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <p>
-                  {placeDetail?.price} x {diffDays} night
+                  {booking?.price} x {diffDays} night
                 </p>
                 <p>{basePrice}</p>
               </div>
               <div className="flex justify-between">
-                <p>Airbnb service fee</p>
-                <p>{airbnbFee}</p>
+                <p>Staysphere service fee</p>
+                <p>{OurplatformFee}</p>
               </div>
               <div className="flex justify-between">
                 <p>Taxes</p>
@@ -228,4 +221,4 @@ const ConfirmAndPay = () => {
   );
 };
 
-export default ConfirmAndPay;
+export default memo(ConfirmAndPay);
