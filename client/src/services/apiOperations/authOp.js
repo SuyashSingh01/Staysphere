@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import { request } from "../apiConnector";
 import { authApis } from "../api.urls";
 import { setLoading } from "../../Redux/slices/AuthSlice";
@@ -23,11 +22,14 @@ export function getPasswordResetToken(email, setEmailSent) {
         message: "Reset Email Sent",
         duration: 1,
       });
-      // toast.success("Reset Email Sent");
+
       setEmailSent(true);
     } catch (error) {
       console.log("RESET PASSWORD TOKEN Error", error);
-      toast.error("Failed to send email for resetting password");
+      notification.error({
+        message: "Failed to send email for resetting password",
+        duration: 1,
+      });
     }
     dispatch(setLoading(false));
   };
@@ -52,10 +54,9 @@ export function resetPassword(password, confirmPassword, token, navigate) {
         duration: 1,
       });
       navigate("/login");
-      // toast.success("Password has been reset successfully");
     } catch (error) {
       console.log("RESET PASSWORD TOKEN Error", error);
-      // toast.error("Unable to reset password");
+
       notification.error({
         message: "Unable to reset password",
         duration: 1,

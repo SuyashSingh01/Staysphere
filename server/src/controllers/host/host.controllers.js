@@ -9,7 +9,7 @@ class HostController {
         title,
         description,
         price,
-        location,
+        address: location,
         perks,
         maxGuests,
         extraInfo,
@@ -71,7 +71,7 @@ class HostController {
         image: imageUrls,
         price,
         description,
-        amenities: perks,
+        amenities: [...perks],
         rules: extraInfo,
         type,
         maxGuests,
@@ -99,6 +99,7 @@ class HostController {
   async deleteHostPlace(req, res) {
     try {
       const id = req.params.placeId;
+      console.log("Delete host place", id);
       const hostId = req.user.id;
       // check the host id and place id is valid
       if (!id || !hostId) {
@@ -152,6 +153,13 @@ class HostController {
   async getHostPlaceById(req, res) {
     try {
       const { id } = req.params;
+      if (!id) {
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message: "Missing required fields to get the place",
+        });
+      }
       const place = await Place.findById(id);
 
       if (!place) {
@@ -185,6 +193,8 @@ class HostController {
       const hostId = req.user.id;
       const places = await Place.find({ host: hostId });
 
+      // find the number of booking for
+
       return JsonResponse(res, {
         status: 200,
         success: true,
@@ -212,13 +222,14 @@ class HostController {
         title,
         description,
         price,
-        location,
+        address: location,
         perks,
         maxGuests,
         extraInfo,
         type,
       } = req.body;
-
+      console.log("updatePlacebody", req.body);
+      console.log(`updateHostPlace:`, images);
       if (
         !title ||
         !description ||

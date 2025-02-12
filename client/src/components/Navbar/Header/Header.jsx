@@ -46,12 +46,12 @@ function Header() {
             <img
               className="h-8 hidden xl:block"
               src={stayspherelogo}
-              alt="air bnb logo"
+              alt="staysphere logo"
             />
             <img
               className="h-10 block xl:hidden"
               src={stayspherelogo}
-              alt="air bnb logo"
+              alt="Staysphere logo"
             />
           </div>
           {/* Search Bar */}
@@ -68,7 +68,7 @@ function Header() {
           {/* Right Section */}
           <div className="flex items-center gap-1 relative">
             <button className="hover:bg-gray-100 font-semibold px-3 py-2 rounded-full text-sm">
-              Airbnb your home
+              Staysphere your home
             </button>
             <button className="p-3 hover:bg-gray-100 rounded-full">
               <img className="w-4 h-4" src={world_icon} alt="" />

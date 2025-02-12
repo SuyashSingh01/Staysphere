@@ -13,7 +13,7 @@ export const auth = async (req, res, next) => {
     // console.log(req.body.token);
     // console.log("cookies",req.cookies.tokenname);
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-    console.log("Requested client", req.body);
+    console.log("Requested client", req.header);
     console.log("Header: ", req.header("Authorization"));
     const token =
       req.body?.token ||
@@ -31,6 +31,7 @@ export const auth = async (req, res, next) => {
     // verify token
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
       // console.log(decoded);
       // Reason so that we can check authorization in next that's  why i placed the decoded back to user request
       req.user = decoded;
@@ -47,14 +48,14 @@ export const auth = async (req, res, next) => {
           id: payload.sub, // Google user ID
           email: payload.email,
           name: payload.name,
-          role: "GoogleUser", // Default role for Google users, can be customized
+          role: "User", // Default role for Google users, can be customized
         };
         console.log("Authenticated via Google: ", req.user);
       } catch (googleErr) {
         // If both fail, token is invalid
         return res.status(401).json({
           success: false,
-          message: "Token is invalid. Please log in again.",
+          message: "Token is invalid. Please login again.",
         });
       }
     }

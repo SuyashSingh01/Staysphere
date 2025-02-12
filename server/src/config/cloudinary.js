@@ -1,6 +1,12 @@
 import { v2 as cloudinary } from "cloudinary";
 import { config } from "dotenv";
+import multer from "multer";
 config();
+
+export const multerUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 100 * 1024 * 1024 },
+});
 
 export const cloudinaryConnect = () => {
   try {

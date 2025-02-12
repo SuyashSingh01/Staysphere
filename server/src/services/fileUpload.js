@@ -44,9 +44,9 @@ export async function localfileupload(req, res) {
 
 // make an routes handler over here for cloudinary uploading
 
-export const imageupload = async (images) => {
+export const imageupload = async (fileImages) => {
   try {
-    const files = images.files;
+    const files = fileImages.images;
     console.log("files in imageupload", files);
 
     if (!files || files.length === 0 || files.length === 1) {
@@ -57,7 +57,7 @@ export const imageupload = async (images) => {
     // Prepare an array to store uploaded image data
     const uploadedImages = [];
     await Promise.all(
-      files.map(async (file) => {
+      files?.map(async (file) => {
         const types = path.extname(file.name).split(".")[1].toLowerCase();
         const supportedTypes = ["jpg", "png", "jpeg", "webp"];
         const checkValidType = supportedTypes.includes(types);

@@ -1,7 +1,5 @@
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-// add all the correct routes that are available in pdf except for chat routes
-
 // AUTH ENDPOINTS
 export const authApis = {
   REGISTER_API: BASE_URL + "/auth/register",
@@ -11,28 +9,27 @@ export const authApis = {
   // SENDOTP_API: BASE_URL + "/auth/sendotp",
 };
 
-// Host Authentication ENDPOINTS
+// HOST ENDPOINTS
 export const hostApis = {
+  // Host Authentication ENDPOINTS
   HOST_REGISTER_API: BASE_URL + "/host/register",
   HOST_REGISTER_VERIFY_API: BASE_URL + "/host/register/verify",
   HOST_LOGIN: BASE_URL + "/host/login",
+
+  // Host Profile ENDPOINTS
+  ADD_PLACE: BASE_URL + "/host/addplace",
+  DELETE_PLACE: BASE_URL + "/host/deletehostplace/",
+  GET_HOST_PLACE_BY_ID: BASE_URL + "/host/gethostplaceById",
+  GET_ALL_PLACES: BASE_URL + "/host/getallhostplace",
+  UPDATE_PLACE: BASE_URL + "/host/updatehostplace",
 };
 
 // BOOKINGS ENDPOINTS
 export const bookingsApis = {
   GET_ALL_BOOKINGS: BASE_URL + "/booking/all",
   GET_BOOKING_BY_ID: BASE_URL + "/booking/",
-  CREATE_BOOKING: BASE_URL + "/create-booking/:paymentId",
+  CREATE_BOOKING: BASE_URL + "/create-booking",
   CANCEL_BOOKING: BASE_URL + "/booking/cancel-request/:bookingId",
-};
-
-// HOST ENDPOINTS
-export const host = {
-  ADD_PLACE: BASE_URL + "/host/addplace",
-  DELETE_PLACE: BASE_URL + "/host/deletehostplace/:placeId",
-  GET_HOST_PLACE_BY_ID: BASE_URL + "/host/gethostplaceById/:id",
-  GET_ALL_PLACES: BASE_URL + "/host/getallhostplace",
-  UPDATE_PLACE: BASE_URL + "/host/updatehostplace/:id",
 };
 
 // FAVORITES  ENDPOINTS
@@ -61,10 +58,10 @@ export const listingApis = {
 
 // PAYMENT ENDPOINTS
 
-export const payment = {
-  CHECKOUT_API: BASE_URL + "/checkout",
-  VERIFY_PAYMENT: "/payment/verifyPayment",
-  // SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",
+export const paymentApis = {
+  BOOKING_PAYMENT_CHECKOUT_API: BASE_URL + "/checkout",
+  BOOKING_VERIFY_API_PAYMENT: BASE_URL + "/payment/verifyPayment",
+  SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",
 };
 
 // PROFILE ENDPOINTS

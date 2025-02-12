@@ -20,11 +20,10 @@ export const ListingsProvider = ({ children }) => {
   const fetchedListingData = async () => {
     dispatch(setLoading(true));
     try {
-      const { data } = await request("GET", listingApis.GET_ALL_LISTINGS_API);
-
-      localStorage.setItem("listings", JSON.stringify(data.data));
-      setlistingData(data.data);
-      dispatch(setListings(listingData));
+      // const { data } = await request("GET", listingApis.GET_ALL_LISTINGS_API);
+      // localStorage.setItem("listings", JSON.stringify(data.data));
+      // setlistingData(data.data);
+      // dispatch(setListings(listingData));
     } catch (e) {
       console.log(e.message);
     }

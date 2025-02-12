@@ -259,18 +259,9 @@ class AuthController {
             status: 404,
             message: "User not found",
             success: false,
+            data: [],
           });
         }
-        // check whether the user is already authenticated or not
-        // if (user.googleId != null) {
-        //   return JsonResponse(res, {
-        //     status: 400,
-        //     message:
-        //       "User is registered with google account try to login with google account",
-        //     success: false,
-        //     data: [],
-        //   });
-        // }
 
         // Compare password
         const isMatch = await bcrypt.compare(password, user.password);
@@ -283,7 +274,12 @@ class AuthController {
         }
 
         // Create a JWT token
-        const token = generateToken({ id: user._id, email: email });
+        const token = generateToken({
+          id: user._id,
+          name: user.name,
+          email: email,
+          role: user.role,
+        });
 
         // set the cookie to the token
         const options = {
@@ -465,6 +461,7 @@ class AuthController {
         const token = generateToken({
           id: user._id,
           email: email,
+          name: user.name,
           role: user.role,
           phone: phone,
         });

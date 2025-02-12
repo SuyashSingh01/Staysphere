@@ -12,7 +12,7 @@ import { request } from "../services/apiConnector.js";
 const BookingsPage = () => {
   const [loading, setLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
-  const { bookings } = useSelector((state) => state.bookings);
+
   const [Bookings, setBookings] = useState([]);
   const dispatch = useDispatch();
 
@@ -47,7 +47,7 @@ const BookingsPage = () => {
   if (loading) return <Spinner />;
 
   return (
-    <div className="w-full min-h-screen bg-gray-50 py-8 px-4 md:px-8 lg:px-16">
+    <div className="w-full min-h-screen bg-white py-8 px-4 md:px-8 lg:px-16">
       <h1 className="mb-8 text-center text-3xl font-bold text-gray-800">
         Your Bookings
       </h1>
@@ -61,7 +61,7 @@ const BookingsPage = () => {
             >
               {/* Place Image */}
               <div className="relative h-40 md:h-52">
-                {booking?.place?.photos?.[0] ? (
+                {booking?.place?.image?.[0] ? (
                   <PlaceImg
                     place={booking?.place}
                     className="h-full w-full object-cover"

@@ -8,13 +8,18 @@ import Payment from "../../models/Payment.model.js";
 import { paymentSuccessEmail } from "../../mailTemplate/paymentSuccessEmail.js";
 import mailSender from "../../utils/sendEmail.js";
 import mongoose from "mongoose";
+import generateReceipt from "../../utils/generatePDF.js";
+import Place from "../../models/Place.model.js";
 
 class BookingController {
   async createBooking(req, res) {
     try {
-      const { checkIn, checkOut, phone, price, placeId } = req.body;
+      const { checkIn, checkOut, phone, price, placeId } =
+        req.body.bookingDetail;
       const userId = req.user.id;
       const { paymentId } = req.params;
+      console.log("Checking", checkIn, checkOut, phone, price, placeId);
+      console.log("PAYEMNTID", paymentId);
 
       if (!checkIn || !checkOut || !phone || !price || !paymentId || !placeId) {
         return JsonResponse(res, {
@@ -24,7 +29,6 @@ class BookingController {
         });
       }
       console.log("paymentid", paymentId);
-
       //  Verify if payment exists and is successful
       const payment = await Payment.findOne({
         _id: new mongoose.Types.ObjectId(paymentId),
@@ -40,6 +44,7 @@ class BookingController {
           data: [],
         });
       }
+      // also make sure to incrment the number of bookings
 
       // Create new booking
       const booking = await Booking.create({
@@ -52,6 +57,9 @@ class BookingController {
         paymentId,
         bookingStatus: "booked",
       });
+      const updatedDetail = await Place.findByIdAndUpdate(placeId, {
+        $inc: { numberOfBookings: 1 },
+      }).populate("host");
 
       // Add booking reference to user
       const user = await User.findByIdAndUpdate(
@@ -61,23 +69,45 @@ class BookingController {
         },
         { new: true }
       );
+      try {
+        // Generate PDF receipt
+        const receiptPath = await generateReceipt({
+          _id: booking._id,
+          user,
+          updatedDetail,
+          checkIn,
+          checkOut,
+          price,
+          paymentId,
+        });
 
-      await mailSender(
-        user.email,
-        `Staysphere || Payment Received Your Booking Id${booking._id}`,
-        paymentSuccessEmail(
-          `${user?.name} `,
-          payment?.amount,
-          payment?.orderId,
-          payment?._id
-        )
-      );
-      return JsonResponse(res, {
-        status: 201,
-        success: true,
-        message: "Booking created successfully",
-        data: booking,
-      });
+        // Send email with receipt
+        await mailSender(
+          user.email,
+          `Staysphere || Payment Received - Your Booking ID: ${booking._id}`,
+          paymentSuccessEmail(
+            `${user?.name}`,
+            payment?.amount,
+            payment?.orderId,
+            payment?._id
+          ),
+          [{ filename: "Receipt.pdf", path: receiptPath }] // Attach receipt
+        );
+
+        return JsonResponse(res, {
+          status: 201,
+          success: true,
+          message: "Booking created successfully",
+          data: booking,
+        });
+      } catch (error) {
+        console.error(error);
+        return JsonResponse(res, {
+          status: 500,
+          success: false,
+          message: "Error creating booking",
+        });
+      }
     } catch (error) {
       console.error(error);
       return JsonResponse(res, {

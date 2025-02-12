@@ -21,6 +21,7 @@ import music_icon from "../../assets/icons/music.svg";
 import Bookmark_icon from "../../assets/icons/Bookmark-icon.svg";
 import { request } from "../../services/apiConnector.js";
 import { LoadingSpinner } from "../Wrapper/PageWrapper.jsx";
+import BookingSummaryCard from "./Booking/Bookingsummary.jsx";
 
 const PlaceDetail = () => {
   const { id } = useParams();
@@ -77,8 +78,16 @@ const PlaceDetail = () => {
           Max number of guests: {place?.maxGuests}
           <Perks perks={place?.perks} />
         </div>
-        <div className="sm:w-full md:w-[35%] sticky top-0">
+        {/* <div className="sm:w-full md:w-[35%] sticky top-0">
           <BookingWidget place={place} />
+        </div> */}
+        <div className="lg:ml-[94px] w-[34%] pt-8 relative sm:block ">
+          <BookingSummaryCard
+            originalPrice={place?.price}
+            discountedPrice={2}
+            place={place}
+            // handleReserve={handleReserve}
+          />
         </div>
       </div>
       <div className="-mx-8 border-t bg-white px-8 py-8">

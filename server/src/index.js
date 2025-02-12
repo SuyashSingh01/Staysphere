@@ -33,8 +33,9 @@ new SocketService(server);
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    // credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 // Serve static files from the "assets" directory
@@ -45,8 +46,6 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 app.use(express.json());
 // cookie parser
 app.use(cookiesparser());
-
-app.use(express.json());
 
 app.use(
   fileupload({
@@ -62,6 +61,7 @@ dbConnect();
 cloudinaryConnect();
 
 // middleware
+
 app.use(express.urlencoded({ extended: false }));
 
 // routes

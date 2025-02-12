@@ -1,27 +1,36 @@
-import {useState } from 'react';
-import {useNavigate } from 'react-router-dom';
-import { differenceInDays } from 'date-fns';
-import { toast } from 'react-toastify';
-import DatePickerWithRange from './DatePickerWithRange.jsx';
-import { useDispatch } from 'react-redux';
-import { setLoading } from '../../Redux/slices/AuthSlice.js';
-import {useSelector} from 'react-redux'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { differenceInDays } from "date-fns";
+import { toast } from "react-toastify";
+import DatePickerWithRange from "./DatePickerWithRange.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "../../Redux/slices/AuthSlice.js";
+
+import { addBooking } from "../../Redux/slices/BookingSlice.js";
+import { notification } from "antd";
 
 const BookingWidget = ({ place }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { _id, price } = place;
 
-  const navigate=useNavigate();
-  
-  const { user } = useSelector((state)=>state.auth);
-
+  const { user } = useSelector((state) => state.auth);
   const [dateRange, setDateRange] = useState({ from: null, to: null });
 
-  const [bookingData, setBookingData] = useState({noOfGuests: 1,name: user?.name||'',phone: '',});
-  const dispatch = useDispatch();
+  const [bookingData, setBookingData] = useState({
+    noOfGuests: 1,
+    name: user?.name || "",
+    phone: "",
+  });
   const { noOfGuests, name, phone } = bookingData;
-  const {  id, price } = place;
 
-  const numberOfNights =dateRange.from && dateRange.to? 
-  differenceInDays(new Date(dateRange.to).setHours(0, 0, 0, 0),new Date(dateRange.from).setHours(0, 0, 0, 0),): 0;
+  const numberOfNights =
+    dateRange.from && dateRange.to
+      ? differenceInDays(
+          new Date(dateRange.to).setHours(0, 0, 0, 0),
+          new Date(dateRange.from).setHours(0, 0, 0, 0)
+        )
+      : 0;
 
   // handle booking form
   const handleBookingData = (e) => {
@@ -35,57 +44,53 @@ const BookingWidget = ({ place }) => {
     // User must be signed in to book place
 
     if (!user) {
-      toast.error('Please sign in to book place ');
-      navigate('/register')
-      return ;
+      notification.error({
+        message: "Please sign in to book place ",
+        duration: 1,
+      });
+
+      navigate("/register");
+      return;
     }
 
     // BOOKING DATA VALIDATION
     if (numberOfNights < 1) {
-      return toast.error('Please select valid dates');
+      return toast.error("Please select valid dates");
     } else if (noOfGuests < 1) {
       return toast.error("No. of guests can't be less than 1");
     } else if (noOfGuests > place.maxGuests) {
       return toast.error(`Allowed max. no. of guests: ${place.maxGuests}`);
-    } else if (name.trim() === '') {
+    } else if (name.trim() === "") {
       return toast.error("Name can't be empty");
-    } else if (phone.trim() === '') {
+    } else if (phone.trim() === "") {
       return toast.error("Phone can't be empty");
     }
     // send the data to backend server
     dispatch(setLoading(true));
     try {
-      const bookingDetail= {
+      const bookingDetails = {
         checkIn: dateRange.from.toISOString(),
         checkOut: dateRange.to.toISOString(),
         noOfGuests,
         name,
         phone,
-        place: id,
+        placeId: _id,
         price: numberOfNights * price,
       };
-      // here the id should be the same as  the place id 
-   
-      // dispatch(addBooking(BookingDetails));
-      const BookingDetails = {
-        booking:bookingDetail,
-        placeDetail: place,
-      };
-    
-      navigate(`/account/bookings/${id}/confirm-pay/`, { state: {
-        BookingDetails,
-        } 
-      });
-      // take out the booking id from server response created in database
-      // const bookingId = response.data.booking._id;
-    } catch (error) {
-      toast.error('Something went wrong!');
-      console.log('Error: ', error.message);
-    }finally{
-    dispatch(setLoading(false));
-    }
-  
 
+      dispatch(addBooking(bookingDetails));
+
+      navigate(`/account/bookings/${_id}/confirm-pay`, {
+        state: {
+          place,
+        },
+      });
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.log("Error: ", error.message);
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
 
   return (
@@ -98,15 +103,16 @@ const BookingWidget = ({ place }) => {
           <DatePickerWithRange setDateRange={setDateRange} />
         </div>
         <div className="border-t py-3 px-4">
-          <label>Number of guests: 
-          <input 
-            type="number"
-            name="noOfGuests"
-            placeholder={`Max. guests: ${place.maxGuests}`}
-            min={1}
-            max={place.maxGuests}
-            value={noOfGuests}
-            onChange={handleBookingData}
+          <label>
+            Number of guests:
+            <input
+              type="number"
+              name="noOfGuests"
+              placeholder={`Max. guests: ${place.maxGuests}`}
+              min={1}
+              max={place.maxGuests}
+              value={noOfGuests}
+              onChange={handleBookingData}
             />
           </label>
         </div>

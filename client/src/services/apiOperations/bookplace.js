@@ -1,14 +1,14 @@
-import { bookings } from "../api.urls";
-import { request } from "../request";
-// import apnalogo from "../../assets/images/apnalogo.png";
+import { bookingsApis } from "../api.urls";
+import { request } from "../apiConnector";
 import { setPaymentLoading } from "../../Redux/slices/BookingSlice";
 import { toast } from "react-toastify";
+import { notification } from "antd";
 
 const {
   BOOKING_PAYMENT_API,
-  BOOKING_VERIFY_API,
+  BOOKING_VERIFY_API_PAYMENT,
   SEND_PAYMENT_SUCCESS_EMAIL_API,
-} = bookings;
+} = bookingsApis;
 
 function loadScript(src) {
   return new Promise((resolve) => {
@@ -48,7 +48,7 @@ export async function bookYourPlace(
     //initiate the order
     const orderResponse = await request(
       "POST",
-      BOOKING_PAYMENT_API,
+      BOOKING_PAYMENT_CHECKOUT_API,
       { placeId, bookingDetail },
       {
         Authorization: `Bearer ${token}`,
@@ -122,22 +122,42 @@ async function sendPaymentSuccessEmail(response, amount, token) {
 
 //verify payment
 async function verifyPayment(bodyData, token, navigate, dispatch) {
-  const toastId = toast.loading("Verifying Payment....");
+  notification.open(
+    {
+      message: "Payment is in progress",
+      duration: 1,
+      placement: "Top-left",
+    },
+    0
+  );
   dispatch(setPaymentLoading(true));
   try {
-    const response = await request("POST", BOOKING_VERIFY_API, bodyData, {
-      Authorization: `Bearer ${token}`,
-    });
+    const response = await request(
+      "POST",
+      BOOKING_VERIFY_API_PAYMENT,
+      bodyData,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
 
     if (!response.data.success) {
       throw new Error(response.data.message);
     }
-    toast.success("payment Successful,Booking added successfully");
+    notification.success({
+      message: "payment Successful,Booking added successfully",
+      duration: 1,
+      placement: "Top-left",
+    });
     navigate("/account/bookings");
   } catch (error) {
     console.log("PAYMENT VERIFY ERROR....", error);
-    toast.error("Could not verify Payment");
+    notification.error({
+      message: error.message,
+      duration: 1,
+      placement: "Top-left",
+    });
   }
-  toast.dismiss(toastId);
+
   dispatch(setPaymentLoading(false));
 }
