@@ -2,8 +2,7 @@ import React from "react";
 
 const Perks = ({ perks }) => {
   return (
-    <div className="mt-4">
-      <hr className="mb-5 border" />
+    <div className="mt-4 w-full">
       <p className="text-2xl font-semibold">What this place offers</p>
 
       <div className="mt-4 grid flex-col md:flex-row gap-4 lg:grid-cols-2 lg:justify-items-stretch lg:gap-4">

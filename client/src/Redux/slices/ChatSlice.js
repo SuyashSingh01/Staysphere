@@ -1,12 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const chatSlice = createSlice({
-  name: "chat",
-  initialState: {
+const getInitialState = () => {
+  return {
     chats: [],
     loading: false,
-    chatModal: false,
-  },
+    openChat: false,
+    size: JSON.parse(localStorage.getItem("chatSize")) || {
+      width: 400,
+      height: 500,
+    },
+    position: JSON.parse(localStorage.getItem("chatPosition")) || {
+      x: 100,
+      y: 100,
+    },
+  };
+};
+const chatSlice = createSlice({
+  name: "chat",
+  initialState: getInitialState(),
   reducers: {
     setChats(state, action) {
       state.chats = action.payload;
@@ -17,13 +27,27 @@ const chatSlice = createSlice({
     setLoading(state, action) {
       state.loading = action.payload;
     },
-    setChatModal(state, action) {
-      state.chatModal = !state.chatModal;
-      console.log("chat modal", state.chatModal);
+    setOpenChat(state, action) {
+      state.openChat = action.payload;
+      console.log("chat modal", state.openChat);
+    },
+    setChatSize: (state, action) => {
+      state.size = action.payload;
+      localStorage.setItem("chatSize", JSON.stringify(action.payload)); // Persist size
+    },
+    setChatPosition: (state, action) => {
+      state.position = action.payload;
+      localStorage.setItem("chatPosition", JSON.stringify(action.payload)); // Persist position
     },
   },
 });
 
-export const { setChats, addChat, setLoading, setChatModal } =
-  chatSlice.actions;
+export const {
+  setChats,
+  addChat,
+  setLoading,
+  setOpenChat,
+  setChatSize,
+  setChatPosition,
+} = chatSlice.actions;
 export default chatSlice.reducer;

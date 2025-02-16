@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Carousel } from "antd";
 
 const contentStyle = {
@@ -14,9 +15,12 @@ const SwipeImages = ({ photos }) => {
   return (
     <Carousel arrows={true} infinite={false}>
       {photos?.map((image) => (
-        <img src={image} className="w-16 rounded-sm" key={image} />
+        <img src={image} className="w-16 rounded-sm" key={image} alt="" />
       ))}
     </Carousel>
   );
+};
+SwipeImages.propTypes = {
+  photos: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 export default SwipeImages;

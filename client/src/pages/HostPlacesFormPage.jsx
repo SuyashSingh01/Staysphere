@@ -1,7 +1,7 @@
 import { Form, notification, Select } from "antd";
 import Spinner from "../components/common/Spinner.jsx";
 import Perks from "../components/PlaceDetail/Perks.jsx";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, memo, useState } from "react";
 import PerksWidget from "../components/common/PerksWidget.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import MultiplePhotosUploader from "../components/common/MultiplePhotosUploader.jsx";
@@ -12,6 +12,7 @@ import {
   useUpdatePlace,
 } from "../hooks/host/useMutationAddPlace.js";
 import { Controller, useForm } from "react-hook-form";
+import { LoadingSpinner } from "../components/Wrapper/PageWrapper.jsx";
 
 const HostPlacesFormPage = () => {
   const navigate = useNavigate();
@@ -49,9 +50,12 @@ const HostPlacesFormPage = () => {
   console.log("placeData", initialplaceData);
   const addPlaceMutation = useAddPlace();
   const updatePlaceMutation = useUpdatePlace();
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
-  useEffect(() => {
-    if (placeId && placeData) {
+  if (placeId && placeData) {
+    useEffect(() => {
       reset({
         title: initialplaceData?.placeName || "",
         address: initialplaceData?.placeLocation || "",
@@ -71,8 +75,8 @@ const HostPlacesFormPage = () => {
         }));
         setFileList(formattedFileList);
       }
-    }
-  }, [placeData, reset, placeId]);
+    }, [placeData, reset, placeId]);
+  }
   const perks = watch("perks");
 
   const onSubmit = async (data) => {
@@ -84,10 +88,40 @@ const HostPlacesFormPage = () => {
         formData.append(key, value);
       }
     });
-
-    fileList.forEach((file) => {
-      formData.append("images", file.originFileObj || file);
+    // Handle image files properly
+    const imageFiles = await Promise.all(
+      fileList.map(async (file) => {
+        if (file.originFileObj instanceof File) {
+          return file.originFileObj; // New uploaded file
+        } else if (typeof file.url === "string") {
+          return file.url; // Existing Cloudinary URL
+        } else {
+          console.warn("Skipping invalid file:", file);
+          return null;
+        }
+      })
+    );
+    console.log(imageFiles);
+    // Append only valid images
+    imageFiles.forEach((file) => {
+      if (file) formData.append("images", file);
+      console.log("uploaded", file);
     });
+
+    // fileList.forEach((file) => {
+    //   formData.append("images", file.url || file);
+    // });
+    // fileList.forEach((file) => {
+    //   if (file.originFileObj) {
+    //     formData.append("images", file.originFileObj); // Append File object, not URL
+    //   } else {
+    //     // formData.append("images", file); // Ensure actual File objects are sent
+    //   }
+    // });
+    console.log("FILELIS", fileList);
+    // for (const pair of formData.entries()) {
+    //   console.log("HU", pair[0], pair[1]); // Should log actual files, not "[object Object]"
+    // }
 
     // Debugging Log
     console.log("Submitting FormData:", Object.fromEntries(formData.entries()));

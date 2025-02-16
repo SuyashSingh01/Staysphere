@@ -1,25 +1,13 @@
 import express from "express";
 const router = express.Router();
 
-const { login, signup } = require("../controller/Auth");
-const { auth, isAdmin, isHost } = require("../../middleware/auth");
-
-// Routes
-
-router.post("/login", login);
-router.post("/signup", signup);
+import { auth, isAdmin, isHost } from "../../middleware/auth.js";
 
 // Testing Purpose Routes
-router.get("/test", auth, (req, res) => {
-  res.json({
-    message: "Welcome to Test Routes",
-    success: true,
-  });
-});
 
 // Protected Routes
 
-router.get("/account/", auth, (req, res) => {
+router.get("/account", (req, res) => {
   res.json({
     message: "Welcome to Protected Routes of User",
     success: true,
@@ -39,4 +27,4 @@ router.get("/host", auth, isHost, (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

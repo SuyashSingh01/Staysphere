@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../Redux/slices/AuthSlice";
 import AddressLink from "./AddressLink.jsx";
 import ReviewCategorieSection from "./ReviewCategorieSection.jsx";
-import { setChatModal } from "../../Redux/slices/ChatSlice.js";
+import { setOpenChat } from "../../Redux/slices/ChatSlice.js";
 import star_icon from "../../assets/icons/star-icon.svg";
 import bag_icon from "../../assets/icons/bag.svg";
 import { listingApis } from "../../services/api.urls";
@@ -22,13 +22,16 @@ import Bookmark_icon from "../../assets/icons/Bookmark-icon.svg";
 import { request } from "../../services/apiConnector.js";
 import { LoadingSpinner } from "../Wrapper/PageWrapper.jsx";
 import BookingSummaryCard from "./Booking/Bookingsummary.jsx";
+import { Divider } from "@mui/joy";
+import ChatModal from "../Chat/chatModal.jsx";
+import { notification } from "antd";
 
 const PlaceDetail = () => {
   const { id } = useParams();
   const [place, setPlace] = useState({});
   const { loading } = useSelector((state) => state.auth);
-  const { chatModal } = useSelector((state) => state.chat);
-  console.log("chat modal", chatModal);
+  const { openChat } = useSelector((state) => state.chat);
+  console.log("chat modal", openChat);
   const dispatch = useDispatch();
 
   // const io = useDispatch(
@@ -39,8 +42,8 @@ const PlaceDetail = () => {
 
   const connecthostHandler = () => {
     // io.emit("connection", id);
-    dispatch(setChatModal(true));
-    console.log("connecthostHandler", chatModal);
+    console.log("connecthostHandler", openChat);
+    dispatch(setOpenChat(true));
     // navigate(`/chat/${id}`);
   };
   const getPlaceDetail = async () => {
@@ -55,7 +58,11 @@ const PlaceDetail = () => {
       setPlace(placeDetail);
     } catch (e) {
       console.log("eror ", e.message);
-      toast.error(e.message);
+      notification.error({
+        message: e.message,
+        durations: 2,
+        placement: "bottomRight",
+      });
     }
     dispatch(setLoading(false));
   };
@@ -66,41 +73,36 @@ const PlaceDetail = () => {
   if (loading) return <LoadingSpinner />;
   return (
     <div className="mt-4 overflow-x-hidden px-8 md:pt-16">
-      <h1 className="text-3xl mt-2 ">{place?.title}</h1>
-      <AddressLink className="my-2 block" placeAddress={place?.address} />
-      <PlaceGallery place={place} />
-      <div className="mt-8 mb-8 flex flex-col md:flex-row ">
-        <div className=" md:w-[65%]">
+      <h1 className="text-3xl mt-2 ">{place?.placeName}</h1>
+      <AddressLink className="my-2 block" placeAddress={place?.placeLocation} />
+      <PlaceGallery place={place.image} />
+      <div className="sm:my-4 md:mt-8 md:mb-8 flex flex-col md:flex-row justify-between border-blue-400 border-2 ">
+        <div className=" ">
           <div className="my-4">
             <h2 className="md:text-2xl font-semibold text-xl">Description</h2>
             {place?.description}
           </div>
           Max number of guests: {place?.maxGuests}
-          <Perks perks={place?.perks} />
+          <Divider width="100%" height="4px" />
+          <Perks perks={place?.amenities} />
         </div>
         {/* <div className="sm:w-full md:w-[35%] sticky top-0">
           <BookingWidget place={place} />
         </div> */}
-        <div className="lg:ml-[94px] w-[34%] pt-8 relative sm:block ">
+        <div className=" w-[100%] md:w-[34%] pt-8 relative sm:block ">
           <BookingSummaryCard
             originalPrice={place?.price}
             discountedPrice={2}
             place={place}
+
             // handleReserve={handleReserve}
           />
         </div>
       </div>
-      <div className="-mx-8 border-t bg-white px-8 py-8">
-        <div>
-          <h2 className="mt-4 text-2xl font-semibold">Extra Info</h2>
-        </div>
-        <div className="mb-4 mt-2 text-sm leading-5 text-gray-700">
-          {place?.extraInfo}
-        </div>
-      </div>
+
       <div className="mt-4">
         <ReviewCategorieSection Rating={place.rating} />
-        <Reviews />
+        <Reviews reviews={place.reviews} place={place} />
       </div>
       {/*----------------- message section--------- */}
 
@@ -188,6 +190,7 @@ const PlaceDetail = () => {
           </div>
         </div>
       </section>
+      <section>{openChat && <ChatModal />}</section>
 
       {/* --------------------------------------- */}
 
@@ -196,7 +199,7 @@ const PlaceDetail = () => {
           width="100%"
           height="600"
           src="https://maps.google.com/maps?width=100%&amp;height=600&amp;hl=en&amp;coord=52.70967533219885, -8.020019531250002&amp;q=1%20Grafton%20Street%2C%20Dublin%2C%20Ireland&amp;ie=UTF8&amp;t=&amp;z=14&amp;iwloc=B&amp;output=embed"
-          frameborder="0"
+          frameBorder="0"
           scrolling="no"
           marginheight="0"
           marginwidth="0"

@@ -1,5 +1,5 @@
-import React from 'react';
-import { TailSpin } from 'react-loader-spinner';
+import React from "react";
+import { TailSpin } from "react-loader-spinner";
 
 const Spinner = () => {
   return (
@@ -7,7 +7,7 @@ const Spinner = () => {
       <TailSpin
         height={100}
         width={200}
-        color="#f5385d"
+        color="#f97316"
         radius="1"
         visible={true}
       />

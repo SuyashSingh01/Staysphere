@@ -57,13 +57,19 @@ class BookingController {
         paymentId,
         bookingStatus: "booked",
       });
-      const updatedDetail = await Place.findByIdAndUpdate(placeId, {
-        $inc: { numberOfBookings: 1 },
-      }).populate("host");
+      // need to check out the bookings
+      // increment the number of bookings for the place
+      const updatedPlace = await Place.findByIdAndUpdate(
+        new mongoose.Types.ObjectId(placeId),
+        {
+          $push: { numberOfBookings: booking._id },
+        },
+        { new: true }
+      ).populate("host");
 
       // Add booking reference to user
       const user = await User.findByIdAndUpdate(
-        userId,
+        new mongoose.Types.ObjectId(userId),
         {
           $push: { bookings: booking._id },
         },
@@ -74,7 +80,7 @@ class BookingController {
         const receiptPath = await generateReceipt({
           _id: booking._id,
           user,
-          updatedDetail,
+          updatedPlace,
           checkIn,
           checkOut,
           price,
@@ -146,7 +152,7 @@ class BookingController {
       console.log("bookingId", bookingId);
       const userBookings = await Booking.findById(bookingId)
         .populate("place")
-        .populate("user")
+        .populate("review")
         .populate("payment");
       if (!userBookings)
         return JsonResponse(res, {

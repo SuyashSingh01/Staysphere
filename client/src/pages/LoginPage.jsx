@@ -35,7 +35,6 @@ const Login = () => {
       const { data, success } = await request("POST", authApis.LOGIN_API, {
         firebaseToken: token,
       });
-      console.log("data", data.data);
 
       if (data.success) {
         notification.success({
@@ -47,8 +46,8 @@ const Login = () => {
         const userDetails = {
           name: data?.data?.user?.name,
           email: data?.data.user.email,
-          uid: data?.data.user?.uid,
-          role: data?.data.user?.role || "user",
+          id: data?.data.user?.uid || data?.data.user?._id,
+          role: data?.data.user?.role || "User",
         };
         dispatch(setToken(data?.data?.token));
         dispatch(setUserData(userDetails));
@@ -89,7 +88,7 @@ const Login = () => {
       });
       return;
     }
-    console.log("loginData:", formData);
+
     dispatch(setLoading(true));
     try {
       const { data } = await request("POST", authApis.LOGIN_API, {
@@ -106,13 +105,12 @@ const Login = () => {
         });
         return;
       }
-      console.log("Login response: ", data);
 
       const userDetails = {
         name: data.data?.user?.name,
         email: data?.data.user.email,
-        uid: data?.data.user?.uid,
-        role: data?.data.user?.role,
+        id: data?.data.user?._id || data?.data.user?.uid,
+        role: data?.data.user?.role || "User",
       };
       dispatch(setToken(data?.data?.token));
       dispatch(setUserData(userDetails));

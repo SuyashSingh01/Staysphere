@@ -57,9 +57,17 @@ function BookingSummaryCard({ originalPrice, discountedPrice = 2, place }) {
     } else if (guests < 1) {
       return toast.error("No. of guests can't be less than 1");
     } else if (guests > place?.maxGuests) {
-      return toast.error(`Allowed max. no. of guests: ${place.guests}`);
+      return notification.error({
+        message: `Allowed max. no. of guests: ${place.guests}`,
+        duration: 1,
+        placement: "topLeft",
+      });
     } else if (bookingData.phone.trim() === "") {
-      return toast.error("Phone can't be empty");
+      return notification.error({
+        message: "Phone can't be empty",
+        duration: 1,
+        placement: "topLeft",
+      });
     }
     // send the data to backend server
 

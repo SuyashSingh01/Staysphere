@@ -6,6 +6,8 @@ import BookingController from "./booking/booking.controllers.js";
 import FavouriteController from "./favourite/favourite.controllers.js";
 import PaymentController from "./payment/payment.controllers.js";
 import ReviewController from "./review/review.controllers.js";
+import userProfileController from "./user/userProfile.controller.js";
+import ContactSupportController from "./user/userContact.controller.js";
 
 export const controllers = {
   auth: AuthController,
@@ -16,4 +18,6 @@ export const controllers = {
   favourite: FavouriteController,
   payment: PaymentController,
   review: ReviewController,
+  userProfile: userProfileController,
+  contactsupport: ContactSupportController,
 };

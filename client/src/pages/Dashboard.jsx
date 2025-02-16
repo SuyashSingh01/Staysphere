@@ -1,13 +1,19 @@
+import React, { memo } from "react";
 import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
-
-import Sidebar from "../components/Dashboard/Sidebar";
 import { LoadingSpinner } from "../components/Wrapper/PageWrapper";
 import Navbar from "../components/Navbar/Navbar";
+import { Layout, theme, Breadcrumb } from "antd";
+import Sidebar from "../components/Dashboard/Sidebar";
 
-function Dashboard() {
+const { Header } = Layout;
+
+const Dashboard = () => {
   //   const { loading: profileLoading } = useSelector((state) => state.profile);
   const { loading: authLoading } = useSelector((state) => state.auth);
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
 
   if (authLoading) {
     return <LoadingSpinner />;
@@ -16,16 +22,38 @@ function Dashboard() {
   return (
     <div>
       <Navbar />
-      <div className=" relative top-[80px] flex min-h-[calc(100vh-3.5rem)]">
+      <Layout
+        style={{
+          minHeight: "100vh",
+          marginTop: 100,
+        }}
+      >
         <Sidebar />
-        <div className="h-[calc(100vh-3.5rem)] flex-1 overflow-auto">
-          <div className="mx-auto w-11/12 max-w-[1000px] py-10">
+        <Layout className="bg-slate-100">
+          <Breadcrumb
+            style={{
+              marginTop: "3%",
+              marginBottom: "1%",
+            }}
+          >
+            {window.location.pathname.split("/").map((path, index) => (
+              <Breadcrumb.Item key={index}>{path}</Breadcrumb.Item>
+            ))}
+          </Breadcrumb>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 360,
+
+              borderRadius: borderRadiusLG,
+            }}
+          >
             <Outlet />
           </div>
-        </div>
-      </div>
+        </Layout>
+      </Layout>
     </div>
   );
-}
+};
 
-export default Dashboard;
+export default memo(Dashboard);

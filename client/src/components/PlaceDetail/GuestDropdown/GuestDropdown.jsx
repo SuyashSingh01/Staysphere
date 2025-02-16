@@ -40,9 +40,11 @@ function GuestDropdown({ guests, handleGuestChange }) {
   }, []);
 
   return (
-    <>
-      {/* guests count */}
-      <div onClick={() => setIsVisible(!isVisible)} className="w-full  rounded">
+    <div>
+      <div
+        onClick={() => setIsVisible(!isVisible)}
+        className="w-full  rounded relative"
+      >
         <div
           htmlFor="guests"
           className="text-xs font-semibold uppercase block mb-1 absolute px-4 pt-3"
@@ -118,7 +120,7 @@ function GuestDropdown({ guests, handleGuestChange }) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

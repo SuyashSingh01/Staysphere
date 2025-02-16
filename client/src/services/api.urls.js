@@ -74,7 +74,7 @@ export const profileEndpoints = {
 
   UPDATE_EMAIL_API: BASE_URL + "/profile/updateEmail",
   UPDATE_PHONE_API: BASE_URL + "/profile/updatePhone",
-
+  GET_TRANSACTIONS_API: BASE_URL + "/profile/transactions",
   //   add other
 };
 
@@ -92,7 +92,9 @@ export const location = {
 };
 
 // CONTACT US API
-export const contactusEndpoint = {};
+export const contactusEndpoint = {
+  SUBMIT_CONTACT_API: BASE_URL + "/support/contact",
+};
 
 //   add other ENDPOINTS LIKE FOR CHATS
 

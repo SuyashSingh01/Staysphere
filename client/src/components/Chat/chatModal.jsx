@@ -1,93 +1,88 @@
-import React, { memo, useRef, useState } from "react";
-import { Button, Modal } from "antd";
+import React, { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setOpenChat,
+  setChatSize,
+  setChatPosition,
+} from "../../Redux/slices/chatSlice";
 import Draggable from "react-draggable";
+import { Resizable } from "re-resizable";
+import { motion, AnimatePresence } from "framer-motion";
 import Chat from "./Chat";
-import { useSelector } from "react-redux";
-import { setChatModal as setOpen } from "../../Redux/slices/ChatSlice";
-const ChatModal = () => {
-  const { chatModal: open } = useSelector((state) => state.chat);
-  console.log("chatmodal", open);
 
-  const [disabled, setDisabled] = useState(true);
-  const [bounds, setBounds] = useState({
-    left: 0,
-    top: 0,
-    bottom: 0,
-    right: 0,
-  });
+const ChatModal = () => {
+  const dispatch = useDispatch();
+  const { openChat, size, position } = useSelector((state) => state.chat);
   const draggleRef = useRef(null);
-  const showModal = () => {
-    setOpen(true);
-  };
-  const handleOk = (e) => {
-    console.log(e);
-    setOpen(false);
-  };
-  const handleCancel = (e) => {
-    console.log(e);
-    setOpen(false);
-  };
-  const onStart = (_event, uiData) => {
-    const { clientWidth, clientHeight } = window.document.documentElement;
-    const targetRect = draggleRef.current?.getBoundingClientRect();
-    if (!targetRect) {
-      return;
-    }
-    setBounds({
-      left: -targetRect.left + uiData.x,
-      right: clientWidth - (targetRect.right - uiData.x),
-      top: -targetRect.top + uiData.y,
-      bottom: clientHeight - (targetRect.bottom - uiData.y),
-    });
-  };
+
   return (
-    <Modal
-      width={{
-        xs: "90%",
-        sm: "80%",
-        md: "70%",
-        lg: "60%",
-        xl: "50%",
-        xxl: "40%",
-      }}
-      title={
-        <div
-          style={{
-            width: "100%",
-            cursor: "move",
-          }}
-          onMouseOver={() => {
-            if (disabled) {
-              setDisabled(false);
+    <AnimatePresence>
+      {openChat && (
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.3 }}
+          className="fixed z-50"
+          style={{ left: position.x, top: position.y }}
+        >
+          <Draggable
+            nodeRef={draggleRef}
+            handle=".chat-header"
+            defaultPosition={position}
+            // position={position}
+            onStop={(_, data) =>
+              dispatch(setChatPosition({ x: data.x, y: data.y }))
             }
-          }}
-          onMouseOut={() => {
-            setDisabled(true);
-          }}
-          onFocus={() => {}}
-          onBlur={() => {}}
-        >
-          Draggable Modal
-        </div>
-      }
-      open={open}
-      onOk={handleOk}
-      onCancel={handleCancel}
-      modalRender={(modal) => (
-        <Draggable
-          disabled={disabled}
-          bounds={bounds}
-          nodeRef={draggleRef}
-          onStart={(event, uiData) => onStart(event, uiData)}
-        >
-          <div ref={draggleRef}>{modal}</div>
-        </Draggable>
+            // bounds="parent"
+          >
+            <Resizable
+              size={size}
+              minWidth={300}
+              minHeight={300}
+              maxWidth={800}
+              maxHeight={window.innerHeight - 50}
+              enable={{ top: false, right: true, bottom: true, left: true }}
+              onResizeStop={(_, __, ref, d) =>
+                dispatch(
+                  setChatSize({
+                    width: size.width + d.width,
+                    height: size.height + d.height,
+                  })
+                )
+              }
+            >
+              <div
+                ref={draggleRef}
+                className="absolute flex flex-col bg-white shadow-lg rounded-lg overflow-hidden"
+                style={{
+                  width: size.width,
+                  height: size.height,
+                  maxHeight: "90vh", // Prevents overflowing beyond viewport
+                }}
+              >
+                {/* Chat Header */}
+                <div className="chat-header bg-blue-600 text-white p-3 flex justify-between cursor-move">
+                  <span>Chat with Host</span>
+                  <button
+                    className="text-white text-lg"
+                    onClick={() => dispatch(setOpenChat(false))}
+                  >
+                    ✖
+                  </button>
+                </div>
+
+                {/* Chat Body - Scrollable when exceeding viewport */}
+                <div className="h-[90%] flex-1 overflow-auto p-3 scrollbar-hide cursor-move">
+                  <Chat userId={1} hostId={2} />
+                </div>
+              </div>
+            </Resizable>
+          </Draggable>
+        </motion.div>
       )}
-    >
-      <div>
-        <Chat />
-      </div>
-    </Modal>
+    </AnimatePresence>
   );
 };
-export default memo(ChatModal);
+
+export default ChatModal;

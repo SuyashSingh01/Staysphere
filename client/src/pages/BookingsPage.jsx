@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import React, { useEffect, useState, memo } from "react";
+import React, { useEffect, useState, memo, useMemo } from "react";
 import PlaceImg from "../components/common/PlaceImg.jsx";
 import BookingDates from "../components/common/BookingDates.jsx";
 import Spinner from "../components/common/Spinner.jsx";
@@ -8,43 +8,18 @@ import { useDispatch, useSelector } from "react-redux";
 import NoTripBookedYet from "../components/common/NoTripBookedYet.jsx";
 import { bookingsApis } from "../services/api.urls.js";
 import { request } from "../services/apiConnector.js";
+import { useBookings } from "../hooks/useQueryBooking.js";
 
 const BookingsPage = () => {
   const [loading, setLoading] = useState(false);
   const { token } = useSelector((state) => state.auth);
 
-  const [Bookings, setBookings] = useState([]);
+  // const [Bookings, setBookings] = useState([]);
   const dispatch = useDispatch();
+  const { data, isLoading, error } = useBookings();
+  const Bookings = useMemo(() => data, [data]);
 
-  const getBookings = async () => {
-    setLoading(true);
-
-    try {
-      const { data } = await request(
-        "GET",
-        bookingsApis.GET_ALL_BOOKINGS,
-        null,
-        {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        }
-      );
-      console.log("BookingData", data);
-      setBookings(data?.data);
-    } catch (error) {
-      console.log("Error: ", error.message);
-      notification.error({
-        message: "Failed to fetch bookings",
-        duration: 1,
-      });
-    }
-    setLoading(false);
-  };
-  useEffect(() => {
-    getBookings();
-  }, []);
-
-  if (loading) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="w-full min-h-screen bg-white py-8 px-4 md:px-8 lg:px-16">

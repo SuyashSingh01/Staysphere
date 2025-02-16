@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types";
 // import PlaceImg from "../common/PlaceImg.jsx";
 import SwipeImages from "./SwipeImages.jsx";
@@ -6,7 +6,6 @@ import { addListing, addplaceDetail } from "../../Redux/slices/ListingSlice.js";
 import { useDispatch, useSelector } from "react-redux";
 
 import { useDeletePlace } from "../../hooks/host/useMutationDeleteHostedPlace.js";
-import { memo } from "react";
 
 const InfoCard = ({ place, navigate }) => {
   const dispatch = useDispatch();
@@ -53,7 +52,7 @@ const InfoCard = ({ place, navigate }) => {
           <p className="text-sm md:text-base">Max Guests: {place.maxGuests}</p>
           <p className="text-sm md:text-base">Price: {place.price}</p>
           <p className="text-sm md:text-base">
-            No. of Booking : {place?.numberOfBookings}
+            No. of Booking : {place?.numberOfBookings?.length}
           </p>
         </div>
         <div className="flex flex-wrap gap-2 md:gap-4 ">

@@ -79,12 +79,7 @@ export const imageupload = async (fileImages) => {
     return uploadedImages;
   } catch (err) {
     console.log(err);
-    return JsonResponse(res, {
-      status: 500,
-      message: "Something went wrong",
-      error: err.message,
-      success: false,
-    });
+    throw new Error("Error while uploading Images ");
   }
 };
 

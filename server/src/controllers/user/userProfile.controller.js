@@ -1,10 +1,13 @@
-import Profile from "../../models/Profile.model.js";
-import { imageupload } from "../../services/fileUpload.js";
-import { JsonResponse } from "../../utils/jsonResponse.js";
+import mongoose from "mongoose";
+import OTP from "../../models/Otp.model.js";
 import User from "../../models/User.model.js";
 import mailSender from "../../utils/sendEmail.js";
+import Booking from "../../models/Booking.model.js";
+import Payment from "../../models/Payment.model.js";
+import Profile from "../../models/Profile.model.js";
 import { generatOtp } from "../../utils/utlitity.js";
-import OTP from "../../models/Otp.model.js";
+import { JsonResponse } from "../../utils/jsonResponse.js";
+import { imageupload } from "../../services/fileUpload.js";
 
 class ProfileController {
   async getProfileById(req, res) {
@@ -286,6 +289,121 @@ class ProfileController {
         message: "Something Went Wrong while Verifying Email",
         error: err.message,
       });
+    }
+  }
+
+  async getTransactions(req, res) {
+    try {
+      const { id } = req.user;
+      if (!id) {
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message: "User Not Found",
+        });
+      }
+      console.log("userID", typeof id);
+      const transaction = await Payment.find({
+        userId: new mongoose.Types.ObjectId(id),
+      });
+      console.log("transaction", transaction);
+      return JsonResponse(res, {
+        status: 200,
+        success: true,
+        message: "Transactions Fetched Successfully",
+        data: transaction,
+      });
+    } catch (err) {
+      console.log(err);
+      return JsonResponse(res, {
+        status: 500,
+        success: false,
+        message: "Something Went Wrong while Fetching Transactions",
+      });
+    }
+  }
+
+  async getHostEarnings(req, res) {
+    try {
+      const { hostId } = req.params;
+
+      if (!mongoose.Types.ObjectId.isValid(hostId)) {
+        return res.status(400).json({ message: "Invalid Host ID" });
+      }
+
+      // Get all bookings related to the host
+      const bookings = await Booking.aggregate([
+        {
+          $match: {
+            "place.host": new mongoose.Types.ObjectId(hostId),
+          },
+        },
+        {
+          $lookup: {
+            from: "payments",
+            localField: "payment",
+            foreignField: "_id",
+            as: "payment",
+          },
+        },
+        {
+          $unwind: {
+            path: "$payment",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            payment: 1,
+            bookingDate: 1,
+          },
+        },
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+      ]);
+      console.log("bookings", bookings);
+      let totalEarnings = 0;
+      let successPayments = 0;
+      let failedPayments = 0;
+      let pendingPayments = 0;
+
+      const earningsData = bookings
+        .map((booking) => {
+          const payment = booking.payment;
+          if (!payment) return null;
+
+          if (payment.paymentStatus === "success") {
+            totalEarnings += payment.amount;
+            successPayments += payment.amount;
+          } else if (payment.paymentStatus === "failed") {
+            failedPayments += payment.amount;
+          } else {
+            pendingPayments += payment.amount;
+          }
+
+          return {
+            orderId: payment.orderId,
+            amount: payment.amount,
+            paymentStatus: payment.paymentStatus,
+            paymentMethod: payment.paymentMethod,
+            bookingDate: booking.bookingDate,
+          };
+        })
+        .filter(Boolean);
+      console.log("earningsData", earningsData);
+      console.log("successPayments", successPayments);
+      res.json({
+        totalEarnings,
+        success: successPayments,
+        pending: pendingPayments,
+        failed: failedPayments,
+        bookings: earningsData,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Server Error", error: error.message });
     }
   }
 }
