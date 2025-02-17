@@ -13,6 +13,7 @@ import { PageWrapper } from "./components/Wrapper/PageWrapper.jsx";
 import ChatModal from "./components/Chat/chatModal.jsx";
 import TransactionsPage from "./components/Dashboard/Transaction/TransactionPayment.jsx";
 import ContactSupportPage from "./components/common/ContactSupport.jsx";
+import OTPInput from "./components/Auth/Otpinput.jsx";
 
 // lazy loading pages
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -92,6 +93,14 @@ function App() {
             }
           />
           <Route
+            path="/verify/otp"
+            element={
+              <PageWrapper>
+                <OTPInput />
+              </PageWrapper>
+            }
+          />
+          <Route
             path="/update-password/:token"
             element={
               <PageWrapper>
@@ -152,12 +161,12 @@ function App() {
           <Route
             path="/chat"
             element={
-              <PrivateRoute>
-                <PageWrapper>
+              <PageWrapper>
+                <PrivateRoute>
                   {/* <Chat /> */}
                   <ChatModal />
-                </PageWrapper>
-              </PrivateRoute>
+                </PrivateRoute>
+              </PageWrapper>
             }
           />
         </Route>

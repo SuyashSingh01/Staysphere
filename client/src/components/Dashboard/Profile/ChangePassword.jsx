@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { Input, Button, Card, message } from "antd";
 import { LockOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
+import useUpdatePassword from "../../../hooks/auth/useMutation.UpdatePassword";
+import { useSelector } from "react-redux";
 
 const ChangePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { token } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
+  const { mutate: updatePassword, isLoading: isPasswordLoading } =
+    useUpdatePassword();
 
   const handleChangePassword = () => {
     if (!oldPassword || !newPassword || !confirmPassword) {
@@ -22,12 +27,8 @@ const ChangePassword = () => {
       message.error("New passwords do not match!");
       return;
     }
-
+    updatePassword({ oldPassword, newPassword, confirmPassword, token });
     setLoading(true);
-    setTimeout(() => {
-      message.success("Password updated successfully!");
-      setLoading(false);
-    }, 1500);
   };
 
   return (
@@ -36,9 +37,9 @@ const ChangePassword = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 30 }}
       transition={{ duration: 0.3 }}
-      className="flex justify-center items-center min-h-screen  p-4"
+      className="flex justify-center items-center min-h-screen  p-4 w-full bg-white"
     >
-      <Card className="p-6 shadow-sm border rounded-2xl w-full max-w-md bg-white">
+      <Card className="p-6 shadow-sm border rounded-2xl w-full max-w-md ">
         <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800">
           Update Password
         </h2>

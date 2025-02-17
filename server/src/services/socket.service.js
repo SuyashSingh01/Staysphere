@@ -29,7 +29,7 @@ class SocketService {
 
         socket.join(roomId);
 
-        console.log(`User with ID ${socket.id} joined room: ${room}`);
+        console.log(`User with ID ${socket.id} joined room: ${roomId}`);
 
         try {
           const chat = await Chat.findOne({ roomId });

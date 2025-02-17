@@ -29,22 +29,16 @@ import { notification } from "antd";
 const PlaceDetail = () => {
   const { id } = useParams();
   const [place, setPlace] = useState({});
-  const { loading } = useSelector((state) => state.auth);
+  const { loading, user } = useSelector((state) => state.auth);
   const { openChat } = useSelector((state) => state.chat);
   console.log("chat modal", openChat);
   const dispatch = useDispatch();
 
-  // const io = useDispatch(
-  //   io("http://localhost:3001", {
-  //     transports: ["websocket"],
-  //   })
-  // );
-
   const connecthostHandler = () => {
-    // io.emit("connection", id);
     console.log("connecthostHandler", openChat);
-    dispatch(setOpenChat(true));
-    // navigate(`/chat/${id}`);
+    if (user) {
+      dispatch(setOpenChat(true));
+    }
   };
   const getPlaceDetail = async () => {
     dispatch(setLoading(true));
@@ -76,7 +70,7 @@ const PlaceDetail = () => {
       <h1 className="text-3xl mt-2 ">{place?.placeName}</h1>
       <AddressLink className="my-2 block" placeAddress={place?.placeLocation} />
       <PlaceGallery place={place.image} />
-      <div className="sm:my-4 md:mt-8 md:mb-8 flex flex-col md:flex-row justify-between border-blue-400 border-2 ">
+      <div className="sm:my-4 md:mt-8 md:mb-8 flex flex-col md:flex-row justify-between ">
         <div className=" ">
           <div className="my-4">
             <h2 className="md:text-2xl font-semibold text-xl">Description</h2>
@@ -94,8 +88,6 @@ const PlaceDetail = () => {
             originalPrice={place?.price}
             discountedPrice={2}
             place={place}
-
-            // handleReserve={handleReserve}
           />
         </div>
       </div>
@@ -190,7 +182,9 @@ const PlaceDetail = () => {
           </div>
         </div>
       </section>
-      <section>{openChat && <ChatModal />}</section>
+      <section>
+        {openChat && <ChatModal userId={user?.id} hostId={place?.host} />}
+      </section>
 
       {/* --------------------------------------- */}
 

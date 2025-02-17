@@ -127,8 +127,9 @@ const Login = () => {
 
       // clear the form data
     } catch (e) {
+      console.log("error:", e);
       notification.error({
-        message: "Login Failed: " + e.message,
+        message: "Login Failed: " + e.response?.data?.message,
         duration: 1,
       });
       console.error("error", e.message);
@@ -160,20 +161,22 @@ const Login = () => {
               onChange={handleFormData}
               // {...register("password", { required: true })}
             />
-            <button className="primary my-4 text-xl">Login</button>
+            <button className="w-full bg-orange-500 focus:ring-orange-700 active:bg-orange-400 focus:bg-orange-600 transition-shadow my-4 text-xl p-2 rounded-[8px] text-white">
+              Login
+            </button>
           </form>
 
           <Flex justify="space-around" align="center">
             <button
               type="button"
-              className="my-6 rounded-[8px] bg-primary py-[6px] px-[12px]  text-white"
+              className="my-6 rounded-[8px] bg-orange-500 focus:ring-orange-700 active:bg-orange-600 focus:bg-orange-600 py-[6px] px-[12px]  text-white"
               onClick={handleGoogleSignIn}
             >
               Sign In with Google
             </button>
             <button
               type="button"
-              className="my-6 rounded-[8px] bg-primary py-[6px] px-[12px]  text-white"
+              className="my-6 rounded-[8px] bg-orange-500 focus:ring-orange-700  active:bg-orange-600 focus:bg-orange-600 py-[6px] px-[12px]  text-white"
               onClick={() => navigate("/forgot-password")}
             >
               Forgot Password

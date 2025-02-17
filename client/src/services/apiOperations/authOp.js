@@ -38,7 +38,7 @@ export function resetPassword(password, confirmPassword, token, navigate) {
   return async (dispatch) => {
     dispatch(setLoading(true));
     try {
-      const response = await request("POST", RESETPASSWORD_API, {
+      const response = await request("POST", `${RESETPASSWORD_API}/${token}`, {
         password,
         confirmPassword,
         token,

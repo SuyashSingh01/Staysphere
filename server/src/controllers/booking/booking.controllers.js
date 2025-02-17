@@ -127,7 +127,14 @@ class BookingController {
     try {
       const id = req.user.id;
       const userBookings = await User.findOne({ _id: id }).populate("bookings");
-
+      if (!userBookings) {
+        return JsonResponse(res, {
+          title: "Booking not found",
+          status: 404,
+          message: "No user bookings",
+          data: [],
+        });
+      }
       return JsonResponse(res, {
         status: 200,
         message: "User Bookings fetched successfully",

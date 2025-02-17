@@ -1,26 +1,70 @@
 import React, { useState } from "react";
 import { Input, Button, Card } from "@mui/joy";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import PhoneAndroidRoundedIcon from "@mui/icons-material/PhoneAndroidRounded";
+import { notification } from "antd";
+import useVerifyEmail from "../../../hooks/auth/useMutationVerifyEmail";
+import { useNavigate } from "react-router-dom";
+import useVerifyPhone from "../../../hooks/auth/useMutationVerifyPhone";
 
 const ProfileDetails = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const [email, setEmail] = useState(user?.email ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
-  const [role, setRole] = useState(user?.role ?? "Guest");
-  const [isEmailVerified, setIsEmailVerified] = useState(user?.emailVerified);
-  const [isPhoneVerified, setIsPhoneVerified] = useState(user?.phoneVerified);
+  const [role, setRole] = useState(user?.role ?? "User");
+  const { isEmailVerified, isPhoneVerified } = useSelector(
+    (state) => state.profile
+  );
+  console.log("Email Verified:", isEmailVerified);
+  console.log("Phone Verified:", isPhoneVerified);
+  const {
+    mutate: verifyEmail,
+    isLoading: isEmailLoading,
+    isSuccess: isEmailSuccess,
+  } = useVerifyEmail();
+
+  const {
+    mutate: verifyPhone,
+    isLoading: isPhoneLoading,
+    isSuccess: isPhoneSuccess,
+  } = useVerifyPhone();
 
   const handleEmailVerification = () => {
-    alert("Verification email sent!");
-    setIsEmailVerified(true);
+    if (!email) {
+      notification.error({
+        message: "Email is required!",
+        duration: 2,
+        placement: "topRight",
+      });
+      return;
+    }
+
+    verifyEmail(email, {
+      onSuccess: () => {
+        navigate("/verify/otp", { state: { email } }); // Correct way to pass state
+      },
+    });
   };
 
   const handlePhoneVerification = () => {
-    alert("OTP sent to your phone!");
-    setIsPhoneVerified(true);
+    if (!phone) {
+      notification.error({
+        message: "Phone is required!",
+        duration: 2,
+        placement: "topRight",
+      });
+      return;
+    }
+
+    verifyPhone(phone, {
+      onSuccess: () => {
+        navigate("/verify/otp", { state: { phone } });
+      },
+    });
   };
 
   return (
@@ -52,8 +96,11 @@ const ProfileDetails = () => {
                 onClick={handleEmailVerification}
                 variant="solid"
               >
-                Verify
+                {isEmailLoading ? "Verifying..." : "Verify"}
               </Button>
+            )}
+            {isEmailVerified && (
+              <span className="text-green-500">Verified</span>
             )}
           </div>
 
@@ -73,8 +120,11 @@ const ProfileDetails = () => {
                 onClick={handlePhoneVerification}
                 variant="solid"
               >
-                Verify
+                {isPhoneLoading ? "Verifying..." : "Verify"}
               </Button>
+            )}
+            {isPhoneVerified && (
+              <span className="text-green-500">Verified</span>
             )}
           </div>
 

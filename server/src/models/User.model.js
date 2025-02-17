@@ -57,7 +57,11 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
     },
-    isVerified: {
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    isPhoneVerified: {
       type: Boolean,
       default: false,
     },

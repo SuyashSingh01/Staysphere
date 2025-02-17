@@ -39,6 +39,7 @@ export async function localfileupload(req, res) {
     });
   } catch (err) {
     console.log(err);
+    throw err;
   }
 }
 
@@ -59,7 +60,7 @@ export const imageupload = async (fileImages) => {
     await Promise.all(
       files?.map(async (file) => {
         const types = path.extname(file.name).split(".")[1].toLowerCase();
-        const supportedTypes = ["jpg", "png", "jpeg", "webp"];
+        const supportedTypes = ["jpg", "png", "jpeg", "webp", "svg"];
         const checkValidType = supportedTypes.includes(types);
 
         if (!checkValidType) {

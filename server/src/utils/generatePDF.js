@@ -55,7 +55,7 @@ const generateReceipt = async (booking) => {
             body: [
               ["👤 User Name", booking.user.name ?? "N/A"],
               ["👤 User Email", booking.user.email ?? "N/A"],
-              ["👤 Host ", booking.updatedPlace.host.name ?? "N/A"],
+              ["👤 Host ", booking.updatedPlace.host?.name ?? "N/A"],
               ["🏠 Place Name", booking.updatedPlace.placeName || "N/A"],
               ["📅 Check-in", new Date(booking.checkIn).toDateString()],
               ["📅 Check-out", new Date(booking.checkOut).toDateString()],

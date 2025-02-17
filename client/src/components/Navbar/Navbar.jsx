@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Dropdown, Modal } from "antd";
 import { useSelector } from "react-redux";
 import SearchBar from "../common/SearchBar";
@@ -5,18 +6,15 @@ import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import logo from "../../assets/logos/stayspherelogo2.png";
-
 import CatNavbar from "./CatNavbar.jsx";
-import { memo } from "react";
 import { getMenuItems, LogoutItems } from "./NavDropdowndata.jsx";
 const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
   const menuItems = user ? getMenuItems(user.role) : LogoutItems;
-
   const [showSearchBar, setShowSearchBar] = useState(true);
   const [hasShadow, setHasShadow] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("Historical homes");
+
   const [toggleTaxes, setToggleTaxes] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const location = useLocation();

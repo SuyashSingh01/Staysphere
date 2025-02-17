@@ -80,6 +80,6 @@ app.use("/api/v1", reviewRoutes);
 app.use("/api/v1", chatRoutes);
 app.use("/api/v1", profileRoutes);
 // server activiation
-app.listen(Port, () => {
-  console.log("server is running on port ", Port);
+server.listen(Port, () => {
+  console.log(`Server is running on port ${Port}`);
 });

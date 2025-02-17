@@ -6,6 +6,12 @@ export const authApis = {
   LOGIN_API: BASE_URL + "/auth/login",
   RESETPASSTOKEN_API: BASE_URL + "/auth/forgot",
   RESETPASSWORD_API: BASE_URL + "/auth/reset-password",
+  VERIFY_EMAIL_API: BASE_URL + "/auth/verify-email",
+  VERIFY_EMAIL_OTP_API: BASE_URL + "/auth/verify-email-otp",
+  VERIFY_PHONE_API: BASE_URL + "/auth/verify-phone",
+  VERIFY_PHONE_OTP_API: BASE_URL + "/auth/verify-phone-otp",
+  CHANGE_PASSWORD_API: BASE_URL + "/auth/change-password",
+
   // SENDOTP_API: BASE_URL + "/auth/sendotp",
 };
 

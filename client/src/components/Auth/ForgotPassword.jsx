@@ -1,5 +1,5 @@
 import { useState, memo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigation } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { getPasswordResetToken } from "../../services/apiOperations/authOp";
@@ -9,11 +9,15 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigation();
   const { loading } = useSelector((state) => state.auth);
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
     dispatch(getPasswordResetToken(email, setEmailSent));
+    setTimeout(() => {
+      navigate("/verify/otp");
+    }, 2000);
   };
 
   return (

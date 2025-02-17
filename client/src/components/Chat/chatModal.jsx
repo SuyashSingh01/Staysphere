@@ -9,9 +9,14 @@ import Draggable from "react-draggable";
 import { Resizable } from "re-resizable";
 import { motion, AnimatePresence } from "framer-motion";
 import Chat from "./Chat";
+import { useNavigate } from "react-router-dom";
+import { Button } from "antd";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
-const ChatModal = () => {
+const ChatModal = ({ userId, hostId }) => {
+  console.log("Chat modal userid", userId, "-  hostid", hostId);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { openChat, size, position } = useSelector((state) => state.chat);
   const draggleRef = useRef(null);
 
@@ -73,8 +78,30 @@ const ChatModal = () => {
                 </div>
 
                 {/* Chat Body - Scrollable when exceeding viewport */}
+                {/* Chat Header */}
+                <div className="flex items-center px-4 py-2 bg-white shadow">
+                  <Button
+                    icon={<ArrowLeftOutlined />}
+                    shape="circle"
+                    onClick={() => navigate(-1)}
+                    className="mr-4"
+                  />
+                  <div className="flex items-center">
+                    <img
+                      src="https://via.placeholder.com/40"
+                      alt="Host Profile"
+                      className="w-10 h-10 rounded-full mr-3"
+                    />
+                    <div>
+                      <p className="font-semibold">
+                        Room:-{userId + "-" + hostId}
+                      </p>
+                      <p className="text-sm text-gray-500">Online</p>
+                    </div>
+                  </div>
+                </div>
                 <div className="h-[90%] flex-1 overflow-auto p-3 scrollbar-hide cursor-move">
-                  <Chat userId={1} hostId={2} />
+                  <Chat userId={userId} hostId={hostId} />
                 </div>
               </div>
             </Resizable>

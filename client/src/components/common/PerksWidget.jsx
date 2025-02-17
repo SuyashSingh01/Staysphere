@@ -2,6 +2,8 @@ import React from "react";
 
 const Perks = ({ selected, handleFormData }) => {
   console.log("SSSSS", selected);
+  if (selected === undefined) selected = [];
+
   return (
     <div className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-6">
       <label
@@ -10,7 +12,7 @@ const Perks = ({ selected, handleFormData }) => {
       >
         <input
           type="checkbox"
-          checked={selected.indexOf("wifi") !== -1}
+          checked={selected.includes("wifi")}
           name="wifi"
           onChange={handleFormData}
         />

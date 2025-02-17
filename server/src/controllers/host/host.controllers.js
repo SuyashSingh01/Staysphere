@@ -19,7 +19,7 @@ class HostController {
 
       const hostId = req.user.id;
       const images = req.files;
-
+      console.log("addhostplace", req.body);
       console.log("Received Data:", req.body, "Images:", images);
       if (
         !title ||
@@ -72,7 +72,7 @@ class HostController {
         image: imageUrls,
         price,
         description,
-        amenities: [...perks],
+        amenities: perks,
         rules: extraInfo,
         type,
         maxGuests,
@@ -162,7 +162,7 @@ class HostController {
           message: "Missing required fields to get the place",
         });
       }
-      const place = await Place.findById(new mongoose.Types.ObjectId(id));
+      const place = await Place.findById({ _id: id });
 
       if (!place) {
         return JsonResponse(res, {
