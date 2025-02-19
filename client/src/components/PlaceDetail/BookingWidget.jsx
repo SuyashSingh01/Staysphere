@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { differenceInDays } from "date-fns";
-import { toast } from "react-toastify";
+
 import DatePickerWithRange from "./DatePickerWithRange.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../Redux/slices/AuthSlice.js";
@@ -55,15 +55,37 @@ const BookingWidget = ({ place }) => {
 
     // BOOKING DATA VALIDATION
     if (numberOfNights < 1) {
-      return toast.error("Please select valid dates");
+      notification.error({
+        message: "Please select valid dates",
+        duration: 1,
+      });
+      return;
     } else if (noOfGuests < 1) {
-      return toast.error("No. of guests can't be less than 1");
+      return notification.error({
+        message: "No. of guests can't be less than 1",
+        duration: 1,
+      });
     } else if (noOfGuests > place.maxGuests) {
-      return toast.error(`Allowed max. no. of guests: ${place.maxGuests}`);
+      return notification.error({
+        message: `Allowed max. no. of guests: ${place.maxGuests}`,
+        duration,
+      });
     } else if (name.trim() === "") {
-      return toast.error("Name can't be empty");
+      return notification.error({
+        message: "Name can't be empty",
+        duration: 1,
+      });
     } else if (phone.trim() === "") {
-      return toast.error("Phone can't be empty");
+      return notification.error({
+        message: "Phone can't be empty",
+        duration: 1,
+        style: {
+          backgroundColor: "#f9f9f9",
+          color: "#333",
+          borderRadius: "10px",
+          border: "5px solid #333",
+        },
+      });
     }
     // send the data to backend server
     dispatch(setLoading(true));

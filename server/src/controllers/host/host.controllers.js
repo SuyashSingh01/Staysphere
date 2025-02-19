@@ -219,7 +219,7 @@ class HostController {
     try {
       const { id } = req.params;
       const hostId = req.user.id;
-      const { images } = req.body;
+      const { file } = req.body;
       const {
         title,
         description,

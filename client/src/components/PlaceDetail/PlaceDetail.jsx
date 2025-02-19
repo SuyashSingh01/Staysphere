@@ -1,14 +1,9 @@
-import axios from "axios";
 import Perks from "./Perks.jsx";
-import io from "socket.io-client";
-import Spinner from "../common/Spinner.jsx";
+import { notification } from "antd";
 import Reviews from "../common/Reviews.jsx";
-
-import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import PlaceGallery from "../common/PlaceGallery.jsx";
-import BookingWidget from "./BookingWidget.jsx";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../Redux/slices/AuthSlice";
 import AddressLink from "./AddressLink.jsx";
@@ -24,7 +19,8 @@ import { LoadingSpinner } from "../Wrapper/PageWrapper.jsx";
 import BookingSummaryCard from "./Booking/Bookingsummary.jsx";
 import { Divider } from "@mui/joy";
 import ChatModal from "../Chat/chatModal.jsx";
-import { notification } from "antd";
+
+// import BookingWidget from "./BookingWidget.jsx";
 
 const PlaceDetail = () => {
   const { id } = useParams();
@@ -150,7 +146,7 @@ const PlaceDetail = () => {
               StayVista. With a love for...
             </p>
             <button className="underline flex gap-2 items-center font-semibold text-lg mt-4 bg-white">
-              Show more
+              <span>Show more</span>
               <img
                 className="w-3"
                 src="data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2016%2016'%20aria-hidden='true'%20role='presentation'%20focusable='false'%20style='display:%20block;%20height:%2012px;%20width:%2012px;%20fill:%20currentcolor;'%3e%3cpath%20d='M5.41.3%204%201.7%2010.3%208%204%2014.3l1.41%201.4%206.6-6.58c.57-.58.6-1.5.1-2.13l-.1-.11z'%3e%3c/path%3e%3c/svg%3e"
@@ -195,8 +191,9 @@ const PlaceDetail = () => {
           src="https://maps.google.com/maps?width=100%&amp;height=600&amp;hl=en&amp;coord=52.70967533219885, -8.020019531250002&amp;q=1%20Grafton%20Street%2C%20Dublin%2C%20Ireland&amp;ie=UTF8&amp;t=&amp;z=14&amp;iwloc=B&amp;output=embed"
           frameBorder="0"
           scrolling="no"
-          marginheight="0"
-          marginwidth="0"
+          marginHeight="0"
+          marginWidth="0"
+          title="Place Location"
         ></iframe>
         <br />
       </div>
@@ -204,4 +201,4 @@ const PlaceDetail = () => {
   );
 };
 
-export default PlaceDetail;
+export default memo(PlaceDetail);

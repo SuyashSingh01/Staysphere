@@ -1,15 +1,14 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { notification } from "antd";
 import DatePicker from "../DatePicker/DatePicker.jsx";
 import tag_icon from "../../../assets/icons/tag-icon.svg";
 import flag_icon from "../../../assets/icons/flag.svg";
 import { formatNumberWithCommas } from "../../../utility/utils";
 import GuestDropdown from "../GuestDropdown/GuestDropdown.jsx";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addBooking } from "../../../Redux/slices/BookingSlice.js";
-import { notification } from "antd";
 
 function BookingSummaryCard({ originalPrice, discountedPrice = 2, place }) {
   const navigate = useNavigate();
@@ -51,9 +50,14 @@ function BookingSummaryCard({ originalPrice, discountedPrice = 2, place }) {
 
     // BOOKING DATA VALIDATION
     if (numberOfNights < 1) {
-      return toast.error("Please select valid dates");
+      return notification.error({
+        message: "Please select valid dates",
+        duration: 1,
+      });
     } else if (guests < 1) {
-      return toast.error("No. of guests can't be less than 1");
+      return notification.error({
+        message: "No. of guests can't be less than 1",
+      });
     } else if (guests > place?.maxGuests) {
       return notification.error({
         message: `Allowed max. no. of guests: ${place.guests}`,
