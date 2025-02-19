@@ -11,7 +11,6 @@ const listingSlice = createSlice({
   },
   reducers: {
     setListings(state, action) {
-      // Initialize listings
       state.listings = action.payload;
     },
     addFavorite(state, action) {
@@ -25,7 +24,6 @@ const listingSlice = createSlice({
       );
     },
     addListing(state, action) {
-      // Add new listing
       state.listings.push(action.payload);
     },
     updateListing(state, action) {
@@ -39,7 +37,7 @@ const listingSlice = createSlice({
         (listing) => listing.id !== action.payload
       );
     },
-    // Add place details
+
     addplaceDetail(state, action) {
       state.place = action.payload;
     },

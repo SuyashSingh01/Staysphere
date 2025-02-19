@@ -1,12 +1,12 @@
+import { notification } from "antd";
+import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { Input, Button, Card } from "@mui/joy";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import PhoneAndroidRoundedIcon from "@mui/icons-material/PhoneAndroidRounded";
-import { notification } from "antd";
 import useVerifyEmail from "../../../hooks/auth/useMutationVerifyEmail";
-import { useNavigate } from "react-router-dom";
 import useVerifyPhone from "../../../hooks/auth/useMutationVerifyPhone";
 
 const ProfileDetails = () => {

@@ -1,11 +1,12 @@
-import React from 'react';
+import React from "react";
+import PropTypes from "prop-types";
 
 const AddressLink = ({ placeAddress, className = null }) => {
   if (!className) {
-    className = 'my-3 block';
+    className = "my-3 block";
   }
 
-  className += ' flex gap-1 font-semibold underline';
+  className += " flex gap-1 font-semibold underline";
   return (
     <a
       className={className}
@@ -35,6 +36,10 @@ const AddressLink = ({ placeAddress, className = null }) => {
       {placeAddress}
     </a>
   );
+};
+AddressLink.propTypes = {
+  placeAddress: PropTypes.string.isRequired,
+  className: PropTypes.string,
 };
 
 export default AddressLink;

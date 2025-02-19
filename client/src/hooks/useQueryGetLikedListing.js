@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { request } from "../services/apiConnector"; // Axios request function
-import { favorite, hostApis } from "../services/api.urls";
+import { favoriteApis } from "../services/api.urls";
 import { useSelector } from "react-redux";
 
 const fetchLikedPlaces = async ({ queryKey }) => {
-  const [_key, likedPlaceIds, token] = queryKey;
+  const [likedPlaceIds, token] = queryKey;
 
   if (!likedPlaceIds || likedPlaceIds.length === 0) {
     return [];
@@ -12,7 +12,7 @@ const fetchLikedPlaces = async ({ queryKey }) => {
 
   const { data } = await request(
     "GET",
-    favorite.GET_FAVORITE,
+    favoriteApis.GET_FAVORITE,
     { placeIds: likedPlaceIds },
     { Authorization: `Bearer ${token}` }
   );

@@ -10,7 +10,7 @@ function NoTripBookedYet() {
         <h3 className="pt-6 text-2xl font-semibold">No trips booked... yet!</h3>
         <p>Time to dust off you bags and start planning your next adventure</p>
         <Link to="/" className="my-4">
-          <div className="flex w-40 justify-center rounded-lg  text-white bg-primary p-3 text-lg font-semibold hover:bg-red-500">
+          <div className="flex w-40 justify-center rounded-lg  text-white bg-orange-400  p-3 text-lg font-semibold hover:bg-orange-500 transition-colors">
             Start Searching
           </div>
         </Link>

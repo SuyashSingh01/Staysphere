@@ -3,7 +3,6 @@ import { request } from "../../services/apiConnector";
 import { hostApis } from "../../services/api.urls";
 import { useSelector } from "react-redux";
 
-// Fetch a single place details (for editing)
 export const usePlaceDetails = (placeId) => {
   const { token } = useSelector((state) => state.auth);
   return useQuery({
@@ -12,6 +11,7 @@ export const usePlaceDetails = (placeId) => {
       request("GET", `${hostApis.GET_HOST_PLACE_BY_ID}/${placeId}`, null, {
         Authorization: `Bearer ${token}`,
       }),
+    enabled: !!placeId,
   });
 };
 

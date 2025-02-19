@@ -1,11 +1,10 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-
 import chatReducer from "./slices/ChatSlice";
 import authReducer from "./slices/AuthSlice";
 import bookingReducer from "./slices/BookingSlice";
 import listingReducer from "./slices/ListingSlice";
-import categoriesReducer from "./slices/CategorySlice";
 import profileReducer from "./slices/ProfileSlice";
+import categoriesReducer from "./slices/CategorySlice";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 const rootReducer = combineReducers({
   auth: authReducer,

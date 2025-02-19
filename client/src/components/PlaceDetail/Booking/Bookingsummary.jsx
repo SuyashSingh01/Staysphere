@@ -22,13 +22,11 @@ function BookingSummaryCard({ originalPrice, discountedPrice = 2, place }) {
   const [guests, setGuests] = useState(1);
 
   const { user } = useSelector((state) => state.auth);
-  // const [dateRange, setDateRange] = useState({ from: null, to: null });
 
   const [bookingData, setBookingData] = useState({
     name: user?.name || "",
     phone: "",
   });
-  // const { noOfGuests, name, phone } = bookingData;
 
   // handle booking form
   const handleBookingData = (e) => {
@@ -96,13 +94,6 @@ function BookingSummaryCard({ originalPrice, discountedPrice = 2, place }) {
       console.log("Error: ", error.message);
     }
   };
-
-  // useEffect(() => {
-  //   localStorage.setItem("date1", date1);
-  //   localStorage.setItem("date2", date2);
-  //   localStorage.setItem("guests", guests);
-  //   localStorage.setItem("numberOfNights", dateDifference);
-  // }, [date1, date2, guests, dateDifference]);
 
   const handleGuestChange = (value) => {
     setGuests(value);

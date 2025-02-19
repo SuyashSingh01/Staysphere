@@ -39,7 +39,7 @@ export const bookingsApis = {
 };
 
 // FAVORITES  ENDPOINTS
-export const favorite = {
+export const favoriteApis = {
   ADD_FAVORITE: BASE_URL + "/add-favorite/:placeID",
   GET_FAVORITE: BASE_URL + "/account/liked-place",
   REMOVE_FAVORITE: BASE_URL + "/remove-favorite/:id",
@@ -51,7 +51,6 @@ export const listingApis = {
   GET_LISTING_DETAILS_API: BASE_URL + "/place/getplaceDetails",
   GET_TOP_PLACE_API: BASE_URL + "/place/top-listing",
   // GET_NEARBY_PLACE_API: BASE_URL + "/place/nearby",
-  // GET_PLACE_BY_CATEGORY_API: BASE_URL + "/place/category",
   // GET_PLACE_BY_LOCATION_API: BASE_URL + "/place/location",
   // GET_PLACE_BY_NAME_API: BASE_URL + "/place/name",
   // GET_PLACE_BY_RATING_API: BASE_URL + "/place/rating",
@@ -71,7 +70,7 @@ export const paymentApis = {
 };
 
 // PROFILE ENDPOINTS
-export const profileEndpoints = {
+export const profileApis = {
   GET_PROFILE_API: BASE_URL + "/account/profile",
   UPDATE_PROFILE_API: BASE_URL + "/account/profileupdate",
   UPDATE_PROFILE_IMAGE_API: BASE_URL + "/account/updateDisplaypic",
@@ -85,7 +84,7 @@ export const profileEndpoints = {
 };
 
 // RATINGS AND REVIEWS
-export const review = {
+export const reviewApis = {
   REVIEWS_DETAILS_API: BASE_URL + "/place/getReviews/:id",
   ADD_REVIEW_API: BASE_URL + "/place/addReview",
   DELETE_REVIEW_API: BASE_URL + "/place/deleteReview",
@@ -98,7 +97,7 @@ export const location = {
 };
 
 // CONTACT US API
-export const contactusEndpoint = {
+export const contactUsApis = {
   SUBMIT_CONTACT_API: BASE_URL + "/support/contact",
 };
 

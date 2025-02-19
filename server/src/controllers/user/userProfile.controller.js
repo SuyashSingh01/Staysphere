@@ -7,14 +7,14 @@ import Payment from "../../models/Payment.model.js";
 import Profile from "../../models/Profile.model.js";
 import { generatOtp } from "../../utils/utlitity.js";
 import { JsonResponse } from "../../utils/jsonResponse.js";
-import { imageupload } from "../../services/fileUpload.js";
+import { imagecompress, imageupload } from "../../services/fileUpload.js";
 
 class ProfileController {
   async getProfileById(req, res) {
     try {
-      const { id } = req.body;
-      const profileData = await Profile.findOne({ _id: id });
-
+      const { id } = req.user;
+      const profileData = await Profile.findOne({ user: id });
+      console.log("Profile", profileData);
       return JsonResponse(res, {
         status: 200,
         success: true,
@@ -34,18 +34,23 @@ class ProfileController {
   async updateprofileDetails(req, res) {
     try {
       const {
-        userID,
+        name,
         gender,
-        username,
-        about,
-        education,
-        contactnumber,
         country,
+        phone,
+        dateofBirth,
+        address,
+        website,
+        bio,
       } = req.body;
+      console.log("REAIADS<>", req.body);
+      const { id } = req.user;
+      // const image = imagecompress(req.body);
+
       const updatedUser = await User.findOneAndUpdate(
-        userID,
+        { _id: id },
         {
-          name: username,
+          name,
         },
         {
           new: true,
@@ -55,12 +60,15 @@ class ProfileController {
       const profile = await Profile.findOneAndUpdate(
         { _id: new mongoose.Types.ObjectId(updatedUser.otherdetails) },
         {
+          name: name,
           gender: gender,
-          username: username,
-          about: about,
-          education: education,
-          contactnumber: contactnumber,
           country: country,
+          phone: phone,
+          // profilepic: image,
+          dateofBirth: dateofBirth,
+          address: address,
+          website: website,
+          bio: bio,
         },
         { new: true }
       );
@@ -74,7 +82,7 @@ class ProfileController {
       console.log(err);
       return res.status(500).json({
         success: false,
-        message: "Something Went Wrong while Signing Up",
+        message: "Something Went Wrong while Updating profile Up",
         error: err.message,
       });
     }

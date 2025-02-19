@@ -12,6 +12,7 @@ const profileSlice = createSlice({
     profilePic: localStorage.getItem("profilePic")
       ? JSON.parse(localStorage.getItem("profilePic"))
       : null,
+    profileData: null,
   },
   reducers: {
     setIsEmailVerified(state, action) {
@@ -23,8 +24,12 @@ const profileSlice = createSlice({
     setProfilePic(state, action) {
       state.profilePic = action.payload;
     },
+    setProfileData(state, action) {
+      state.profileData = action.payload;
+    },
   },
 });
 
-export const { setIsEmailVerified, setIsPhoneVerified } = profileSlice.actions;
+export const { setIsEmailVerified, setIsPhoneVerified, setProfileData } =
+  profileSlice.actions;
 export default profileSlice.reducer;

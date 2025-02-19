@@ -59,7 +59,7 @@ const SingleBookedPlace = () => {
               </h2>
               <BookingDates booking={booking} />
             </div>
-            <div className="mt-5 w-[80%] rounded-2xl bg-primary text-white sm:mt-0 flex justify-around items-center p-2 md:p-4">
+            <div className="mt-5 w-[80%] rounded-2xl bg-orange-400 hover:bg-orange-500 transition-colors text-white sm:mt-0 flex justify-around items-center p-2 md:p-4">
               <div className="hidden md:block text-xl md:text-2xl">
                 Total price
               </div>

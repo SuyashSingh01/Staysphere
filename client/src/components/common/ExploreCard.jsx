@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 const ExploreCard = ({ title, explore }) => {
@@ -16,6 +17,10 @@ const ExploreCard = ({ title, explore }) => {
       </Link>
     </div>
   );
+};
+ExploreCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  explore: PropTypes.string.isRequired,
 };
 
 export default ExploreCard;

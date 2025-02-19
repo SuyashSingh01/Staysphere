@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 const BookingRequests = () => {
   const requests = [
@@ -24,7 +24,7 @@ const BookingRequests = () => {
       totalPrice: 700,
     },
   ];
-  
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
@@ -34,7 +34,7 @@ const BookingRequests = () => {
         {requests.map((request, index) => (
           <div
             key={index}
-            className="bg-gray-200 shadow-md rounded-lg p-4 hover:scale-105 transform transition-transform duration-300 ease-in-out"
+            className="bg-gray-100 shadow-md rounded-lg p-4 hover:scale-105 transform transition-transform duration-300 ease-in-out"
           >
             <h2 className="text-lg font-semibold text-gray-900">
               {request.guestName}
@@ -52,9 +52,9 @@ const BookingRequests = () => {
               {request.numberOfGuests}
             </p>
             <p className="text-gray-700 mt-1">
-              <span className="font-medium">Price:</span> ${request.totalPrice}
+              <span className="font-medium">Price:</span> ₹{request.totalPrice}
             </p>
-            <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600 transition-colors duration-300">
+            <button className="mt-4 bg-orange-500 text-white px-4 py-2 rounded-md shadow hover:bg-orange-600 transition-colors duration-300">
               Accept Request
             </button>
           </div>
@@ -64,5 +64,4 @@ const BookingRequests = () => {
   );
 };
 
-
-export default BookingRequests;
+export default memo(BookingRequests);

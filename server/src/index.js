@@ -20,6 +20,7 @@ import paymentRoutes from "./Routes/Payment/Payment.routes.js";
 import favoriteRoutes from "./Routes/Favourite/Favourite.routes.js";
 import userRoutes from "./Routes/User/User.routes.js";
 import profileRoutes from "./Routes/User/Profile.routes.js";
+import contactUsRoutes from "./Routes/User/ContactUs.routes.js";
 
 const app = express();
 const Port = process.env.PORT || 4000;
@@ -79,6 +80,7 @@ app.use("/api/v1", paymentRoutes);
 app.use("/api/v1", reviewRoutes);
 app.use("/api/v1", chatRoutes);
 app.use("/api/v1", profileRoutes);
+app.use("/api/v1", contactUsRoutes);
 // server activiation
 server.listen(Port, () => {
   console.log(`Server is running on port ${Port}`);

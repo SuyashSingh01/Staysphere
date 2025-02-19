@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   AspectRatio,
   Box,
@@ -17,31 +17,48 @@ import {
   CardOverflow,
   Textarea,
 } from "@mui/joy";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import AccessTimeFilledRoundedIcon from "@mui/icons-material/AccessTimeFilledRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import { useProfile, useUpdateProfile } from "../hooks/useProfileDetail";
+import { setProfileData } from "../Redux/slices/ProfileSlice";
+import { FaGenderless } from "react-icons/fa";
+import { BsGenderAmbiguous } from "react-icons/bs";
 
-function ProfilePage() {
+const ProfilePage = () => {
+  const { profilePic } = useSelector((state) => state.profile);
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { data: profile, isLoading } = useProfile();
+  const updateProfileMutation = useUpdateProfile();
+  const [formData, setFormData] = useState({});
 
-  const [firstName, setFirstName] = useState(user?.name?.split(" ")[0] || "");
-  const [lastName, setLastName] = useState(user?.name?.split(" ")[1] || "");
-  const [role, setRole] = useState("Host");
-  const [email, setEmail] = useState(user?.email ?? "");
-  const [phone, setPhone] = useState(user?.phone ?? "");
-  const [bio, setBio] = useState(user?.bio ?? "");
-  const [address, setAddress] = useState(user?.address ?? "");
-  const [website, setWebsite] = useState(user?.website ?? "");
+  useEffect(() => {
+    if (profile) {
+      setFormData(profile);
+      // dispatch(setProfileData(profile));
+    }
+  }, [profile]);
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    console.log("Form Data:", formData);
+  };
+
+  const handleSave = () => {
+    console.log("Form Data:-", formData);
+    updateProfileMutation.mutate(formData);
+  };
+
+  const [selectedFile, setSelectedFile] = useState(null);
   const [profileImage, setProfileImage] = useState(
-    user?.profilepic ??
+    profilePic ??
       "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
   );
-  const [selectedFile, setSelectedFile] = useState(null);
-
   const handleUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -49,20 +66,6 @@ function ProfilePage() {
       setProfileImage(fileURL);
       setSelectedFile(file);
     }
-  };
-
-  const handleSave = () => {
-    const updatedProfile = {
-      name: `${firstName} ${lastName}`,
-      role,
-      email,
-      phone,
-      bio,
-      address,
-      website,
-      profileImage: selectedFile || profileImage,
-    };
-    console.log("Updated Profile:", updatedProfile);
   };
 
   return (
@@ -95,24 +98,17 @@ function ProfilePage() {
           </Box>
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <FormControl>
-              <FormLabel>First Name</FormLabel>
+              <FormLabel>Name</FormLabel>
               <Input
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Last Name</FormLabel>
-              <Input
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={formData.name || user.name}
+                onChange={handleInputChange}
               />
             </FormControl>
           </Stack>
           <FormControl>
             <FormLabel>Email</FormLabel>
             <Input
-              value={email}
+              value={formData.email || user.email}
               disabled
               startDecorator={<EmailRoundedIcon />}
             />
@@ -120,48 +116,66 @@ function ProfilePage() {
           <FormControl>
             <FormLabel>Phone Number</FormLabel>
             <Input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={formData.phone}
+              onChange={handleInputChange}
               startDecorator={<PhoneRoundedIcon />}
             />
           </FormControl>
           <FormControl>
             <FormLabel>Role</FormLabel>
-            <Input value={role} onChange={(e) => setRole(e.target.value)} />
+            <Input value={user.role} disabled />
           </FormControl>
           <FormControl>
             <FormLabel>Bio</FormLabel>
             <Textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
+              value={formData.bio}
+              onChange={handleInputChange}
               placeholder="Write about yourself..."
             />
           </FormControl>
           <FormControl>
             <FormLabel>Address</FormLabel>
             <Input
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              value={formData.address}
+              onChange={handleInputChange}
               startDecorator={<HomeRoundedIcon />}
             />
           </FormControl>
           <FormControl>
-            <FormLabel>Website</FormLabel>
+            <FormLabel>Gender</FormLabel>
+            <Select
+              startDecorator={<BsGenderAmbiguous />}
+              defaultValue="male"
+              onChange={handleInputChange}
+            >
+              <Option value={"male"}>Male</Option>
+              <Option value={"female"}>Female</Option>
+            </Select>
+          </FormControl>
+          <FormControl>
+            <FormLabel>Country</FormLabel>
             <Input
-              value={website}
-              onChange={(e) => setWebsite(e.target.value)}
-              startDecorator={<LinkRoundedIcon />}
+              value={formData.country}
+              onChange={handleInputChange}
+              startDecorator={<AccessTimeFilledRoundedIcon />}
             />
           </FormControl>
           <FormControl>
-            <FormLabel>Timezone</FormLabel>
-            <Select
-              startDecorator={<AccessTimeFilledRoundedIcon />}
-              defaultValue="1"
-            >
-              <Option value="1">India Time — GMT+05:30</Option>
-              <Option value="2">USA (New York) — GMT-05:00</Option>
-            </Select>
+            <FormLabel>Date of Birth</FormLabel>
+            <Input
+              value={formData.dateofBirth}
+              onChange={handleInputChange}
+              type="date"
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel>Website</FormLabel>
+            <Input
+              value={formData.website}
+              onChange={handleInputChange}
+              startDecorator={<LinkRoundedIcon />}
+            />
           </FormControl>
         </Stack>
         <CardOverflow className="mt-4 border-t pt-4">
@@ -175,6 +189,6 @@ function ProfilePage() {
       </Card>
     </Box>
   );
-}
+};
 
 export default memo(ProfilePage);

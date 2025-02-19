@@ -17,6 +17,7 @@ router.post(
 router.post("/auth/verify-phone", controllers.auth.phoneVerification);
 router.post(
   "/auth/verify-phone-otp",
+  auth,
   controllers.auth.phoneVerificationWithOTP
 );
 

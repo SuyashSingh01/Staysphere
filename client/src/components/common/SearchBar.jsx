@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setSearch } from "../../Redux/slices/CategorySlice";
@@ -8,7 +8,6 @@ const SearchBar = () => {
   const dispatch = useDispatch();
   const { search } = useSelector((state) => state.category);
   const [inputValue, setInputValue] = useState(search);
-
   const debouncedSearch = debounce((query) => {
     dispatch(setSearch(query));
   }, 500);
@@ -52,4 +51,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default memo(SearchBar);

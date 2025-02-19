@@ -15,9 +15,9 @@ const ForgotPassword = () => {
   const handleOnSubmit = (e) => {
     e.preventDefault();
     dispatch(getPasswordResetToken(email, setEmailSent));
-    setTimeout(() => {
-      navigate("/verify/otp");
-    }, 2000);
+    // setTimeout(() => {
+    //   navigate("/verify/otp");
+    // }, 2000);
   };
 
   return (

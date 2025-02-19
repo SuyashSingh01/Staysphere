@@ -1,7 +1,7 @@
 export const contactUsEmail = (email, name, message) => {
-  return `<!DOCTYPE html>
+  return `
+  <!DOCTYPE html>
     <html>
-    
     <head>
         <meta charset="UTF-8">
         <title>Contact Form Confirmation</title>
@@ -43,7 +43,7 @@ export const contactUsEmail = (email, name, message) => {
             .cta {
                 display: inline-block;
                 padding: 10px 20px;
-                background-color: #FFD60A;
+                background-color: #fb923c ;
                 color: #000000;
                 text-decoration: none;
                 border-radius: 5px;

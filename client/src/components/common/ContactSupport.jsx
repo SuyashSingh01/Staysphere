@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Button, Card, Alert, Collapse, Spin } from "antd";
+import { Form, Input, Card, Alert, Collapse, Spin } from "antd";
 import { motion } from "framer-motion";
 import { useSubmitSupport } from "../../hooks/useMutateSubmitSupport";
 
@@ -33,7 +33,7 @@ const ContactSupportPage = () => {
         {isSuccess && (
           <Alert
             message="Success"
-            description="Your message has been sent. We will get back to you soon!"
+            description="Your message has been sent To Staysphere Team. We will get back to you soon!"
             type="success"
             showIcon
             className="mb-4"
@@ -77,14 +77,13 @@ const ContactSupportPage = () => {
             <TextArea rows={4} placeholder="Type your message..." />
           </Form.Item>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="w-full bg-orange-500"
+          <button
+            type="submit"
+            className="w-full bg-orange-500 p-4 text-3xl text-white rounded-2xl"
             disabled={isLoading}
           >
             {isLoading ? <Spin /> : "Submit"}
-          </Button>
+          </button>
         </Form>
       </Card>
 

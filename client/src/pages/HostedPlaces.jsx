@@ -6,9 +6,7 @@ import { useHostedPlaces } from "../hooks/host/useQueryHostedPlace";
 
 const HostedPlaces = () => {
   const navigate = useNavigate();
-
   const { data, isLoading, error } = useHostedPlaces();
-
   const places = useMemo(() => data?.data ?? [], [data]);
   console.log("Hostedplaces", places);
 

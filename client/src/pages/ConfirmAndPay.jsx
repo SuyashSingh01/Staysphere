@@ -1,18 +1,14 @@
 import React, { memo } from "react";
 import { Select, Button, Input, notification } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { format } from "date-fns";
-import { addBooking } from "../Redux/slices/BookingSlice";
-import { bookingsApis } from "../services/api.urls";
-import { bookYourPlace } from "../services/apiOperations/bookplace";
-import { handleBookingPayment } from "../components/Booking/payment";
+
 import { useBookingPayment } from "../hooks/useProcessPayment";
 
 const ConfirmAndPay = () => {
   const location = useLocation();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   const { place: placeDetail, bookingDetails: booking } = location.state || {};
 
   const { token, user } = useSelector((state) => state.auth);
@@ -41,10 +37,8 @@ const ConfirmAndPay = () => {
   const bookingHandler = async () => {
     try {
       // add  the booking in the backend
-      // await handleBookingPayment(token, booking, user);
       processPayment();
       // called the handlebooking route
-
       notification.success({
         message: "Payment Successful",
         duration: 1,
