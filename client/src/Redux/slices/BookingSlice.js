@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const bookingSlice = createSlice({
   name: "bookings",
   initialState: {
-    steps: 1,
+    step: 1,
     bookings: [],
     reviews: [
       {

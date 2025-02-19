@@ -15,11 +15,15 @@ import {
   Card,
   CardActions,
   CardOverflow,
+  Textarea,
 } from "@mui/joy";
+import { useSelector } from "react-redux";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import PhoneRoundedIcon from "@mui/icons-material/PhoneRounded";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import LinkRoundedIcon from "@mui/icons-material/LinkRounded";
 import AccessTimeFilledRoundedIcon from "@mui/icons-material/AccessTimeFilledRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import { useSelector } from "react-redux";
 
 function ProfilePage() {
   const { user } = useSelector((state) => state.auth);
@@ -28,6 +32,10 @@ function ProfilePage() {
   const [lastName, setLastName] = useState(user?.name?.split(" ")[1] || "");
   const [role, setRole] = useState("Host");
   const [email, setEmail] = useState(user?.email ?? "");
+  const [phone, setPhone] = useState(user?.phone ?? "");
+  const [bio, setBio] = useState(user?.bio ?? "");
+  const [address, setAddress] = useState(user?.address ?? "");
+  const [website, setWebsite] = useState(user?.website ?? "");
   const [profileImage, setProfileImage] = useState(
     user?.profilepic ??
       "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
@@ -48,138 +56,123 @@ function ProfilePage() {
       name: `${firstName} ${lastName}`,
       role,
       email,
+      phone,
+      bio,
+      address,
+      website,
       profileImage: selectedFile || profileImage,
     };
-    // dispatch the changes to the store  or API
     console.log("Updated Profile:", updatedProfile);
   };
 
   return (
-    <Box
-      sx={{ flex: 1, width: "100%", marginTop: "30px", marginBottom: "30px" }}
-    >
-      <Stack
-        spacing={4}
-        sx={{
-          maxWidth: "800px",
-          mx: "auto",
-          px: { xs: 2, sm: 4, md: 6 },
-          py: { xs: 2, sm: 4, md: 5 },
-        }}
-      >
-        <Card sx={{ p: 3, flexGrow: 1 }}>
-          <Box sx={{ mb: 2 }}>
-            <Typography level="title-md">Personal info</Typography>
-            <Typography level="body-sm">
-              Customize how your profile information will appear to the
-              networks.
-            </Typography>
+    <Box className="flex justify-center py-10 px-5">
+      <Card className="max-w-3xl w-full p-6 shadow-xl rounded-lg">
+        <Typography level="h5" className="mb-1 font-bold">
+          Personal Info
+        </Typography>
+        <Typography level="body-sm" className="mb-4 text-gray-600">
+          Customize your profile details for better visibility on Staysphere.
+        </Typography>
+        <Divider />
+        <Stack className="mt-4" spacing={4}>
+          <Box className="flex flex-col items-center">
+            <AspectRatio
+              ratio="1"
+              className="w-32 h-32 rounded-full overflow-hidden"
+            >
+              <img src={profileImage} alt="Profile" loading="lazy" />
+            </AspectRatio>
+            <IconButton component="label" className="mt-2">
+              <EditRoundedIcon />
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handleUpload}
+              />
+            </IconButton>
           </Box>
-          <Divider />
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={3}
-            sx={{ mt: 2 }}
-          >
-            <Box sx={{ position: "relative", textAlign: "center" }}>
-              <AspectRatio
-                ratio="1"
-                maxHeight={200}
-                sx={{
-                  flex: 1,
-                  minWidth: 120,
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                }}
-              >
-                <img src={profileImage} alt="Profile" loading="lazy" />
-              </AspectRatio>
-              <IconButton
-                aria-label="upload new picture"
-                size="sm"
-                variant="outlined"
-                color="neutral"
-                sx={{
-                  position: "absolute",
-                  zIndex: 2,
-                  right: "25%",
-                  bottom: "5%",
-                  transform: "translateX(50%)",
-                  boxShadow: "sm",
-                }}
-                component="label"
-              >
-                <EditRoundedIcon />
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  onChange={handleUpload}
-                />
-              </IconButton>
-            </Box>
-            <Stack spacing={2} sx={{ flexGrow: 1 }}>
-              <FormControl>
-                <FormLabel>Name</FormLabel>
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <Input
-                    size="sm"
-                    placeholder="First name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                  <Input
-                    size="sm"
-                    placeholder="Last name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </Stack>
-              </FormControl>
-              <FormControl>
-                <FormLabel>Primary Email</FormLabel>
-                <Input
-                  size="sm"
-                  placeholder="Email"
-                  value={email}
-                  disabled
-                  startDecorator={<EmailRoundedIcon />}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Role</FormLabel>
-                <Input
-                  size="sm"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  placeholder="Enter role"
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Timezone</FormLabel>
-                <Select
-                  size="sm"
-                  startDecorator={<AccessTimeFilledRoundedIcon />}
-                  defaultValue="1"
-                >
-                  <Option value="1">India Time — GMT+05:30</Option>
-                  <Option value="2">USA (New York) — GMT-05:00</Option>
-                </Select>
-              </FormControl>
-            </Stack>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+            <FormControl>
+              <FormLabel>First Name</FormLabel>
+              <Input
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Last Name</FormLabel>
+              <Input
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </FormControl>
           </Stack>
-          <CardOverflow sx={{ borderTop: "1px solid", borderColor: "divider" }}>
-            <CardActions sx={{ justifyContent: "flex-end", pt: 2 }}>
-              <Button size="sm" variant="outlined" color="neutral">
-                Cancel
-              </Button>
-              <Button size="sm" variant="solid" onClick={handleSave}>
-                Save
-              </Button>
-            </CardActions>
-          </CardOverflow>
-        </Card>
-      </Stack>
+          <FormControl>
+            <FormLabel>Email</FormLabel>
+            <Input
+              value={email}
+              disabled
+              startDecorator={<EmailRoundedIcon />}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Phone Number</FormLabel>
+            <Input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              startDecorator={<PhoneRoundedIcon />}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Role</FormLabel>
+            <Input value={role} onChange={(e) => setRole(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Bio</FormLabel>
+            <Textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Write about yourself..."
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Address</FormLabel>
+            <Input
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              startDecorator={<HomeRoundedIcon />}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Website</FormLabel>
+            <Input
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              startDecorator={<LinkRoundedIcon />}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Timezone</FormLabel>
+            <Select
+              startDecorator={<AccessTimeFilledRoundedIcon />}
+              defaultValue="1"
+            >
+              <Option value="1">India Time — GMT+05:30</Option>
+              <Option value="2">USA (New York) — GMT-05:00</Option>
+            </Select>
+          </FormControl>
+        </Stack>
+        <CardOverflow className="mt-4 border-t pt-4">
+          <CardActions className="flex justify-end">
+            <Button variant="outlined">Cancel</Button>
+            <Button variant="solid" onClick={handleSave}>
+              Save
+            </Button>
+          </CardActions>
+        </CardOverflow>
+      </Card>
     </Box>
   );
 }

@@ -59,10 +59,12 @@ const placeschema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    numberOfBookings: {
-      type: Number,
-      default: 0,
-    },
+    numberOfBookings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Bookings",
+      },
+    ],
     reviews: [
       {
         type: mongoose.Schema.Types.ObjectId,

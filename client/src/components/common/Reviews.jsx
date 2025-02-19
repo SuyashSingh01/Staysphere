@@ -6,19 +6,25 @@ import p1 from "../../assets/logo.svg";
 import { FaStar } from "react-icons/fa6";
 import { FaAngleRight } from "react-icons/fa6";
 
-const Reviews = ({ placeId }) => {
+const Reviews = ({ reviews, place }) => {
   const dispatch = useDispatch();
-  const { reviews, bookings } = useSelector((state) => state.bookings);
+  console.log("PLACEINREVIEWS", place);
+  const placeId = place?._id;
+
   const { user } = useSelector((state) => state.auth);
   const [newReview, setNewReview] = useState({
     username: "",
     rating: 0,
     comment: "",
   });
+  const bookings = place?.numberOfBookings;
 
-  const isBooked = bookings.find((booking) => {
+  const isBooked = bookings?.find((booking) => {
     return booking.place === placeId;
   });
+  console.log("BOOKINGS", bookings);
+  console.log("PLACEDID", placeId);
+  console.log("isBooked", isBooked);
   const dummy = new Array(5).fill(0);
   const handleSubmitReview = (e) => {
     e.preventDefault();
@@ -45,7 +51,7 @@ const Reviews = ({ placeId }) => {
     <div className="bg-gray-50 rounded-lg  mt-4 mb-8 py-4">
       <h2 className="text-2xl font-semibold mb-4 border-b py-2">Reviews</h2>
       {/* Display Existing Reviews */}
-      {reviews.length > 0 ? (
+      {reviews?.length > 0 ? (
         <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
           {reviews.map((review, index) => (
             <div

@@ -1,25 +1,23 @@
+import { memo } from "react";
+import { Dropdown, Modal } from "antd";
+import { useSelector } from "react-redux";
+import SearchBar from "../common/SearchBar";
 import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
-import { useSelector } from "react-redux";
-import { Dropdown, Modal } from "antd";
-import { LoginItems, LogoutItems } from "./NavDropdowndata.jsx";
-import SearchBar from "../common/SearchBar";
 import logo from "../../assets/logos/stayspherelogo2.png";
-
 import CatNavbar from "./CatNavbar.jsx";
-import { memo } from "react";
-
+import { getMenuItems, LogoutItems } from "./NavDropdowndata.jsx";
 const Navbar = () => {
+  const { user } = useSelector((state) => state.auth);
+  const menuItems = user ? getMenuItems(user.role) : LogoutItems;
   const [showSearchBar, setShowSearchBar] = useState(true);
   const [hasShadow, setHasShadow] = useState(false);
   const [isActive, setIsActive] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("Historical homes");
+
   const [toggleTaxes, setToggleTaxes] = useState(false);
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const location = useLocation();
-
-  const { user } = useSelector((state) => state.auth);
 
   const handleScroll = (event) => {
     event.preventDefault();
@@ -49,7 +47,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={` fixed top-0 z-10 flex w-screen flex-col justify-around mb-4 bg-white p-2 ${
+      className={` fixed top-0 z-10 flex w-screen  flex-col justify-around mb-4 bg-white p-2 ${
         hasShadow ? "shadow-md" : ""
       }`}
     >
@@ -98,52 +96,30 @@ const Navbar = () => {
           <div
             className={`z-10 h-[35px] w-[35px] overflow-hidden rounded-full cursor-pointer transition`}
           >
-            {user ? (
-              <Dropdown
-                menu={{
-                  items: LoginItems,
-                }}
-                placement="bottomRight"
-                arrow={{
-                  pointAtCenter: true,
-                }}
-                trigger={["click"]}
-              >
-                <Avatar>
-                  {user?.picture ? (
-                    <AvatarImage src={user.picture} className="h-full w-full" />
-                  ) : (
-                    <AvatarImage
-                      src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                      className="h-full w-full"
-                    />
-                  )}
-                </Avatar>
-              </Dropdown>
-            ) : (
-              <Dropdown
-                menu={{
-                  items: LogoutItems,
-                }}
-                placement="bottomRight"
-                arrow={{
-                  pointAtCenter: true,
-                }}
-              >
-                <svg
-                  fill="#858080"
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="796 796 200 200"
-                  enableBackground="new 796 796 200 200"
-                  xmlSpace="preserve"
-                  stroke="#858080"
-                  className="h-8 w-8"
-                >
-                  <path d="..."></path>
-                </svg>
-              </Dropdown>
-            )}
+            <Dropdown
+              menu={{
+                items: menuItems,
+              }}
+              placement="bottomRight"
+              arrow={{
+                pointAtCenter: true,
+              }}
+              trigger={["click"]}
+            >
+              <Avatar>
+                {user?.profilepic ? (
+                  <AvatarImage
+                    src={user.profilepic}
+                    className="h-full w-full"
+                  />
+                ) : (
+                  <AvatarImage
+                    src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                    className="h-full w-full"
+                  />
+                )}
+              </Avatar>
+            </Dropdown>
           </div>
         </div>
       </div>

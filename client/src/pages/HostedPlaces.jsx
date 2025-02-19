@@ -46,7 +46,7 @@ const HostedPlaces = () => {
       </div>
       <div className="text-center mt-4 mb-4">
         <Link
-          className="gap-1 m-11 inline-flex rounded-full bg-primary py-3 px-5 md:px-13 text-xl font-semibold text-white"
+          className="gap-1 m-11 inline-flex rounded-full bg-orange-500 active:bg-orange-600 py-3 px-5 md:px-13 text-xl font-semibold text-white"
           to={"/account/places/new"}
         >
           Add new place

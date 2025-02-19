@@ -11,7 +11,7 @@ class ChatServiceController {
       if (!userId || !roomId) {
         return next(new Error("User ID and Room ID are required"));
       }
-      // Assume `authenticate` middleware attaches `user` to `req`
+
       if (!roomId) {
         return res
           .status(400)
@@ -51,9 +51,22 @@ class ChatServiceController {
           .status(400)
           .json({ success: false, message: "Room ID is required." });
       }
-      return await Chat.find({ roomId }).sort({ timestamp: 1 }); // Sort by timestamp (oldest to newest)
+      return await Chat.find({ roomId }).sort({ timestamp: 1 });
     } catch (error) {
       next(error);
+    }
+  }
+  async getUsersMessageByHostId(req, res, next) {
+    try {
+      const { hostId } = req.params;
+      const chats = await Chat.find({ hostId }).populate(
+        "userId",
+        "name email"
+      );
+      res.json(chats);
+    } catch (error) {
+      console.error("Error fetching host chats:", error);
+      res.status(500).json({ message: "Error fetching chats" });
     }
   }
 }

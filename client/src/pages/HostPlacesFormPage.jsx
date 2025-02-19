@@ -1,269 +1,223 @@
-import { Form, notification, Select } from "antd";
-import Spinner from "../components/common/Spinner.jsx";
-import Perks from "../components/PlaceDetail/Perks.jsx";
-import React, { useEffect, useMemo, useState } from "react";
-import PerksWidget from "../components/common/PerksWidget.jsx";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  notification,
+  DatePicker,
+  InputNumber,
+  Card,
+  Typography,
+} from "antd";
+import { useEffect, useState, memo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import MultiplePhotosUploader from "../components/common/MultiplePhotosUploader.jsx";
-import { types } from "../data/categories.js";
 import {
   useAddPlace,
   usePlaceDetails,
   useUpdatePlace,
-} from "../hooks/host/useMutationAddPlace.js";
+} from "../hooks/host/useMutationAddPlace";
 import { Controller, useForm } from "react-hook-form";
+import MultiplePhotosUploader from "../components/common/MultiplePhotosUploader";
+import PerksWidget from "../components/common/PerksWidget";
+import { types } from "../data/categories";
+import Spinner from "../components/common/Spinner";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import moment from "moment";
+
+const { Title, Text } = Typography;
 
 const HostPlacesFormPage = () => {
   const navigate = useNavigate();
   const { placeId } = useParams();
-
   const {
     register,
     handleSubmit,
     setValue,
-    getValues,
     watch,
     reset,
     control,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      title: "",
-      address: "",
-      description: "",
-      perks: [],
-      extraInfo: "",
-      maxGuests: "",
-      price: "",
-      type: "",
-    },
-  });
-
+  } = useForm();
   const [fileList, setFileList] = useState([]);
+  const [location, setLocation] = useState(null);
 
   const { data: placeData, isLoading } = usePlaceDetails(placeId);
-  const initialplaceData = useMemo(() => {
-    return placeData?.data.data;
-  }, [placeData]);
-
-  console.log("placeData", initialplaceData);
-  const addPlaceMutation = useAddPlace();
   const updatePlaceMutation = useUpdatePlace();
+  const addPlaceMutation = useAddPlace();
 
   useEffect(() => {
-    if (placeId && placeData) {
+    if (placeId && placeData?.status === 200) {
+      const initialData = placeData.data.data;
       reset({
-        title: initialplaceData?.placeName || "",
-        address: initialplaceData?.placeLocation || "",
-        description: initialplaceData?.description || "",
-        perks: initialplaceData?.amenities ?? [],
-        extraInfo: initialplaceData?.rules || "",
-        maxGuests: initialplaceData?.maxGuests || "",
-        price: initialplaceData?.price || "",
-        type: initialplaceData?.type || "",
+        title: initialData.placeName || "",
+        address: initialData.placeLocation || "",
+        description: initialData.description || "",
+        perks: initialData.amenities || [],
+        extraInfo: initialData.rules || "",
+        maxGuests: initialData.maxGuests || "",
+        price: initialData.price || "",
+        type: initialData.type || "",
+        availability: initialData.availability
+          ? moment(initialData.availability)
+          : null,
       });
-      if (initialplaceData?.image) {
-        const formattedFileList = initialplaceData.image.map((url, index) => ({
+      setLocation(initialData.placeLocation || "");
+      setFileList(
+        initialData.image?.map((url, index) => ({
           uid: `${index}`,
           name: `Photo ${index + 1}`,
           status: "done",
-          url: url, // Ant Design needs "url" for previewing images
-        }));
-        setFileList(formattedFileList);
-      }
+          url,
+        })) || []
+      );
     }
-  }, [placeData, reset, placeId]);
-  const perks = watch("perks");
+  }, [placeId, placeData, reset]);
 
-  const onSubmit = async (data) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (key === "perks") {
-        formData.append(key, JSON.stringify(value)); // Convert perks array to string
+  const onSubmit = async (formData) => {
+    const preparedData = new FormData();
+    fileList.forEach((file) => {
+      if (file.originFileObj) {
+        preparedData.append("images", file.originFileObj);
       } else {
-        formData.append(key, value);
+        preparedData.append("existingImages", file.url);
       }
     });
 
-    fileList.forEach((file) => {
-      formData.append("images", file.originFileObj || file);
-    });
-
-    // Debugging Log
-    console.log("Submitting FormData:", Object.fromEntries(formData.entries()));
+    Object.entries(formData).forEach(([key, value]) =>
+      preparedData.append(key, value)
+    );
+    preparedData.append("location", location?.label || "");
 
     if (placeId) {
-      console.log("Submitting for updation", placeId, formData);
       await updatePlaceMutation.mutateAsync(
-        { placeId, updatedData: formData },
+        { placeId, updatedData: preparedData },
         {
           onSuccess: () => {
-            notification.success({
-              message: "Place updated successfully!",
-              duration: 1,
-            });
+            notification.success({ message: "Place updated successfully!" });
             navigate("/account/places");
           },
-          onError: () => {
-            notification.error({ message: "Failed to update place!" });
-          },
+          onError: () => notification.error({ message: "Update failed!" }),
         }
       );
     } else {
-      addPlaceMutation.mutate(formData, {
+      addPlaceMutation.mutate(preparedData, {
         onSuccess: () => {
-          notification.success({
-            message: "Place added successfully!",
-            duration: 1,
-          });
+          notification.success({ message: "Place added successfully!" });
           navigate("/account/places");
         },
-        onError: () => {
-          notification.error({ message: "Failed to add place!" });
-        },
+        onError: () => notification.error({ message: "Addition failed!" }),
       });
     }
   };
 
-  const label = (header, description) => (
-    <>
-      <h2 className="mt-4 text-2xl">{header}</h2>
-      <p className="text-sm text-gray-500">{description}</p>
-    </>
-  );
-
-  if (isLoading) {
-    return <Spinner />;
-  }
+  if (isLoading) return <Spinner />;
 
   return (
-    <div className="flex min-h-screen min-w-screen items-center justify-center bg-gray-100 mx-auto md:p-2 lg:p-4 p-1">
-      <form
-        encType="multipart/form-data"
-        onSubmit={handleSubmit(onSubmit)}
-        className="mx-4"
-      >
-        {label("Title", "Title for your place. Should be catchy.")}
-        <input
-          {...register("title", { required: "Title is required" })}
-          type="text"
-          placeholder="e.g. Cozy Apartment"
-        />
-        {errors.title && <p className="text-red-500">{errors.title.message}</p>}
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-6">
+      <Card className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-lg">
+        <Title level={3} className="text-center mb-4">
+          Host Your Place
+        </Title>
+        <Text className="block text-gray-500 text-center mb-6">
+          Fill in the details to list your place on our platform.
+        </Text>
 
-        {label("Address", "Address to this place")}
-        <input
-          {...register("address", { required: "Address is required" })}
-          type="text"
-          placeholder="Address"
-        />
-        {errors.address && (
-          <p className="text-red-500">{errors.address.message}</p>
-        )}
-
-        {label("Photos", "Upload the pictures of your place")}
-        <MultiplePhotosUploader fileList={fileList} setFileList={setFileList} />
-
-        {label("Perks", "Select all the perks of your place")}
-        <PerksWidget
-          selected={watch("perks") || []}
-          handleFormData={(e) => {
-            const name = e.target.name;
-            setValue(
-              "perks",
-              perks.includes(name)
-                ? perks.filter((p) => p !== name)
-                : [...perks, name]
-            );
-          }}
-        />
-        <Perks
-          perks={perks}
-          handleFormData={(e) => {
-            const name = e.target.name;
-            setValue(
-              "perks",
-              perks.includes(name)
-                ? perks.filter((p) => p !== name)
-                : [...perks, name]
-            );
-          }}
-        />
-        {label("Type", "Select the type of your place")}
-        <Form.Item
-          validateStatus={errors.type ? "error" : ""}
-          help={errors.type ? errors.type.message : ""}
-          className="mt-4 "
-        >
-          <Controller
-            name="type"
-            control={control}
-            render={({ field }) => (
-              <Select {...field} placeholder="Select type">
-                {types.map((type) => (
-                  <Select.Option key={type} value={type}>
-                    {type}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-          />
-        </Form.Item>
-
-        {label("Description", "Tell us more about your place")}
-        <textarea {...register("description")} />
-
-        {label(
-          "Guests & Price",
-          "Specify the maximum guests and price per night"
-        )}
-        <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
-          <div>
-            <h3 className="mt-2 -mb-1">Max no. of guests</h3>
-            <input
-              {...register("maxGuests", {
-                required: "Max guests is required",
-                min: { value: 1, message: "At least 1 guest required" },
-              })}
-              type="number"
-              placeholder="1"
+        <Form onFinish={handleSubmit(onSubmit)} layout="vertical">
+          <Form.Item
+            label="Title"
+            validateStatus={errors.title ? "error" : ""}
+            help={errors.title?.message}
+          >
+            <Input
+              {...register("title", { required: "Title is required" })}
+              placeholder="Cozy Apartment"
             />
-            {errors.maxGuests && (
-              <p className="text-red-500">{errors.maxGuests.message}</p>
-            )}
-          </div>
-          <div>
-            <h3 className="mt-2 -mb-1">Price per night</h3>
-            <input
-              {...register("price", {
-                required: "Price is required",
-                min: { value: 1, message: "Minimum price is 1" },
-              })}
-              type="number"
-              placeholder="1"
+          </Form.Item>
+
+          <Form.Item label="Address">
+            <GooglePlacesAutocomplete
+              selectProps={{ location, onChange: setLocation }}
             />
-            {errors.price && (
-              <p className="text-red-500">{errors.price.message}</p>
-            )}
-          </div>
-        </div>
+          </Form.Item>
 
-        {label("Extra info", "House rules, etc.")}
-        <textarea {...register("extraInfo")} />
+          <Form.Item label="Photos">
+            <MultiplePhotosUploader
+              fileList={fileList}
+              setFileList={setFileList}
+            />
+          </Form.Item>
 
-        <button
-          className="mx-auto my-4 flex rounded-full bg-orange-400 py-3 px-20 text-xl font-semibold text-white active:bg-orange-500"
-          type="submit"
-        >
-          {placeId
-            ? isLoading
-              ? "Updating..."
-              : "Update"
-            : isLoading
-            ? "Saving..."
-            : "Save"}
-        </button>
-      </form>
+          <Form.Item label="Perks">
+            <PerksWidget
+              selected={watch("perks")}
+              handleFormData={(e) =>
+                setValue(
+                  "perks",
+                  e.target.checked
+                    ? [...watch("perks"), e.target.name]
+                    : watch("perks").filter((p) => p !== e.target.name)
+                )
+              }
+            />
+          </Form.Item>
+
+          <Form.Item label="Type">
+            <Controller
+              name="type"
+              control={control}
+              render={({ field }) => (
+                <Select {...field} placeholder="Select type">
+                  {types.map((type) => (
+                    <Select.Option key={type} value={type}>
+                      {type}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
+            />
+          </Form.Item>
+
+          <Form.Item label="Description">
+            <Input.TextArea
+              {...register("description")}
+              placeholder="Tell us more about your place"
+            />
+          </Form.Item>
+
+          <Form.Item label="Max Guests">
+            <InputNumber
+              {...register("maxGuests", { required: "Required", min: 1 })}
+              placeholder="1"
+              min={1}
+            />
+          </Form.Item>
+
+          <Form.Item label="Price per Night">
+            <InputNumber
+              {...register("price", { required: "Required", min: 1 })}
+              placeholder="100"
+              min={1}
+              formatter={(value) => `$ ${value}`}
+            />
+          </Form.Item>
+
+          <Form.Item label="Availability">
+            <Controller
+              name="availability"
+              control={control}
+              render={({ field }) => (
+                <DatePicker {...field} format="YYYY-MM-DD" />
+              )}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" className="w-full">
+              {placeId ? "Update" : "Save"}
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
     </div>
   );
 };

@@ -1,14 +1,12 @@
 import express from "express";
 const router = express.Router();
-// import { contactUsController } from "../controller/ContactUS";
+import { controllers } from "../../controllers/index.controller";
 
-// const {createNewsletter,deleteNewsletter,getallNewsletters,getNewsletterbyId}=require('../controller/Newsletter');
-
-// router.get('/newsletter', getallNewsletters);
-// router.get('/newsletter/:newsletterId',getNewsletterbyId);
-// router.post('/createNewsletter',createNewsletter);
-// router.delete('/deleteNewsletter/:newsletterId',deleteNewsletter);
-
-router.post("/reach/contact", contactUsController);
+router.post("/reach/contact", controllers.contactsupport.contactUsController);
+// we need to add more routes here
+// router.get('/newsletter', controllers.contactsupportgetallNewsletters);
+// router.get('/newsletter/:newsletterId',controllers.contactsupportgetNewsletterbyId);
+// router.post('/createNewsletter',controllers.contactsupportcreateNewsletter);
+// router.delete('/deleteNewsletter/:newsletterId',controllers.contactsupportdeleteNewsletter);
 
 export default router;

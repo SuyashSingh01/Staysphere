@@ -68,7 +68,7 @@ const SingleBookedPlace = () => {
               </div>
             </div>
           </div>
-          <Reviews placeId={booking?._id} />
+          <Reviews place={booking?.place} placeId={booking?._id} />
         </div>
       ) : (
         <ExploreCard

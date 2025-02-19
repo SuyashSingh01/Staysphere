@@ -4,8 +4,14 @@ import ListingLoader from "../components/Skeleton/ListingLoader";
 import { useInfiniteListings } from "../hooks/useQueryInfiniteListings";
 
 const HomePage = () => {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
-    useInfiniteListings();
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+    isLoading,
+  } = useInfiniteListings();
 
   const observer = useRef();
   const lastListingRef = useCallback(
@@ -27,7 +33,7 @@ const HomePage = () => {
 
   // console.log("listing", listings);
 
-  if (status === "loading") {
+  if (isLoading) {
     return (
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 mt-10 px-6">
         {Array.from({ length: 8 }).map((_, index) => (

@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import PdfPrinter from "pdfmake";
 
-// ✅ Manually specify fonts (Avoids missing Roboto issue)
 const fonts = {
   Roboto: {
     normal: path.join("./src/fonts/Roboto-Regular.ttf"),
@@ -19,7 +18,7 @@ const generateReceipt = async (booking) => {
     // Load Staysphere Logo
     const logoPath = path.join("./src/assets/logos", "stayspherelogo3.png");
     const logoExists = fs.existsSync(logoPath);
-    // ✅ Generate UPI Payment QR Code (Modify as per your requirement)
+
     const upiPaymentLink = `upi://pay?pa=upi@razorpay&pn=${booking.user.email}&am=${booking.price}&cu=INR&tn=Staysphere%20Booking`;
 
     // Define PDF structure
@@ -35,7 +34,9 @@ const generateReceipt = async (booking) => {
               fontSize: 22,
               bold: true,
               alignment: "center",
+              color: "#e67e22",
             },
+            // logoExists ? { image: logoPath, width: 100, height: 90 } : {},
           ],
           margin: [5, 15, 0, 10],
         },
@@ -54,8 +55,8 @@ const generateReceipt = async (booking) => {
             body: [
               ["👤 User Name", booking.user.name ?? "N/A"],
               ["👤 User Email", booking.user.email ?? "N/A"],
-              ["👤 Host ", booking.updatedDetail.host.name ?? "N/A"],
-              ["🏠 Place Name", booking.updatedDetail.placeName || "N/A"],
+              ["👤 Host ", booking.updatedPlace.host?.name ?? "N/A"],
+              ["🏠 Place Name", booking.updatedPlace.placeName || "N/A"],
               ["📅 Check-in", new Date(booking.checkIn).toDateString()],
               ["📅 Check-out", new Date(booking.checkOut).toDateString()],
             ],
@@ -99,23 +100,39 @@ const generateReceipt = async (booking) => {
           text: "Scan to Pay",
           style: "sectionHeader",
           alignment: "center",
+          color: "#e67e22",
           margin: [0, 20],
         },
         {
           qr: upiPaymentLink,
-          fit: 150, // Adjust size
+          fit: 100,
           alignment: "center",
         },
 
-        // 🔹 Footer
-        { text: "Thank you for booking with Staysphere!", style: "footer" },
+        {
+          text: "Thank you for booking with Staysphere!",
+          style: "footer",
+          color: "#e67e22",
+        },
         {
           text: "For any inquiries, contact support@staysphere.com",
           style: "footer",
+          color: "#e67e22",
+        },
+        {
+          columns: [
+            { text: "Staysphere", style: "footer" },
+            logoExists
+              ? {
+                  image: logoPath,
+                  width: 50,
+                  alignment: "right",
+                }
+              : {},
+          ],
         },
       ],
 
-      // Define Styles
       styles: {
         tableStyle: {
           margin: [0, 10, 0, 10],
@@ -128,7 +145,7 @@ const generateReceipt = async (booking) => {
         },
         footer: {
           fontSize: 10,
-          alignment: "center",
+          alignment: "left center",
           margin: [0, 20, 0, 0],
           color: "#555",
         },

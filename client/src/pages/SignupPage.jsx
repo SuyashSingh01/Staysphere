@@ -1,14 +1,14 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+
 import { useSelector, useDispatch } from "react-redux";
 import { setUserData, setLoading, setToken } from "../Redux/slices/AuthSlice";
 import Spinner from "../components/common/Spinner";
 import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../utility/Firebase";
 import { FormControl, MenuItem } from "@mui/joy";
-import { Select } from "antd";
+import { message, Select } from "antd";
 import { notification } from "antd";
 import { request } from "../services/apiConnector";
 import { authApis } from "../services/api.urls";
@@ -27,7 +27,7 @@ const SignupPage = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      role: "user",
+      role: "User",
     },
   });
 
@@ -44,6 +44,7 @@ const SignupPage = () => {
       if (data.success) {
         console.log("datta", data);
         dispatch(setToken(data.token));
+        dispatch(setUserData(data.user));
         notification.success({
           message: "Google Sign-In successful",
           duration: 1,
@@ -84,30 +85,35 @@ const SignupPage = () => {
         password: formData.password,
         role: formData.role,
       });
+      console.log(result);
 
       const userDetails = {
         name: formData.name,
         email: formData.email,
-        uid: result?.user?.uid,
+        id: result?.data?.data._id,
+        role: formData.role,
       };
 
-      dispatch(setToken(result?.user?.accessToken));
+      dispatch(setToken(result?.data?.data?.token));
       dispatch(setUserData(userDetails));
 
-      localStorage.setItem("token", JSON.stringify(result?.user?.accessToken));
+      localStorage.setItem("token", JSON.stringify(result?.data?.data?.token));
       localStorage.setItem("user", JSON.stringify(userDetails));
 
       notification.success({
-        message: `Account Created: ${result.user.email}`,
+        message: `Account Created: ${result.email}`,
         duration: 1,
       });
 
       reset();
       navigate("/account");
     } catch (error) {
-      toast.error(
-        "Couldn't create account: " + (error?.message || "Unknown Error")
-      );
+      notification.error({
+        message:
+          "Couldn't create account: " + (error?.message || "Unknown Error"),
+        duration: 1,
+        placement: "topRight",
+      });
     }
 
     dispatch(setLoading(false));
@@ -120,7 +126,7 @@ const SignupPage = () => {
       ) : (
         <div className="w-full md:w-1/2 flex justify-center items-center">
           <div className="mb-40 w-full">
-            <h1 className="mb-4 text-center text-4xl text-red-500 ">
+            <h1 className="mb-4 text-center text-4xl text-orange-700 ">
               Register
             </h1>
             <form
@@ -181,9 +187,9 @@ const SignupPage = () => {
                       onChange={(value) => setValue("role", value)}
                       style={{ width: "100%", height: "40px" }}
                     >
-                      <Option value="admin">Admin</Option>
-                      <Option value="user">User</Option>
-                      <Option value="host">Host</Option>
+                      <Option value="Admin">Admin</Option>
+                      <Option value="User">User</Option>
+                      <Option value="Host">Host</Option>
                     </Select>
                   )}
                 />
@@ -192,7 +198,11 @@ const SignupPage = () => {
                 )}
               </FormControl>
 
-              <button className="primary my-2" type="submit" disabled={loading}>
+              <button
+                className="w-full bg-orange-400 focus:ring-orange-700 active:bg-orange-500 focus:bg-orange-600 transition-shadow my-4 text-xl p-2 rounded-[8px] text-white"
+                type="submit"
+                disabled={loading}
+              >
                 Register
               </button>
             </form>
@@ -204,7 +214,7 @@ const SignupPage = () => {
             </div>
 
             <button
-              className="mt-6 rounded-[8px] bg-primary py-[8px] px-[12px] font-medium text-white"
+              className="mt-6 rounded-[8px] bg-orange-400 focus:ring-orange-700 active:bg-orange-500 focus:bg-orange-600 transition-shadow py-[8px] px-[12px] font-medium text-white"
               onClick={handleGoogleSignIn}
             >
               Sign Up with Google

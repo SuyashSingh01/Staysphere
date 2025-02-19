@@ -1,17 +1,18 @@
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import { config } from "dotenv";
 import OTP from "../../models/Otp.model.js";
 import User from "../../models/User.model.js";
 import Profile from "../../models/Profile.model.js";
 import { JsonResponse } from "../../utils/jsonResponse.js";
 import firebaseAuth from "../../utils/verifygooglefauthToken.js";
-import { generateToken } from "../../utils/utlitity.js";
+import { generateToken, generatOtp } from "../../utils/utlitity.js";
 import mailSender from "../../utils/sendEmail.js";
 import { passwordUpdated } from "../../mailTemplate/passwordChange.js";
-import mongoose from "mongoose";
 import { createVerification } from "../../utils/sendOtp.js";
+import otpTemplate from "../../mailTemplate/otpverificationEmail.js";
 config();
 // import { OAuth2Client } from "google-auth-library";
 
@@ -346,7 +347,7 @@ class AuthController {
           `Your Link for Password Reset is ${url}. Please click this url to reset your password.`
         )
       );
-      JsonResponse(res, {
+      return JsonResponse(res, {
         title: "Check Your Email Address for Reset Password",
         status: 200,
         success: true,
@@ -354,7 +355,7 @@ class AuthController {
           "Email Sent Successfully, Please Check Your Email to Continue Further",
       });
     } catch (error) {
-      return JsonsResponse(res, {
+      return JsonResponse(res, {
         status: 500,
         error: error.message,
         success: false,
@@ -363,7 +364,7 @@ class AuthController {
     }
   }
 
-  // Implementation for password reset
+  // Implementation for password reset with token
   async resetPassword(req, res) {
     try {
       const { token } = req.params || req.body;
@@ -414,7 +415,252 @@ class AuthController {
       });
     }
   }
-  // Host Authentication
+  // Change Password with old password
+  async changePassword(req, res) {
+    try {
+      const { oldPassword, newPassword, confirmPassword } = req.body;
+      const { id } = req.user;
+      console.log(
+        "Change Password",
+        id,
+        oldPassword,
+        newPassword,
+        confirmPassword
+      );
+
+      const user = await User.findOne({ _id: id });
+      if (!user) {
+        return JsonResponse(res, {
+          status: 404,
+          success: false,
+          message: "User not found",
+        });
+      }
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message: "Old Password is Incorrect",
+        });
+      }
+      if (newPassword !== confirmPassword) {
+        return JsonResponse(res, {
+          status: 400,
+          success: false,
+          message: "Password and Confirm Password Does not Match",
+        });
+      }
+      const encryptedPassword = await bcrypt.hash(newPassword, 10);
+      await User.findOneAndUpdate(
+        { _id: id },
+        { password: encryptedPassword },
+        { new: true }
+      );
+      mailSender(
+        user.email,
+        "Password Updated",
+        `Your Password has been updated successfully if you have not done this please contact us immediately`
+      );
+      return JsonResponse(res, {
+        title: "Password Updated Successfully",
+        status: 200,
+        success: true,
+        message: "Password Updated Successfully",
+      });
+    } catch (error) {
+      return JsonResponse(res, {
+        title: error.message,
+        status: 500,
+        error: error.message,
+        success: false,
+        message: `Some Error in Updating the Password`,
+      });
+    }
+  }
+  //  Authentication and Verification
+
+  async emailVerification(req, res) {
+    try {
+      const { email } = req.body;
+      const user = await User.findOne({ email: email });
+
+      if (!user) {
+        return JsonResponse(res, {
+          status: 400,
+          message: "User not found with this email address",
+          success: false,
+        });
+      }
+      const otp = generatOtp();
+      await OTP.create({
+        email,
+        otp,
+      });
+
+      return JsonResponse(res, {
+        status: 200,
+        title: "Email sent successfully",
+        message: "Email sent successfully",
+        success: true,
+      });
+    } catch (err) {
+      console.error(err.message);
+      return JsonResponse(res, {
+        status: 500,
+        message: "Internal server error occurred during Email Verification",
+        success: false,
+        error: err.message,
+      });
+    }
+  }
+  async emailVerificationWithOTP(req, res) {
+    try {
+      const { email, otp } = req.body;
+      if (!email || !otp) {
+        return JsonResponse(res, {
+          status: 400,
+          message: "Email or OTP is missing",
+          success: false,
+        });
+      }
+      const otpdata = await OTP.findOne({ email: email, otp: otp })
+        .sort({ createdAt: -1 })
+        .limit(1);
+      if (otpdata === null) {
+        return JsonResponse(res, {
+          status: 400,
+          title: "Invalid OTP",
+          message: "Invalid OTP",
+          success: false,
+          data: [],
+        });
+      }
+      if (otpdata.otp === otp) {
+        const userVerified = await User.findOneAndUpdate(
+          { email: email },
+          {
+            $set: {
+              isEmailVerified: true,
+            },
+          },
+          { new: true }
+        );
+
+        return JsonResponse(res, {
+          status: 200,
+          title: "Email Verified successfully",
+          message: "Email Verified successfully",
+          success: true,
+          data: userVerified,
+        });
+      }
+    } catch (err) {
+      console.error(err.message);
+      return JsonResponse(res, {
+        status: 500,
+        message: "Internal server error occurred during Email Verification",
+        success: false,
+        error: err.message,
+      });
+    }
+  }
+
+  async phoneVerification(req, res) {
+    try {
+      const { phone, email } = req.body;
+      const otp = generatOtp();
+      const otpdata = await OTP.create({ phone: phone, otp: otp });
+      const otpAtphone = await createVerification(phone, otp);
+      console.log("Twiliootp", otpAtphone);
+      console.log("DBOTP", otpdata);
+      // const user = await User.findOneAndUpdate({ email:email }, { $set: { phone: phone } }, { new: true });
+
+      return JsonResponse(res, {
+        status: 200,
+        title: "OTP sent successfully",
+        message: "OTP sent successfully",
+        success: true,
+        data: {
+          otpAtphone,
+          otpdata,
+        },
+      });
+    } catch (err) {
+      console.error(err.message);
+      return JsonResponse(res, {
+        status: 500,
+        message: "Internal server error occurred during Phone Verification",
+        success: false,
+        error: err.message,
+      });
+    }
+  }
+
+  async phoneVerificationWithOTP(req, res) {
+    try {
+      const { phone, otp, email } = req.body;
+      console.log(phone, otp, email);
+      if (!phone || !otp) {
+        return JsonResponse(res, {
+          status: 400,
+          title: "Phone or OTP is missing",
+          message: "Phone or OTP is missing",
+          success: false,
+          data: [],
+        });
+      }
+      const otpdata = await OTP.findOne({ phone: phone, otp: otp })
+        .sort({ createdAt: -1 })
+        .limit(1);
+      if (otpdata === null) {
+        return JsonResponse(res, {
+          status: 400,
+          title: "Invalid OTP",
+          message: "Invalid OTP",
+          success: false,
+          data: [],
+        });
+      }
+      if (otpdata.otp === otp) {
+        const user = await User.findOneAndUpdate(
+          { email: email },
+          {
+            $set: {
+              phone: phone,
+              isPhoneVerified: true,
+            },
+          },
+          { new: true }
+        );
+        return JsonResponse(res, {
+          status: 200,
+          title: "Phone Verified Successfully",
+          message: "Phone Verified Successfully",
+          success: true,
+          data: user,
+        });
+      } else {
+        return JsonResponse(res, {
+          status: 400,
+          title: "Invalid OTP",
+          message: "Invalid OTP",
+          success: false,
+          data: [],
+        });
+      }
+    } catch (err) {
+      console.error(err.message);
+      return JsonResponse(res, {
+        status: 500,
+        message: "Internal server error occurred during Phone Verification",
+        success: false,
+        error: err.message,
+      });
+    }
+  }
+
+  // Host Authentication and Verification needs a changes
   async hostRegister(req, res) {
     try {
       const { email, phone, role } = req.body;
@@ -432,10 +678,10 @@ class AuthController {
         });
       }
       // we can also direct check with email in User model and checke whether the user role  is same or not if same then return the user
-      if (user && user.otherdetails.phone == phone) {
+      if (user && user.otherdetails?.phone == phone) {
         const updatedUser = await User.findOneAndUpdate(
           { otherdetails: new mongoose.Types.ObjectId(user._id) },
-          { role: "Host" | role },
+          { role: role | "Host" },
           { new: true }
         );
         return JsonResponse(res, {
@@ -445,9 +691,9 @@ class AuthController {
           data: updatedUser,
         });
       }
-
+      const otp = generatOtp();
       // else verify the user number then update the role
-      const otpdata = await createVerification(phone);
+      const otpdata = await createVerification(phone, otp);
       // const otpdata = 234;
       console.log("otpsada", otpdata);
       if (otpdata) {
@@ -509,7 +755,8 @@ class AuthController {
           { _id: otpdata.userId },
           {
             $set: {
-              isVerified: true,
+              isEmailVerified: true,
+              isPhoneVerified: true,
               role: "Host",
             },
           },
@@ -562,7 +809,7 @@ class AuthController {
           success: false,
         });
       }
-      if (!user.isVerified) {
+      if (user.role !== "Host") {
         return JsonResponse(res, {
           status: 400,
           message: "User not verified",

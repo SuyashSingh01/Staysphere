@@ -19,12 +19,16 @@ const Chat = ({ userId, hostId }) => {
   const messagesEndRef = useRef(null);
   const navigate = useNavigate();
 
-  const roomId = `${hostId}-${userId}`; // Unique room for the host and user
+  const roomId = [userId, hostId].sort().join("-"); // Unique room for the host and user
 
   // Fetch chat history and set up socket listeners
   useEffect(() => {
     // Join the room when the component mounts
     socket.emit("join_room", { roomId });
+
+    // socket.on("connect", () => {
+    //   console.log("Connected to server with ID:", socket.id);
+    // });
 
     // Listen for chat history
     socket.on("chat_history", (history) => {
@@ -69,30 +73,10 @@ const Chat = ({ userId, hostId }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      {/* Chat Header */}
-      <div className="flex items-center px-4 py-2 bg-white shadow">
-        <Button
-          icon={<ArrowLeftOutlined />}
-          shape="circle"
-          onClick={() => navigate(-1)}
-          className="mr-4"
-        />
-        <div className="flex items-center">
-          <img
-            src="https://via.placeholder.com/40"
-            alt="Host Profile"
-            className="w-10 h-10 rounded-full mr-3"
-          />
-          <div>
-            <p className="font-semibold">Host Name</p>
-            <p className="text-sm text-gray-500">Online</p>
-          </div>
-        </div>
-      </div>
-
+    <div className="flex flex-col h-screen bg-gray-100  ">
       {/* Message Display Area */}
-      <div className="flex-1 overflow-y-auto p-4">
+
+      <div className="flex-1 overflow-y-auto p-4 scrollbar-hide">
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -103,12 +87,12 @@ const Chat = ({ userId, hostId }) => {
             <div
               className={`p-3 rounded-lg max-w-sm ${
                 msg.sender === `User-${userId}`
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-300 text-purple-900"
                   : "bg-gray-300 text-black"
               }`}
             >
               <p className="text-sm">{msg.message}</p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-800 mt-1">
                 {new Date(msg.timestamp).toLocaleTimeString()}
               </p>
             </div>

@@ -44,7 +44,7 @@ const PlaceGallery = ({ place }) => {
       <div className="h-[400px] max-h-[450px] grid-cols-4 gap-2 overflow-hidden rounded-[12px] md:grid">
         {/* column 1 */}
         <div className="col-span-2 overflow-hidden">
-          {place[0] && (
+          {place && place[0] && (
             <div className="h-full w-full overflow-hidden bg-red-200">
               <img
                 onClick={() => setShowAllPhotos(true)}
@@ -59,7 +59,7 @@ const PlaceGallery = ({ place }) => {
         <div className="col-span-1 overflow-hidden">
           {/* row grid inside column 2 */}
           <div className="grid h-full grid-rows-2 gap-2">
-            {place[1] && (
+            {place && place[1] && (
               // row 1
               <div className="bg-gray-200">
                 <img
@@ -71,7 +71,7 @@ const PlaceGallery = ({ place }) => {
               </div>
             )}
 
-            {place[2] && (
+            {place && place[2] && (
               // row 2
               <div className="bg-gray-200">
                 <img
@@ -88,7 +88,7 @@ const PlaceGallery = ({ place }) => {
         <div className="col-span-1 overflow-hidden">
           {/* row grid inside column 3 */}
           <div className="grid h-full grid-rows-2 gap-2">
-            {place[3] && (
+            {place && place[3] && (
               // row 1
               <div className="h-full bg-gray-200">
                 <img
@@ -100,7 +100,7 @@ const PlaceGallery = ({ place }) => {
               </div>
             )}
 
-            {place[4] && (
+            {place && place[4] && (
               // row 2
               <div className="h-full bg-gray-200">
                 <img

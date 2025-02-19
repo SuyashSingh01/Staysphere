@@ -6,6 +6,12 @@ export const authApis = {
   LOGIN_API: BASE_URL + "/auth/login",
   RESETPASSTOKEN_API: BASE_URL + "/auth/forgot",
   RESETPASSWORD_API: BASE_URL + "/auth/reset-password",
+  VERIFY_EMAIL_API: BASE_URL + "/auth/verify-email",
+  VERIFY_EMAIL_OTP_API: BASE_URL + "/auth/verify-email-otp",
+  VERIFY_PHONE_API: BASE_URL + "/auth/verify-phone",
+  VERIFY_PHONE_OTP_API: BASE_URL + "/auth/verify-phone-otp",
+  CHANGE_PASSWORD_API: BASE_URL + "/auth/change-password",
+
   // SENDOTP_API: BASE_URL + "/auth/sendotp",
 };
 
@@ -74,7 +80,7 @@ export const profileEndpoints = {
 
   UPDATE_EMAIL_API: BASE_URL + "/profile/updateEmail",
   UPDATE_PHONE_API: BASE_URL + "/profile/updatePhone",
-
+  GET_TRANSACTIONS_API: BASE_URL + "/profile/transactions",
   //   add other
 };
 
@@ -92,7 +98,9 @@ export const location = {
 };
 
 // CONTACT US API
-export const contactusEndpoint = {};
+export const contactusEndpoint = {
+  SUBMIT_CONTACT_API: BASE_URL + "/support/contact",
+};
 
 //   add other ENDPOINTS LIKE FOR CHATS
 

@@ -7,9 +7,8 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = twilio(accountSid, authToken);
 
-export async function createVerification(number) {
+export async function createVerification(number, otp) {
   try {
-    const otp = generatOtp();
     const message = await client.messages
       .create({
         body: `Verify Yourself at Staysphere here is Your Otp  ${otp} valid for 5 minutes and will be expired after that `,
@@ -20,8 +19,9 @@ export async function createVerification(number) {
 
     // console.log(verification);
     // console.log(verification.sid);
-    return otp;
+    return message;
   } catch (err) {
     console.error(err);
+    throw new Error("Error sending OTP");
   }
 }

@@ -9,7 +9,6 @@ const bookingSchema = new mongoose.Schema(
     roomType: String,
     amount: Number,
     totalAmount: Number,
-
     bookingStatus: {
       type: String,
       enum: ["available ", "await", "booked", "cancelled"],

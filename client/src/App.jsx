@@ -10,12 +10,17 @@ import animationData from "./assets/animation/success.json";
 import UpdatePassword from "./components/Auth/Updatepassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import { PageWrapper } from "./components/Wrapper/PageWrapper.jsx";
+import ChatModal from "./components/Chat/chatModal.jsx";
+import TransactionsPage from "./components/Dashboard/Transaction/TransactionPayment.jsx";
+import ContactSupportPage from "./components/common/ContactSupport.jsx";
+import OTPInput from "./components/Auth/Otpinput.jsx";
 
 // lazy loading pages
 const HomePage = lazy(() => import("./pages/HomePage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 const HostedPlaces = lazy(() => import("./pages/HostedPlaces.jsx"));
 const BookingsPage = lazy(() => import("./pages/BookingsPage.jsx"));
@@ -25,13 +30,27 @@ const SingleBookedPlace = lazy(() => import("./pages/SingleBookedPlace.jsx"));
 const PlaceDetail = lazy(() =>
   import("./components/PlaceDetail/PlaceDetail.jsx")
 );
-const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
 const ConfirmAndPay = lazy(() => import("./pages/ConfirmAndPay.jsx"));
 const BookingRequest = lazy(() =>
   import("./components/common/BookingRequest.jsx")
 );
-const FavouritePlaces = lazy(() => import("./pages/FavouritePlaces.jsx"));
+const HostEarnings = lazy(() =>
+  import("./components/Dashboard/Host/Earning.jsx")
+);
 const Chat = lazy(() => import("./components/Chat/Chat.jsx"));
+
+// Dashboard account
+const ChangePassword = lazy(() =>
+  import("./components/Dashboard/Profile/ChangePassword.jsx")
+);
+const Dashboard = lazy(() => import("./pages/Dashboard.jsx"));
+const FavouritePlaces = lazy(() => import("./pages/FavouritePlaces.jsx"));
+const ProfileDetails = lazy(() =>
+  import("./components/Dashboard/Profile/ProfileDetail.jsx")
+);
+const HostSettings = lazy(() =>
+  import("./components/Dashboard/Profile/HostSetting.jsx")
+);
 
 function App() {
   const location = useLocation();
@@ -44,9 +63,9 @@ function App() {
           <Route
             index
             element={
-              // <PageWrapper>
-              <HomePage />
-              // </PageWrapper>
+              <PageWrapper>
+                <HomePage />
+              </PageWrapper>
             }
           />
           <Route
@@ -74,6 +93,14 @@ function App() {
             }
           />
           <Route
+            path="/verify/otp"
+            element={
+              <PageWrapper>
+                <OTPInput />
+              </PageWrapper>
+            }
+          />
+          <Route
             path="/update-password/:token"
             element={
               <PageWrapper>
@@ -81,6 +108,15 @@ function App() {
               </PageWrapper>
             }
           />
+          <Route
+            path="/account/contact-support"
+            element={
+              <PageWrapper>
+                <ContactSupportPage />
+              </PageWrapper>
+            }
+          />
+
           <Route
             path="/place/:id"
             element={
@@ -125,9 +161,91 @@ function App() {
           <Route
             path="/chat"
             element={
+              <PageWrapper>
+                <PrivateRoute>
+                  {/* <Chat /> */}
+                  <ChatModal />
+                </PrivateRoute>
+              </PageWrapper>
+            }
+          />
+        </Route>
+        {/* ---------------Second layout for Dashboard----------------------------- */}
+
+        <Route
+          path="/account"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        >
+          <Route
+            index
+            element={
               <PrivateRoute>
                 <PageWrapper>
-                  <Chat />
+                  <ProfilePage />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="profile/settings"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <ProfileDetails />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="transactions"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <TransactionsPage />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="settings/notifications"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <Notification />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="settings/change-password"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <ChangePassword />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="liked-place"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <FavouritePlaces />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="bookings"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <BookingsPage />
                 </PageWrapper>
               </PrivateRoute>
             }
@@ -141,6 +259,16 @@ function App() {
                   <PrivateRoute>
                     <PageWrapper>
                       <HostPlacesFormPage />
+                    </PageWrapper>
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/account/host/setting"
+                element={
+                  <PrivateRoute>
+                    <PageWrapper>
+                      <HostSettings />
                     </PageWrapper>
                   </PrivateRoute>
                 }
@@ -166,6 +294,16 @@ function App() {
                 }
               />
               <Route
+                path="/account/host/earnings"
+                element={
+                  <PrivateRoute>
+                    <PageWrapper>
+                      <HostEarnings />
+                    </PageWrapper>
+                  </PrivateRoute>
+                }
+              />
+              <Route
                 path="/account/places/:placeId"
                 element={
                   <PrivateRoute>
@@ -177,47 +315,6 @@ function App() {
               />
             </>
           )}
-        </Route>
-        {/* ---------------Second layout for Dashboard----------------------------- */}
-
-        <Route
-          path="/account"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        >
-          <Route
-            index
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <ProfilePage />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="liked-place"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <FavouritePlaces />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="bookings"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <BookingsPage />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
         </Route>
         {/*----------------------- Protected Routes -------------------*/}
 

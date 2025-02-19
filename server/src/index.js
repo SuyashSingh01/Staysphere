@@ -4,6 +4,7 @@ import http from "http";
 import dotenv from "dotenv";
 import path from "path";
 dotenv.config();
+import { fileURLToPath } from "url";
 import cookiesparser from "cookie-parser";
 import fileupload from "express-fileupload";
 import { dbConnect } from "./config/database.js";
@@ -17,7 +18,8 @@ import bookingRoutes from "./Routes/Booking/Booking.routes.js";
 import listingRoutes from "./Routes/Listing/Listing.routes.js";
 import paymentRoutes from "./Routes/Payment/Payment.routes.js";
 import favoriteRoutes from "./Routes/Favourite/Favourite.routes.js";
-import { fileURLToPath } from "url";
+import userRoutes from "./Routes/User/User.routes.js";
+import profileRoutes from "./Routes/User/Profile.routes.js";
 
 const app = express();
 const Port = process.env.PORT || 4000;
@@ -64,7 +66,10 @@ cloudinaryConnect();
 
 app.use(express.urlencoded({ extended: false }));
 
-// routes
+// Test server
+app.use("/api/v1", userRoutes);
+
+// All Routes
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", bookingRoutes);
 app.use("/api/v1", listingRoutes);
@@ -73,7 +78,8 @@ app.use("/api/v1", favoriteRoutes);
 app.use("/api/v1", paymentRoutes);
 app.use("/api/v1", reviewRoutes);
 app.use("/api/v1", chatRoutes);
+app.use("/api/v1", profileRoutes);
 // server activiation
-app.listen(Port, () => {
-  console.log("server is running on port ", Port);
+server.listen(Port, () => {
+  console.log(`Server is running on port ${Port}`);
 });

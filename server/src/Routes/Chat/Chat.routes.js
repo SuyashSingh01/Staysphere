@@ -13,6 +13,12 @@ router.get(
   "/messages/:roomId",
   auth,
   controllers.chatservice.getMessagesByRoomId
-); // Get messages for a room
+);
+
+// Get all users who messaged the host
+router.get(
+  "/host-chats/:hostId",
+  controllers.chatservice.getUsersMessageByHostId
+);
 
 export default router;

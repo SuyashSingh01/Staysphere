@@ -3,11 +3,13 @@ import { categories } from "../../data/categories.js";
 import filter_icon from "../../assets/icons/filter-icon.svg";
 import ArrowButton from "../Button/ArrowButton.jsx";
 import { setLoading } from "../../Redux/slices/AuthSlice.js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FaFilter } from "react-icons/fa";
+import { setSelectedCategory } from "../../Redux/slices/CategorySlice.js";
 
 const CatNavbar = ({ closeFilterModal, openFilterModal }) => {
-  const [activeCategory, setActiveCategory] = useState("historical-homes");
+  const { selectedCategory } = useSelector((state) => state.category);
+  const [activeCategory, setActiveCategory] = useState(selectedCategory);
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -54,6 +56,7 @@ const CatNavbar = ({ closeFilterModal, openFilterModal }) => {
   // Handle category selection
   const handleCategoryButtonClick = (category) => {
     setActiveCategory(category);
+    dispatch(setSelectedCategory(category));
     // make sure the backend call with this category and
     // update the listing data in state
 

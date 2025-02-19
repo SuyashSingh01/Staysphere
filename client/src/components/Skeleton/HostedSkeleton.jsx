@@ -19,8 +19,8 @@ function HostedSkeleton() {
           <div className="h-4 bg-gray-300 rounded w-1/4 mt-1"></div>
         </div>
         <div className="flex gap-4 md:gap-8">
-          <div className="bg-primary rounded-md p-2 w-32 h-8"></div>
-          <div className="bg-primary rounded-md p-2 w-32 h-8"></div>
+          <div className="bg-orange-400 rounded-md p-2 w-32 h-8"></div>
+          <div className="bg-orange-400 rounded-md p-2 w-32 h-8"></div>
         </div>
       </div>
     </div>

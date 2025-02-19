@@ -7,6 +7,7 @@ import { addBooking } from "../Redux/slices/BookingSlice";
 import { bookingsApis } from "../services/api.urls";
 import { bookYourPlace } from "../services/apiOperations/bookplace";
 import { handleBookingPayment } from "../components/Booking/payment";
+import { useBookingPayment } from "../hooks/useProcessPayment";
 
 const ConfirmAndPay = () => {
   const location = useLocation();
@@ -31,19 +32,24 @@ const ConfirmAndPay = () => {
       checkout = format(checkOutDate, "yyyy-MM-dd");
     }
   }
+  const { mutate: processPayment, isLoading } = useBookingPayment(
+    token,
+    booking,
+    user
+  );
 
   const bookingHandler = async () => {
     try {
       // add  the booking in the backend
-      await handleBookingPayment(token, booking, user);
+      // await handleBookingPayment(token, booking, user);
+      processPayment();
       // called the handlebooking route
-      dispatch(addBooking({ ...booking }));
+
       notification.success({
         message: "Payment Successful",
         duration: 1,
-        placement: "Top-left",
+        placement: "top-left",
       });
-      navigate("/account/bookings");
     } catch (e) {
       console.error(e.message);
       notification.error({
@@ -75,9 +81,9 @@ const ConfirmAndPay = () => {
 
   return (
     <div className="min-h-screen py-10 px-6 flex justify-center">
-      <div className="w-full gap-3 max-w-5xl flex flex-col md:flex-row md:gap-5 justify-between items-center">
+      <div className="w-full gap-3 max-w-5xl flex flex-col-reverse md:flex-row md:gap-5 justify-between items-center">
         {/* Left Section */}
-        <div className="md:col-span-2 p-8 rounded-lg">
+        <div className="md:col-span-2 p-8 rounded-lg w-full md:w-60%">
           <h1 className="text-2xl font-bold mb-6">Confirm and Pay</h1>
 
           {/* Trip Details */}
@@ -171,26 +177,25 @@ const ConfirmAndPay = () => {
             className="mx-auto my-8 flex rounded-xl bg-orange-400 active:bg-orange-500 py-2 px-10 md:px-14 text-md md:text-lg font-semibold text-white"
             onClick={bookingHandler}
           >
-            Confirm and Pay
+            {isLoading ? "Processing..." : "Confirm and Pay"}
           </button>
         </div>
 
         {/* Right Section */}
-        <div className="p-6 rounded-lg">
+        <div className="sm:w-full md:w-50% p-6 rounded-lg">
           <div className="mb-6">
             <img
               src={placeDetail?.image[0]}
               alt="Listing Thumbnail"
               className="h-40 w-60 object-cover rounded-md"
             />
-            <h2 className="text-lg font-medium mt-4">
+            <h2 className="text-lg font-medium mt-4 ">
               {placeDetail?.placeName || "No title available"}
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 uppercase">
               {placeDetail?.placeLocation || "No location provided"}
             </p>
           </div>
-
           {/* Price Details */}
           <div className="border-t pt-4">
             <h2 className="text-lg font-medium mb-4">Price details</h2>

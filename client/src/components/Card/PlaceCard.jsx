@@ -78,6 +78,7 @@
 // export default PlaceCard;
 
 import "swiper/css";
+import PropTypes from "prop-types";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
@@ -101,7 +102,7 @@ export function formatNumberWithCommas(number) {
   return number.toLocaleString("en-US");
 }
 
-const PlaceCard = ({ place, ref }) => {
+const PlaceCard = forwardRef(({ place }, ref) => {
   const swiperRef = useRef(null);
   const {
     image: images,
@@ -232,6 +233,17 @@ const PlaceCard = ({ place, ref }) => {
       </div>
     </div>
   );
+});
+PlaceCard.propTypes = {
+  place: PropTypes.shape({
+    image: PropTypes.arrayOf(PropTypes.string).isRequired,
+    placeLoaction: PropTypes.string.isRequired,
+    placeName: PropTypes.string.isRequired,
+    reviews: PropTypes.arrayOf(PropTypes.object).isRequired,
+    dateRange: PropTypes.string,
+    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    _id: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default memo(PlaceCard);

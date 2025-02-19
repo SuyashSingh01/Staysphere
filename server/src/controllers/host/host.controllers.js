@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Place from "../../models/Place.model.js";
 import { imageupload } from "../../services/fileUpload.js";
 import { JsonResponse } from "../../utils/jsonResponse.js";
@@ -18,7 +19,7 @@ class HostController {
 
       const hostId = req.user.id;
       const images = req.files;
-
+      console.log("addhostplace", req.body);
       console.log("Received Data:", req.body, "Images:", images);
       if (
         !title ||
@@ -71,7 +72,7 @@ class HostController {
         image: imageUrls,
         price,
         description,
-        amenities: [...perks],
+        amenities: perks,
         rules: extraInfo,
         type,
         maxGuests,
@@ -153,6 +154,7 @@ class HostController {
   async getHostPlaceById(req, res) {
     try {
       const { id } = req.params;
+      console.log("getHostPlaceById", id);
       if (!id) {
         return JsonResponse(res, {
           status: 400,
@@ -160,7 +162,7 @@ class HostController {
           message: "Missing required fields to get the place",
         });
       }
-      const place = await Place.findById(id);
+      const place = await Place.findById({ _id: id });
 
       if (!place) {
         return JsonResponse(res, {
@@ -217,7 +219,7 @@ class HostController {
     try {
       const { id } = req.params;
       const hostId = req.user.id;
-      const images = req.files;
+      const { images } = req.body;
       const {
         title,
         description,
@@ -230,6 +232,23 @@ class HostController {
       } = req.body;
       console.log("updatePlacebody", req.body);
       console.log(`updateHostPlace:`, images);
+      // console.log(JSON.stringify(images, null, 2));
+
+      const newUploadedImages = []; // Store new Cloudinary uploaded images
+
+      for (const img of images) {
+        if (typeof img === "string" && img.startsWith("http")) {
+          continue;
+        } else if (img && img.path) {
+          newUploadedImages.push(img.path);
+        } else {
+          console.warn("Invalid image format:", img);
+        }
+      }
+      // images.forEach((image) => {
+      //   console.log(URL.createObjectURL(image)); // If image is a Blob or File
+      // });
+
       if (
         !title ||
         !description ||
@@ -249,13 +268,13 @@ class HostController {
         });
       }
       // add the image upload function here
-      const imagesUrls = await imageupload(images);
+      const imagesUrls = await imageupload(newUploadedImages);
 
       const updates = {
         placeName: title,
         placeLocation: location,
         host: hostId,
-        image: imagesUrls,
+        image: [...newUploadedImages],
         price,
         description,
         amenities: perks,

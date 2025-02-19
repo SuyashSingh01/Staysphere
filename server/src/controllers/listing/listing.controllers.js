@@ -1,41 +1,51 @@
-// import User from "../../models/User.model.js";
 import Place from "../../models/Place.model.js";
 import { JsonResponse } from "../../utils/jsonResponse.js";
 
 class ListingController {
-  // Get all listings with optional filters
   async getAllListings(req, res) {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 8;
       const skip = (page - 1) * limit;
+      const category = req.query.category || "all";
+      const searchQuery = req.query.search || "";
 
-      // Query the database
-      const places = await Place.find().skip(skip).limit(limit);
-      const totalPlaces = await Place.countDocuments();
-      res.status(200).json({
-        places,
+      let matchStage = {};
+      if (category !== "all") {
+        matchStage = { type: category };
+      }
+      if (searchQuery) {
+        matchStage.$or = [
+          { placeName: { $regex: searchQuery, $options: "i" } },
+          { placeLocation: { $regex: searchQuery, $options: "i" } },
+        ];
+      }
+
+      // Aggregation pipeline
+      const placesAggregation = await Place.aggregate([
+        { $match: matchStage },
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+      ]);
+
+      const totalPlaces = await Place.countDocuments(matchStage);
+
+      return res.status(200).json({
+        places: placesAggregation,
         totalPages: Math.ceil(totalPlaces / limit),
         currentPage: page,
       });
-      // return JsonResponse(res, {
-      //   status: 200,
-      //   success: true,
-      //   message: "Places are Fetched successfully",
-      //   places,
-      //   totalPages: Math.ceil(totalPlaces / limit),
-      //   currentPage: page,
-      // });
     } catch (err) {
       console.error(err);
-      return JsonResponse(res, {
-        status: 500,
+      return res.status(500).json({
         success: false,
-        message: "Server error While fetching listings",
+        message: "Server error while fetching listings",
         error: err.message,
       });
     }
   }
+
   async getTopListings(req, res) {
     try {
       const { price, placeLocation, type, availability } = req.query;
