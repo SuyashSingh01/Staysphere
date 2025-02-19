@@ -1,23 +1,18 @@
 import { Link } from "react-router-dom";
-import React, { useEffect, useState, memo, useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import PlaceImg from "../components/common/PlaceImg.jsx";
 import BookingDates from "../components/common/BookingDates.jsx";
 import Spinner from "../components/common/Spinner.jsx";
-import { useDispatch, useSelector } from "react-redux";
-
 import NoTripBookedYet from "../components/common/NoTripBookedYet.jsx";
-import { bookingsApis } from "../services/api.urls.js";
-import { request } from "../services/apiConnector.js";
 import { useBookings } from "../hooks/useQueryBooking.js";
 
 const BookingsPage = () => {
-  const [loading, setLoading] = useState(false);
-  const { token } = useSelector((state) => state.auth);
-
-  // const [Bookings, setBookings] = useState([]);
-  const dispatch = useDispatch();
-  const { data, isLoading, error } = useBookings();
-  const Bookings = useMemo(() => data, [data]);
+  const { data, isLoading } = useBookings();
+  const Bookings = useMemo(() => {
+    if (data?.status === `success`) {
+      return data.data;
+    }
+  }, [data?.data]);
 
   if (isLoading) return <Spinner />;
 

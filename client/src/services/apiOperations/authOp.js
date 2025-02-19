@@ -2,7 +2,6 @@ import { request } from "../apiConnector";
 import { authApis } from "../api.urls";
 import { setLoading } from "../../Redux/slices/AuthSlice";
 import { notification } from "antd";
-// import endpoints
 
 const { RESETPASSTOKEN_API, RESETPASSWORD_API } = authApis;
 export function getPasswordResetToken(email, setEmailSent) {

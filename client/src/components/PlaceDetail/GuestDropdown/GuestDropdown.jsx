@@ -59,7 +59,7 @@ function GuestDropdown({ guests, handleGuestChange }) {
       {isVisible && (
         <div
           ref={dropdownRef}
-          className="p-4 scale-[1.0] absolute bg-white w-full top-[206px] left-0 rounded-lg flex flex-col gap-4"
+          className="w-[390px] max-w-[400px] p-4 scale-[1.0] absolute bg-white  top-[206px] left-0 rounded-lg flex flex-col gap-4"
           style={{ boxShadow: "rgba(0, 0, 0, 0.35) 0px 4px 15px" }}
         >
           {/* adults */}

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Upload, Modal } from "antd";
+import React, { useState, memo } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 
 const MultiplePhotoUploader = ({ fileList, setFileList }) => {
@@ -55,5 +56,9 @@ const MultiplePhotoUploader = ({ fileList, setFileList }) => {
     </div>
   );
 };
+MultiplePhotoUploader.propTypes = {
+  fileList: PropTypes.array.isRequired,
+  setFileList: PropTypes.func.isRequired,
+};
 
-export default MultiplePhotoUploader;
+export default memo(MultiplePhotoUploader);

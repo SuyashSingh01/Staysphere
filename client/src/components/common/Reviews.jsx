@@ -1,10 +1,10 @@
-import { toast } from "react-toastify";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addReviews } from "../../Redux/slices/BookingSlice";
 import p1 from "../../assets/logo.svg";
 import { FaStar } from "react-icons/fa6";
 import { FaAngleRight } from "react-icons/fa6";
+import { notification } from "antd";
 
 const Reviews = ({ reviews, place }) => {
   const dispatch = useDispatch();
@@ -30,7 +30,17 @@ const Reviews = ({ reviews, place }) => {
     e.preventDefault();
     try {
       if (!newReview.username || !newReview.comment || newReview.rating <= 0) {
-        toast.error("Please complete all fields before submitting.");
+        notification.error({
+          message: "Please complete all fields before submitting.",
+          placement: "top-left",
+          duration: 1,
+          style: {
+            backgroundColor: "#f9f9f9",
+            color: "#333",
+            borderRadius: "10px",
+            border: "1px solid #333",
+          },
+        });
         return;
       }
       const updatedReviews = {
@@ -43,7 +53,11 @@ const Reviews = ({ reviews, place }) => {
       setNewReview({ username: "", rating: 0, comment: "" });
     } catch (err) {
       console.error(err.message);
-      toast.error(err.message);
+      notification.error({
+        message: err.message,
+        duration: 1,
+        placement: "top-left",
+      });
     }
   };
 

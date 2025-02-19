@@ -3,7 +3,12 @@ import {
   userApis,
   listingApis,
   hostApis,
-  profileEndpoints,
+  profileApis,
+  bookingApis,
+  reviewApis,
+  locationApis,
+  contactUsApis,
+  chatEndpoint,
 } from "./api.urls";
 
 export const API_URLS = {
@@ -11,10 +16,10 @@ export const API_URLS = {
   LISTING: listingApis,
   USERS: userApis,
   HOST: hostApis,
-  PROFILE: profileEndpoints,
-  BOOKING: booking,
-  REVIEW: review,
-  LOCATION: location,
-  CONTACT: contactusEndpoint,
+  PROFILE: profileApis,
+  BOOKING: bookingApis,
+  REVIEW: reviewApis,
+  LOCATION: locationApis,
+  CONTACT: contactUsApis,
   CHAT: chatEndpoint,
 };

@@ -6,13 +6,10 @@ import Navbar from "../components/Navbar/Navbar";
 import { Layout, theme, Breadcrumb } from "antd";
 import Sidebar from "../components/Dashboard/Sidebar";
 
-const { Header } = Layout;
-
 const Dashboard = () => {
-  //   const { loading: profileLoading } = useSelector((state) => state.profile);
   const { loading: authLoading } = useSelector((state) => state.auth);
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { borderRadiusLG },
   } = theme.useToken();
 
   if (authLoading) {
@@ -37,7 +34,7 @@ const Dashboard = () => {
             }}
           >
             {window.location.pathname.split("/").map((path, index) => (
-              <Breadcrumb.Item key={index}>{path}</Breadcrumb.Item>
+              <Breadcrumb.Item key={path + index}>{path}</Breadcrumb.Item>
             ))}
           </Breadcrumb>
           <div

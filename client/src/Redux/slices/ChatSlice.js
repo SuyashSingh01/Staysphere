@@ -33,7 +33,7 @@ const chatSlice = createSlice({
     },
     setChatSize: (state, action) => {
       state.size = action.payload;
-      localStorage.setItem("chatSize", JSON.stringify(action.payload)); // Persist size
+      localStorage.setItem("chatSize", JSON.stringify(action.payload));
     },
     setChatPosition: (state, action) => {
       state.position = action.payload;

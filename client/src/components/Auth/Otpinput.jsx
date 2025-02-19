@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, memo } from "react";
 import { Input, notification, Card, Flex } from "antd";
 import useVerifyOtp from "../../hooks/auth/useMutatationVerifyOtp";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -6,8 +6,8 @@ import {
   setIsEmailVerified,
   setIsPhoneVerified,
 } from "../../Redux/slices/ProfileSlice";
-import { useDispatch } from "react-redux";
-import { memo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 const OTPInput = ({ length = 6 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,8 +20,8 @@ const OTPInput = ({ length = 6 }) => {
   const { state } = useLocation();
   const email = state?.email;
   const phone = state?.phone;
-
-  console.log("EMAIl", email, "phone", phone);
+  const { token } = useSelector((state) => state.auth);
+  // console.log("EMAIl", email, "phone", phone);
 
   useEffect(() => {
     if (timer > 0) {
@@ -62,6 +62,7 @@ const OTPInput = ({ length = 6 }) => {
         otp: otp.join(""),
         email: email,
         phone: phone,
+        token,
       },
       {
         onSuccess: () => {

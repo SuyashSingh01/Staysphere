@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { request } from "../services/apiConnector";
 import { useSelector } from "react-redux";
-import { profileEndpoints } from "../services/api.urls";
+import { profileApis } from "../services/api.urls";
 
 const fetchTransactions = async (token) => {
   const { data } = await request(
     "GET",
-    profileEndpoints.GET_TRANSACTIONS_API,
+    profileApis.GET_TRANSACTIONS_API,
     null,
     {
       Authorization: `Bearer ${token}`,

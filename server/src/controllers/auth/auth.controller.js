@@ -72,6 +72,10 @@ class AuthController {
           // No password for Google signups
           otherdetails: profile._id,
         });
+        await Profile.findByIdAndUpdate(
+          { _id: profile._id },
+          { user: user._id }
+        );
         const token = generateToken({
           id: uid,
           email: email,
@@ -112,7 +116,6 @@ class AuthController {
         // Create a profile for the user
         const profile = await Profile.create({
           name,
-          otherDetails: null,
         });
 
         // Create a new user
@@ -123,6 +126,14 @@ class AuthController {
           role,
           otherdetails: profile._id,
         });
+        // upadate the profile of the new user
+        await Profile.findByIdAndUpdate(
+          { _id: profile._id },
+          {
+            user: newUser._id,
+          }
+        );
+
         // Generate JWT token
         const token = generateToken({
           id: newUser._id,
@@ -581,10 +592,7 @@ class AuthController {
         title: "OTP sent successfully",
         message: "OTP sent successfully",
         success: true,
-        data: {
-          otpAtphone,
-          otpdata,
-        },
+        data: [],
       });
     } catch (err) {
       console.error(err.message);
@@ -601,6 +609,7 @@ class AuthController {
     try {
       const { phone, otp, email } = req.body;
       console.log(phone, otp, email);
+      const { id } = req.user;
       if (!phone || !otp) {
         return JsonResponse(res, {
           status: 400,
@@ -622,17 +631,19 @@ class AuthController {
           data: [],
         });
       }
+
       if (otpdata.otp === otp) {
+        console.log("userid", id);
         const user = await User.findOneAndUpdate(
-          { email: email },
+          { _id: id },
           {
             $set: {
-              phone: phone,
               isPhoneVerified: true,
+              phone: phone,
             },
-          },
-          { new: true }
+          }
         );
+        console.log("User updated", user);
         return JsonResponse(res, {
           status: 200,
           title: "Phone Verified Successfully",

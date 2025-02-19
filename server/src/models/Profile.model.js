@@ -10,22 +10,19 @@ const profileschema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-
-  gender: {
-    type: String,
-  },
-  education: {
+  otherEmail: {
     type: String,
     trim: true,
   },
+  gender: {
+    type: String,
+  },
+
   country: {
     type: String,
     trim: true,
   },
-  about: {
-    type: String,
-    trim: true,
-  },
+
   phone: {
     type: Number,
     trim: true,
@@ -40,9 +37,20 @@ const profileschema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  website: {
+    type: String,
+    trim: true,
+  },
+
+  bio: {
+    type: String,
+    trim: true,
+  },
   verified: {
     type: Boolean,
     default: false,
   },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 export default mongoose.model("Profile", profileschema);

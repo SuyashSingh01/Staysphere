@@ -1,5 +1,4 @@
 export const types = [
-  "all",
   "icons",
   "islands",
   "top-of-worlds",

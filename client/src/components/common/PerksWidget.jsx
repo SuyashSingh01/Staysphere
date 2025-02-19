@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 const Perks = ({ selected, handleFormData }) => {
   console.log("SSSSS", selected);
@@ -157,4 +157,4 @@ const Perks = ({ selected, handleFormData }) => {
   );
 };
 
-export default Perks;
+export default memo(Perks);

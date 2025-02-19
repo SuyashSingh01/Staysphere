@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 const PlaceGallery = ({ place }) => {
   const [showAllPhotos, setShowAllPhotos] = useState(false);
   console.log("placeGallery", place);
+
   if (showAllPhotos) {
     return (
-      <div className=" fixed inset-0 z-10 overflow-auto bg-white text-white">
+      <div className=" fixed inset-0 z-10 overflow-auto bg-white text-white ">
         <div className="grid gap-4 bg-white px-2 py-20 md:p-8">
           <div>
             <button
@@ -28,8 +30,11 @@ const PlaceGallery = ({ place }) => {
             </button>
           </div>
           {place?.length > 0 &&
-            place.map((photo, index) => (
-              <div key={index} className="max-w-full">
+            place?.map((photo, index) => (
+              <div
+                key={index + "_place"}
+                className="flex justify-center flex-col items-center max-w-[1000px] p-10"
+              >
                 {/* <Image src={photo} /> */}
                 <img src={photo} alt="Staysphere" />
               </div>
@@ -134,6 +139,9 @@ const PlaceGallery = ({ place }) => {
       </button>
     </div>
   );
+};
+PlaceGallery.propTypes = {
+  place: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default PlaceGallery;
