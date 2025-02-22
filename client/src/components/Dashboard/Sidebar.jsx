@@ -1,8 +1,8 @@
 import React, { memo, useState } from "react";
 import { Layout, Menu, theme } from "antd";
 import { sideBarItemsUser, sideBarItemsHost } from "./SideBarData";
-const { Sider } = Layout;
 import { useSelector } from "react-redux";
+const { Sider } = Layout;
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
