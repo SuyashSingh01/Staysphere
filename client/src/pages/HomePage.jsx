@@ -31,8 +31,6 @@ const HomePage = () => {
     return data?.pages?.flatMap((page) => page.places) || [];
   }, [data]);
 
-  // console.log("listing", listings);
-
   if (isLoading) {
     return (
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 mt-10 px-6">

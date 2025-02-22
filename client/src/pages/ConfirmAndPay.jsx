@@ -3,7 +3,6 @@ import { Select, Button, Input, notification } from "antd";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
-
 import { useBookingPayment } from "../hooks/useProcessPayment";
 
 const ConfirmAndPay = () => {

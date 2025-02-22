@@ -1,6 +1,4 @@
-import axios from "axios";
 import Reviews from "../components/common/Reviews";
-import Spinner from "../components/common/Spinner";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import AddressLink from "../components/PlaceDetail/AddressLink";
