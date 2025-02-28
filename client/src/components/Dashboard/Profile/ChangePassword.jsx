@@ -87,7 +87,6 @@ const ChangePassword = () => {
           type="primary"
           block
           size="large"
-          loading={loading}
           style={{ backgroundColor: "#FF6B00", borderColor: "#FF6B00" }}
           onClick={handleChangePassword}
         >

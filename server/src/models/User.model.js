@@ -76,6 +76,13 @@ const userSchema = new mongoose.Schema(
     googleId: {
       type: String,
     },
+    CryptoPaymentEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    contractAddress: {
+      type: String,
+    },
   },
   {
     timestamps: true,

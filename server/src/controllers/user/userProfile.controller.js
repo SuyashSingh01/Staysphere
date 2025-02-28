@@ -7,7 +7,7 @@ import Payment from "../../models/Payment.model.js";
 import Profile from "../../models/Profile.model.js";
 import { generatOtp } from "../../utils/utlitity.js";
 import { JsonResponse } from "../../utils/jsonResponse.js";
-import { imagecompress, imageupload } from "../../services/fileUpload.js";
+import { imageUpload } from "../../services/fileUpload.js";
 
 class ProfileController {
   async getProfileById(req, res) {
@@ -136,7 +136,7 @@ class ProfileController {
           message: "Please select an image to upload",
         });
       }
-      const uploadedImage = await imageupload(req, res, newImage);
+      const uploadedImage = await imageUpload(req, res, newImage);
       if (!uploadedImage) {
         return JsonResponse(res, {
           status: 400,

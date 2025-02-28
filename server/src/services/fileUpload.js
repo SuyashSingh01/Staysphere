@@ -45,9 +45,9 @@ export async function localfileupload(req, res) {
 
 // make an routes handler over here for cloudinary uploading
 
-export const imageupload = async (fileImages) => {
+export const imageUpload = async (fileImages) => {
   try {
-    const files = fileImages.images;
+    const files = fileImages;
     console.log("files in imageupload", files);
 
     if (!files || files.length === 0 || files.length === 1) {

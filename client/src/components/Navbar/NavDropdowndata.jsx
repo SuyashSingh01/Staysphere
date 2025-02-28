@@ -53,7 +53,7 @@ const commonItems = [
   {
     key: "8",
     label: (
-      <Link className="px-4" to="/account/notification">
+      <Link className="px-4" to="/account/settings/notifications">
         Notification
       </Link>
     ),

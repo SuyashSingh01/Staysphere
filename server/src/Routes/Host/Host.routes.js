@@ -12,7 +12,7 @@ router.post(
   auth,
   authorize("Host"),
   // multerUpload.array("images", 10),
-  controllers.host.addhostplace
+  controllers.host.addHostPlace
 ); // host place
 
 router.delete(
@@ -34,7 +34,7 @@ router.get(
   controllers.host.getAllHostPlaces
 ); // All Host place
 router.put(
-  "/host/updatehostplace/:id",
+  "/host/updatehostplace/:placeId",
   auth,
   authorize("Host"),
   // multerUpload.array("images", 1),

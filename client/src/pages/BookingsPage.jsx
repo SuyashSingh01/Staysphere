@@ -9,11 +9,12 @@ import { useBookings } from "../hooks/useQueryBooking.js";
 const BookingsPage = () => {
   const { data, isLoading } = useBookings();
   const Bookings = useMemo(() => {
-    if (data?.status === `success`) {
+    if (data?.status === 200) {
       return data.data;
     }
-  }, [data?.data]);
+  }, [data?.data, isLoading]);
 
+  console.log("Bookings", Bookings);
   if (isLoading) return <Spinner />;
 
   return (
@@ -25,15 +26,15 @@ const BookingsPage = () => {
         <div className="grid gap-8 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
           {Bookings.map((booking, index) => (
             <Link
-              to={`/account/bookings/${booking._id}`}
+              to={`/account/bookings/${booking.bookingId}`}
               key={booking._id || index}
               className="block transform overflow-hidden rounded-xl bg-white shadow-lg transition-all hover:scale-105 hover:shadow-2xl"
             >
               {/* Place Image */}
               <div className="relative h-40 md:h-52">
-                {booking?.place?.image?.[0] ? (
+                {booking?.image?.length ? (
                   <PlaceImg
-                    place={booking?.place}
+                    place={booking}
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -46,7 +47,7 @@ const BookingsPage = () => {
               {/* Booking Details */}
               <div className="p-4">
                 <h2 className="mb-2 text-xl font-semibold text-gray-800">
-                  {booking?.place?.title}
+                  {booking?.place}
                 </h2>
                 <BookingDates
                   booking={booking}

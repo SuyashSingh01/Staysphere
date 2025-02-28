@@ -126,7 +126,27 @@ class BookingController {
   async getallUserBookings(req, res) {
     try {
       const id = req.user.id;
-      const userBookings = await User.findOne({ _id: id }).populate("bookings");
+      const userBookings = await User.findOne({ _id: id }).populate({
+        path: "bookings",
+        populate: {
+          path: "place",
+          model: "Place",
+        },
+      });
+      const userBookingsData = userBookings.bookings.map((booking) => {
+        return {
+          bookingId: booking._id,
+          checkIn: booking.checkIn,
+          checkOut: booking.checkOut,
+          place: booking.place.placeName,
+          image: booking.place.image,
+          price: booking.place.price,
+          bookingStatus: booking.bookingStatus,
+        };
+      });
+
+      // console.log(userBookingsData);
+
       if (!userBookings) {
         return JsonResponse(res, {
           title: "Booking not found",
@@ -139,7 +159,7 @@ class BookingController {
         status: 200,
         message: "User Bookings fetched successfully",
         success: true,
-        data: userBookings.bookings,
+        data: userBookingsData,
       });
     } catch (err) {
       console.log(err);

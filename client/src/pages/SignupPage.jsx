@@ -5,11 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setUserData, setLoading, setToken } from "../Redux/slices/AuthSlice";
 import Spinner from "../components/common/Spinner";
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../utility/Firebase";
-import { FormControl, MenuItem } from "@mui/joy";
-import { message, Select } from "antd";
-import { notification } from "antd";
+import { FormControl } from "@mui/joy";
+import { notification, Select } from "antd";
 import { request } from "../services/apiConnector";
 import { authApis } from "../services/api.urls";
 
@@ -101,7 +100,7 @@ const SignupPage = () => {
       localStorage.setItem("user", JSON.stringify(userDetails));
 
       notification.success({
-        message: `Account Created: ${result.email}`,
+        message: `Account Created: ${result?.data?.data.email}`,
         duration: 1,
       });
 
@@ -126,7 +125,7 @@ const SignupPage = () => {
       ) : (
         <div className="w-full md:w-1/2 flex justify-center items-center">
           <div className="mb-40 w-full">
-            <h1 className="mb-4 text-center text-4xl text-orange-700 ">
+            <h1 className="mb-4 text-center text-4xl text-richblack-900">
               Register
             </h1>
             <form
@@ -199,7 +198,7 @@ const SignupPage = () => {
               </FormControl>
 
               <button
-                className="w-full bg-orange-400 focus:ring-orange-700 active:bg-orange-500 focus:bg-orange-600 transition-shadow my-4 text-xl p-2 rounded-[8px] text-white"
+                className="w-full bg-orange-500 focus:ring-orange-700 active:bg-orange-500 focus:bg-orange-600 transition-shadow my-4 text-xl p-2 rounded-[8px] text-white"
                 type="submit"
                 disabled={loading}
               >
@@ -214,7 +213,7 @@ const SignupPage = () => {
             </div>
 
             <button
-              className="mt-6 rounded-[8px] bg-orange-400 focus:ring-orange-700 active:bg-orange-500 focus:bg-orange-600 transition-shadow py-[8px] px-[12px] font-medium text-white"
+              className="mt-6 rounded-[8px] bg-orange-500 focus:ring-orange-700 active:bg-orange-500 focus:bg-orange-600 transition-shadow py-[8px] px-[12px] font-medium text-white mx-[88px]"
               onClick={handleGoogleSignIn}
             >
               Sign Up with Google

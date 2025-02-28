@@ -14,6 +14,7 @@ import ChatModal from "./components/Chat/chatModal.jsx";
 import TransactionsPage from "./components/Dashboard/Transaction/TransactionPayment.jsx";
 import ContactSupportPage from "./components/common/ContactSupport.jsx";
 import OTPInput from "./components/Auth/Otpinput.jsx";
+import HostPayoutPreference from "./components/Dashboard/Host/PayoutPreference.jsx";
 
 // lazy loading pages
 const HomePage = lazy(() => import("./pages/HomePage"));
@@ -230,6 +231,17 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="settings/payouts"
+            element={
+              <PrivateRoute>
+                <PageWrapper>
+                  <HostPayoutPreference />
+                </PageWrapper>
+              </PrivateRoute>
+            }
+          />
+
           <Route
             path="liked-place"
             element={
