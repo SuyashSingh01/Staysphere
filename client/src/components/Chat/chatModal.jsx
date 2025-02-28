@@ -31,6 +31,7 @@ const ChatModal = ({ userId, hostId }) => {
           className="fixed z-50"
           style={{ left: position.x, top: position.y }}
         >
+          {" "}
           <Draggable
             nodeRef={draggleRef}
             handle=".chat-header"

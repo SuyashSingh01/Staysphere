@@ -46,6 +46,7 @@ import Spinner from "../components/common/Spinner";
 import MultiplePhotosUploader from "../components/common/MultiplePhotosUploader";
 import { types } from "../data/categories";
 import { perksOptions } from "../data/filterSectionAmenities";
+import { FaIndianRupeeSign } from "react-icons/fa6";
 
 const { Title, Text, Paragraph } = Typography;
 const { Step } = Steps;
@@ -692,9 +693,11 @@ const HostPlaceFormPage = () => {
                           min={1}
                           size="large"
                           style={{ width: "100%" }}
-                          formatter={(value) => `$ ${value}`}
+                          formatter={(value) => ` ${value}`}
                           parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-                          prefix={<DollarOutlined className="text-gray-400" />}
+                          prefix={
+                            <FaIndianRupeeSign className="text-gray-400" />
+                          }
                         />
                       )}
                     />
@@ -765,7 +768,7 @@ const HostPlaceFormPage = () => {
                 Back
               </Button>
             )}
-            {currentStep < 2 ? (
+            {currentStep < 2 && (
               <Button
                 type="primary"
                 onClick={handleNext}
@@ -774,7 +777,8 @@ const HostPlaceFormPage = () => {
               >
                 Next
               </Button>
-            ) : (
+            )}
+            {currentStep == 2 && (
               <Button
                 type="primary"
                 htmlType="submit"

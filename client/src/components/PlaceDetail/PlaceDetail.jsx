@@ -68,8 +68,8 @@ const PlaceDetail = () => {
       <PlaceGallery place={place.image} />
       <div className="sm:my-4 md:mt-8 md:mb-8 flex flex-col md:flex-row justify-between ">
         <div className=" ">
-          <div className="my-4">
-            <h2 className="md:text-2xl font-semibold text-xl">Description</h2>
+          <div className="my-4 max-w-[700px]">
+            <h2 className="md:text-2xl font-semibold text-xl ">Description</h2>
             {place?.description}
           </div>
           Max number of guests: {place?.maxGuests}

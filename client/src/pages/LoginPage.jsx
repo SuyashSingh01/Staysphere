@@ -8,12 +8,10 @@ import { authApis } from "../services/api.urls.js";
 import { Flex, notification } from "antd";
 import { LoadingSpinner } from "../components/Wrapper/PageWrapper.jsx";
 import { useNavigate, Link } from "react-router-dom";
-// import { GoogleLogin } from "react-google-login";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const { loading, user, token } = useSelector((state) => state.auth);
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
