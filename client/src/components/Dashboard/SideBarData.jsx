@@ -54,7 +54,7 @@ export const sideBarItemsHost = [
   getItem("Transactions", "5", <WalletOutlined />, "/account/transactions"),
   getItem("Settings", "7", <SettingOutlined />, null, [
     getItem("Change Password", "8", null, "settings/change-password"),
-    getItem("Payout Preferences", "9", null, "/settings/payouts"),
+    getItem("Payout Preferences", "9", null, "/account/settings/payouts"),
     getItem("Payout Settings", "10", null, "/account/host/setting"),
   ]),
   getItem("Support", "10", <FileOutlined />, "contact-support"),

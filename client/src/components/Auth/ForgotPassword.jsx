@@ -1,5 +1,5 @@
 import { useState, memo } from "react";
-import { Link, useNavigation } from "react-router-dom";
+import { Link, useNavigate, useNavigation } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { getPasswordResetToken } from "../../services/apiOperations/authOp";
@@ -9,7 +9,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigation();
+
   const { loading } = useSelector((state) => state.auth);
 
   const handleOnSubmit = (e) => {
@@ -38,7 +38,7 @@ const ForgotPassword = () => {
             {!emailSent && (
               <label className="w-full">
                 <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
-                  Email Address <sup className="text-pink-800">*</sup>
+                  Email Address <sup className="text-white">*</sup>
                 </p>
                 <input
                   required
@@ -53,7 +53,7 @@ const ForgotPassword = () => {
             )}
             <button
               type="submit"
-              className="mt-6 w-full rounded-[8px] bg-red-500 py-[12px] px-[12px] font-medium text-richblack-900"
+              className="mt-6 w-full rounded-[8px] bg-orange-500 py-[12px] px-[12px] font-medium text-richblack-900"
             >
               {!emailSent ? "Sumbit" : "Resend Email"}
             </button>
