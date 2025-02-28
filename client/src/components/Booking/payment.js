@@ -1,4 +1,3 @@
-import axios from "axios";
 import { bookingsApis, paymentApis } from "../../services/api.urls";
 import { notification } from "antd";
 import { request } from "../../services/apiConnector";
@@ -49,6 +48,7 @@ import { request } from "../../services/apiConnector";
 
 // // Call handlePayment when the user initiates the payment
 // handlePayment();
+
 const {
   BOOKING_PAYMENT_CHECKOUT_API,
   BOOKING_VERIFY_API_PAYMENT,
