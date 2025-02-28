@@ -8,7 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # need to add these when using  the firebase package
-src/config/firebaseconfig.js
+# src/config/firebaseConfig.js
 
 .env
 node_modules
