@@ -8,7 +8,7 @@ import {
 import Draggable from "react-draggable";
 import { Resizable } from "re-resizable";
 import { motion, AnimatePresence } from "framer-motion";
-import Chat from "./Chat";
+import Chat from "./chat";
 import { useNavigate } from "react-router-dom";
 import { Button } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
