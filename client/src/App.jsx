@@ -1,4 +1,3 @@
-import Lottie from "lottie-react";
 import React, { lazy } from "react";
 import Layout from "./components/Layout";
 import { useSelector } from "react-redux";
@@ -6,7 +5,6 @@ import { AnimatePresence } from "framer-motion";
 import { ACCOUNT_TYPE } from "./constants/constants.js";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import { Routes, Route, useLocation } from "react-router-dom";
-import animationData from "./assets/animation/success.json";
 import UpdatePassword from "./components/Auth/Updatepassword.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import { PageWrapper } from "./components/Wrapper/PageWrapper.jsx";
@@ -136,19 +134,7 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route
-            path="/paymentsuccess"
-            element={
-              <PrivateRoute>
-                <PageWrapper>
-                  <Lottie
-                    animationData={animationData}
-                    style={{ width: "300px", height: "300px" }}
-                  />
-                </PageWrapper>
-              </PrivateRoute>
-            }
-          />
+
           <Route
             path="/account/bookings/:id"
             element={
