@@ -20,10 +20,11 @@ const placeschema = new mongoose.Schema(
         required: true,
       },
     ],
-    availablity: {
-      type: String,
-      enum: ["available", "booked", "unavailable"],
-      default: "available",
+    availability: {
+      type: Date,
+      required: true,
+      // enum: ["available", "booked", "unavailable"],
+      // default: "available",
     },
     isPopular: {
       type: Boolean,
