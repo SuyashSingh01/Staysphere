@@ -4,7 +4,7 @@ import {
   setOpenChat,
   setChatSize,
   setChatPosition,
-} from "../../Redux/slices/chatSlice";
+} from "../../Redux/slices/ChatSlice";
 import Draggable from "react-draggable";
 import { Resizable } from "re-resizable";
 import { motion, AnimatePresence } from "framer-motion";

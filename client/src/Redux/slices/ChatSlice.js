@@ -50,4 +50,5 @@ export const {
   setChatSize,
   setChatPosition,
 } = chatSlice.actions;
+
 export default chatSlice.reducer;
