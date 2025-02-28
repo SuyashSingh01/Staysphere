@@ -38,7 +38,7 @@ const BookingRequest = lazy(() =>
 const HostEarnings = lazy(() =>
   import("./components/Dashboard/Host/Earning.jsx")
 );
-const Chat = lazy(() => import("./components/Chat/Chat.jsx"));
+// const Chat = lazy(() => import("./components/Chat/chat.jsx"));
 
 // Dashboard account
 const ChangePassword = lazy(() =>
