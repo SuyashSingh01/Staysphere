@@ -2,7 +2,7 @@ import React, { useEffect, useState, memo } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setSearch } from "../../Redux/slices/CategorySlice";
-import { debounce } from "lodash";
+import { debounce } from "lodash/debounce";
 
 const SearchBar = () => {
   const dispatch = useDispatch();
