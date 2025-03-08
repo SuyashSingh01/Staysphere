@@ -43,21 +43,22 @@ const HomePage = () => {
 
   return (
     <div className="grid grid-cols-1 justify-items-center py-32 px-4 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-10 mt-[30px] ">
-      {listings?.map((place, index) => {
-        const isLastItem = index === listings.length - 1;
-        return (
-          <PlaceCard
-            ref={isLastItem ? lastListingRef : null}
-            place={place}
-            key={place?._id}
-          />
-        );
-      })}
+      {listings &&
+        listings.map((place, index) => {
+          const isLastItem = index === listings.length - 1;
+          return (
+            <PlaceCard
+              ref={isLastItem ? lastListingRef : null}
+              place={place}
+              key={place?._id}
+            />
+          );
+        })}
 
       {isFetchingNextPage && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
           {Array.from({ length: 4 }).map((_, index) => (
-            <ListingLoader key={`loader-${index}`} />
+            <ListingLoader key={index} />
           ))}
         </div>
       )}

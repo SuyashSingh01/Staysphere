@@ -144,6 +144,8 @@ class AuthController {
 
         res.cookie("token", token, {
           expires: new Date(Date.now() + 24 * 3600000),
+          sameSite: "none",
+          secure: true,
           httpOnly: true,
         });
 
@@ -297,6 +299,8 @@ class AuthController {
         const options = {
           expires: new Date(Date.now() + 24 * 3600000),
           httpOnly: true,
+          sameSite: "none",
+          secure: true,
         };
 
         res.cookie("token", token, options);
@@ -781,6 +785,8 @@ class AuthController {
         });
         res.cookie("token", token, {
           httpOnly: true,
+          sameSite: "none",
+          secure: true,
           expires: new Date(Date.now() + 24 * 3600000),
         });
         return JsonResponse(res, {

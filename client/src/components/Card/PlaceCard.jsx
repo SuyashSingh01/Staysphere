@@ -242,7 +242,7 @@ PlaceCard.propTypes = {
     reviews: PropTypes.arrayOf(PropTypes.object).isRequired,
     dateRange: PropTypes.string,
     price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    _id: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired || PropTypes.number.isRequired,
   }).isRequired,
 };
 
