@@ -1,7 +1,6 @@
 import { useState } from "react";
 import search_icon from "../../../assets/icons/search-icon.svg";
 import filter_icon from "../../../assets/icons/filter-icon.svg";
-// import FilterModal from "../FilterModal/FilderModal";
 
 const SearchBar = ({ device = "desktop" }) => {
   const [searchQuery, setSearchQuery] = useState("");
