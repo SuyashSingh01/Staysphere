@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo } from "react";
+import { useRef, useCallback, useMemo, memo } from "react";
 import PlaceCard from "../components/Card/PlaceCard";
 import ListingLoader from "../components/Skeleton/ListingLoader";
 import { useInfiniteListings } from "../hooks/useQueryInfiniteListings";
@@ -35,7 +35,7 @@ const HomePage = () => {
     return (
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6 mt-10 px-6">
         {Array.from({ length: 8 }).map((_, index) => (
-          <ListingLoader key={index} />
+          <ListingLoader key={`loader-${index}`} />
         ))}
       </div>
     );
@@ -43,13 +43,13 @@ const HomePage = () => {
 
   return (
     <div className="grid grid-cols-1 justify-items-center py-32 px-4 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-10 mt-[30px] ">
-      {listings.map((place, index) => {
+      {listings?.map((place, index) => {
         const isLastItem = index === listings.length - 1;
         return (
           <PlaceCard
             ref={isLastItem ? lastListingRef : null}
             place={place}
-            key={place._id}
+            key={place?._id}
           />
         );
       })}
@@ -57,7 +57,7 @@ const HomePage = () => {
       {isFetchingNextPage && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
           {Array.from({ length: 4 }).map((_, index) => (
-            <ListingLoader key={index} />
+            <ListingLoader key={`loader-${index}`} />
           ))}
         </div>
       )}
@@ -65,4 +65,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default memo(HomePage);
