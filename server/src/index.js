@@ -30,10 +30,10 @@ const server = http.createServer(app);
 new SocketService(server);
 
 // Middleware
-
+const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:4001"];
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
