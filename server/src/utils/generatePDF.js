@@ -2,6 +2,10 @@ import fs from "fs";
 import path from "path";
 import PdfPrinter from "pdfmake";
 
+const receiptsPath = path.resolve("./receipts");
+if (!fs.existsSync(receiptsPath)) {
+  fs.mkdirSync(receiptsPath, { recursive: true });
+}
 const fonts = {
   Roboto: {
     normal: path.join("./src/fonts/Roboto-Regular.ttf"),
@@ -24,7 +28,7 @@ const generateReceipt = async (booking) => {
     // Define PDF structure
     const docDefinition = {
       content: [
-        // 🔹 Header Section
+        //Header Section
         {
           columns: [
             logoExists ? { image: logoPath, width: 100, height: 90 } : {},
