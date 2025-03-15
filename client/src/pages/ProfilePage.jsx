@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState, useMemo } from "react";
 import {
   AspectRatio,
   Box,
@@ -28,21 +28,33 @@ import { useProfile, useUpdateProfile } from "../hooks/useProfileDetail";
 import { setProfileData } from "../Redux/slices/ProfileSlice";
 import { FaGenderless } from "react-icons/fa";
 import { BsGenderAmbiguous } from "react-icons/bs";
+import Spinner from "../components/common/Spinner";
 
 const ProfilePage = () => {
-  const { profilePic } = useSelector((state) => state.profile);
+  const { profilePic, profileData } = useSelector((state) => state.profile);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const { data: profile, isLoading } = useProfile();
+  const { data, isLoading } = useProfile();
   const updateProfileMutation = useUpdateProfile();
   const [formData, setFormData] = useState({});
+  const [profileImage, setProfileImage] = useState(
+    profilePic ??
+      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
+  );
+  const profile = useMemo(() => {
+    if (data?.status === 200) {
+      return data.data;
+    }
+  }, [data?.data, isLoading]);
 
   useEffect(() => {
     if (profile) {
       setFormData(profile);
-      // dispatch(setProfileData(profile));
+      dispatch(setProfileData(profile));
     }
   }, [profile]);
+
+  if (isLoading) return <Spinner />;
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,17 +66,11 @@ const ProfilePage = () => {
     updateProfileMutation.mutate(formData);
   };
 
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [profileImage, setProfileImage] = useState(
-    profilePic ??
-      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-  );
   const handleUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const fileURL = URL.createObjectURL(file);
       setProfileImage(fileURL);
-      setSelectedFile(file);
     }
   };
 

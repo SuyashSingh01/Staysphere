@@ -31,14 +31,22 @@ new SocketService(server);
 
 // Middleware
 const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173"];
+
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
 // Serve static files from the "assets" directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
