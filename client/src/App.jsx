@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import { lazy } from "react";
 import Layout from "./components/Layout";
 import { useSelector } from "react-redux";
 import { AnimatePresence } from "framer-motion";

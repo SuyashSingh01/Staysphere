@@ -350,7 +350,7 @@ class AuthController {
       );
       console.log("DETAILS", updatedDetails);
 
-      const url = `http://localhost:5173/update-password/${token}`;
+      const url = `${process.env.CLIENT_URL}/update-password/${token}`;
 
       await mailSender(
         email,

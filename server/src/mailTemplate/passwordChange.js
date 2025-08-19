@@ -57,7 +57,7 @@ export const passwordUpdated = (email, name, body) => {
             <div class="message">Password Update Confirmation</div>
             <div class="body">
                 <p>Hey ${name},</p>
-                <p>Your password change Requesthas been Accepted for the email <span class="highlight">${email}</span>.
+                <p>Your password change Request has been Accepted for the email <span class="highlight">${email}</span>.
                 </p>
                 <p>${body}</p>
                 <p>If you did not request this password change, please contact us immediately to secure your account.</p>
