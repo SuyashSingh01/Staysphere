@@ -1,15 +1,14 @@
 import mongoose from "mongoose";
-import { config } from "dotenv";
-config();
+import { ENV } from "../constant/env.js";
 
 export const dbConnect = async () => {
-  console.log("DbURL", process.env.MONGODB_URL);
+  console.info("DbURL", ENV.MONGODB_URL);
   mongoose
-    .connect(process.env.MONGODB_URL)
+    .connect(ENV.MONGODB_URL)
     .then(() => {
-      console.log("Db connected Successfully!");
+      console.info("Db connected Successfully!");
     })
     .catch((err) => {
-      console.log("Db connection issue", err);
+      console.error("Db connection issue", err);
     });
 };

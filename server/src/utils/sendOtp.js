@@ -1,10 +1,9 @@
 import twilio from "twilio";
-import dotenv from "dotenv";
-dotenv.config();
 import { generatOtp } from "./utlitity.js";
+import { ENV } from "../constant/env.js";
 
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
+const accountSid = ENV.TWILIO_SERVICE.TWILIO_ACCOUNT_SID;
+const authToken = ENV.TWILIO_SERVICE.TWILIO_AUTH_TOKEN;
 const client = twilio(accountSid, authToken);
 
 export async function createVerification(number, otp) {
@@ -13,12 +12,9 @@ export async function createVerification(number, otp) {
       .create({
         body: `Verify Yourself at Staysphere here is Your Otp  ${otp} valid for 5 minutes and will be expired after that `,
         to: `+91${number}`,
-        from: `${process.env.TWILIO_PHONE_NUMBER}`,
+        from: `${ENV.TWILIO_SERVICE.TWILIO_PHONE_NUMBER}`,
       })
       .then((message) => console.log(message.sid));
-
-    // console.log(verification);
-    // console.log(verification.sid);
     return message;
   } catch (err) {
     console.error(err);

@@ -1,18 +1,17 @@
 import Razorpay from "razorpay";
-import { config } from "dotenv";
-config();
+import {ENV} from "../constant/env.js";
 
 class RazorpayInstance {
   constructor() {
-    if (!process.env.RAZORPAY_KEY || !process.env.RAZORPAY_SECRET) {
+    if (!ENV.RAZORPAY_SERVICE.RAZORPAY_KEY || !ENV.RAZORPAY_SERVICE.RAZORPAY_SECRET) {
       throw new Error(
         "Razorpay credentials are not properly configured in environment variables"
       );
     }
 
     this.razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY,
-      key_secret: process.env.RAZORPAY_SECRET,
+      key_id: ENV.RAZORPAY_SERVICE.RAZORPAY_KEY,
+      key_secret: ENV.RAZORPAY_SERVICE.RAZORPAY_SECRET,
     });
   }
 

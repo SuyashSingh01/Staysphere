@@ -9,6 +9,7 @@ import { paymentSuccessEmail } from "../../mailTemplate/paymentSuccessEmail.js";
 import { JsonResponse } from "../../utils/jsonResponse.js";
 import { config } from "dotenv";
 import BookingControllers from "../booking/booking.controllers.js";
+import { ENV } from "../../constant/env.js";
 
 config();
 
@@ -148,7 +149,7 @@ class PaymentController {
       // Verify Razorpay Signature
       const body = `${razorpay_order_id}|${razorpay_payment_id}`;
       const expectedSignature = crypto
-        .createHmac("sha256", process.env.RAZORPAY_SECRET)
+        .createHmac("sha256", ENV.RAZORPAY_SERVICE.RAZORPAY_SECRET)
         .update(body)
         .digest("hex");
 
