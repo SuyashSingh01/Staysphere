@@ -1,7 +1,5 @@
 import jwt from "jsonwebtoken";
-import { config } from "dotenv";
-config();
-
+import {ENV} from "../constant/env.js";
 export const isOverlapping = (
   existingCheckIn,
   existingCheckOut,
@@ -16,7 +14,7 @@ export const isOverlapping = (
 };
 
 export function generateToken(payload) {
-  return jwt.sign(payload, process.env.JWT_SECRET, {
+  return jwt.sign(payload, ENV.JWT_SECRET, {
     expiresIn: "3d",
   });
 }

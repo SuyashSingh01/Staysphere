@@ -13,6 +13,7 @@ import mailSender from "../../utils/sendEmail.js";
 import { passwordUpdated } from "../../mailTemplate/passwordChange.js";
 import { createVerification } from "../../utils/sendOtp.js";
 import otpTemplate from "../../mailTemplate/otpverificationEmail.js";
+import { ENV } from "../../constant/env.js";
 config();
 // import { OAuth2Client } from "google-auth-library";
 
@@ -350,7 +351,7 @@ class AuthController {
       );
       console.log("DETAILS", updatedDetails);
 
-      const url = `${process.env.CLIENT_URL}/update-password/${token}`;
+      const url = `${ENV.CLIENT_URL}/update-password/${token}`;
 
       await mailSender(
         email,
@@ -710,7 +711,7 @@ class AuthController {
       // else verify the user number then update the role
       const otpdata = await createVerification(phone, otp);
       // const otpdata = 234;
-      console.log("otpsada", otpdata);
+      console.info("otpsada", otpdata);
       if (otpdata) {
         // also post hook to send the email notification
         const saveotp = await OTP.create({
@@ -816,7 +817,7 @@ class AuthController {
     try {
       const { token } = req.body;
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, ENV.JWT_SECRET);
       console.log("decoded token in host", decoded);
       const user = await User.findOne({ _id: decoded.id });
       if (!user) {

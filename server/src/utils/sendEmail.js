@@ -1,7 +1,6 @@
 import nodemailer from "nodemailer";
-import { config } from "dotenv";
 import otpTemplate from "../mailTemplate/otpverificationEmail.js";
-config();
+import { ENV } from "../constant/env.js";
 
 export async function sendVerificationEmail(email, otp, role = "User") {
   try {
@@ -20,15 +19,15 @@ export async function sendVerificationEmail(email, otp, role = "User") {
 const mailSender = async (email, title, body, attachments = null) => {
   try {
     let transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
+      host: ENV.MAIL_SERVICE.MAIL_HOST,
       auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASSWORD,
+        user: ENV.MAIL_SERVICE.MAIL_USER,
+        pass: ENV.MAIL_SERVICE.MAIL_PASSWORD,
       },
     });
 
     let info = await transporter.sendMail({
-      from: "Staysphere || Admin- SUYASH SINGH",
+      from: "Staysphere || Admin - SUYASH SINGH",
       to: `${email}`,
       subject: `${title}`,
       html: `${body}`,
@@ -37,7 +36,7 @@ const mailSender = async (email, title, body, attachments = null) => {
     // console.log("mail:", info);
     return info;
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
   }
 };
 

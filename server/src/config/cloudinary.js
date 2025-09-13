@@ -1,7 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
-import { config } from "dotenv";
 import multer from "multer";
-config();
+import { ENV } from "../constant/env.js";
 
 export const multerUpload = multer({
   storage: multer.memoryStorage(),
@@ -11,13 +10,13 @@ export const multerUpload = multer({
 export const cloudinaryConnect = () => {
   try {
     cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
+      cloud_name: ENV.CLOUDINARY_SERVICE.CLOUDINARY_CLOUD_NAME,
+      api_key: ENV.CLOUDINARY_SERVICE.CLOUDINARY_API_KEY,
+      api_secret: ENV.CLOUDINARY_SERVICE.CLOUDINARY_API_SECRET,
     });
-    console.log("Cloudinary Connected ");
+    console.info("Cloudinary Connected ");
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 

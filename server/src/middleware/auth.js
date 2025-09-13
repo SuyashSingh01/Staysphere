@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import { OAuth2Client } from "google-auth-library";
+import { ENV } from "../constant/env.js";
 config();
 
 // NOTE: we do not need to send res for ok status as they are already done
@@ -12,7 +13,7 @@ export const auth = async (req, res, next) => {
     // extract jwt token.
     // console.log(req.body.token);
     // console.log("cookies",req.cookies.tokenname);
-    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    const client = new OAuth2Client(ENV.GOOGLE_CLIENT_ID);
     console.log("Requested client", req.header);
     console.log("Header: ", req.header("Authorization"));
     const token =
@@ -30,7 +31,7 @@ export const auth = async (req, res, next) => {
 
     // verify token
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, ENV.JWT_SECRET);
 
       // console.log(decoded);
       // Reason so that we can check authorization in next that's  why i placed the decoded back to user request

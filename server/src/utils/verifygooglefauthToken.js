@@ -1,12 +1,11 @@
 import admin from "firebase-admin";
-import { config } from "dotenv";
+import { ENV } from "../constant/env.js";
 
-config();
-
+// Initialize Firebase Admin SDK
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(
-      JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+      ENV.FIREBASE_SERVICE.FIREBASE_SERVICE_ACCOUNT_KEY
     ),
   });
 }
