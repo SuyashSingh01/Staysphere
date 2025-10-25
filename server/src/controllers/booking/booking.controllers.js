@@ -10,17 +10,18 @@ import mailSender from "../../utils/sendEmail.js";
 import mongoose from "mongoose";
 import generateReceipt from "../../utils/generatePDF.js";
 import Place from "../../models/Place.model.js";
+import { redisConnect } from "../../config/redis.js";
+import redisLockService from "../../services/locking/redisLockService.js";
+import { BookingRequest, getOrCreateQueue } from "../../services/booking/bookingQueueService.js";
+import { recommendationGraph } from "../../services/recommendation/recommendationEngine.js";
 
 class BookingController {
   async createBooking(req, res) {
     try {
       const { checkIn, checkOut, phone, price, placeId } =
-        req.body.bookingDetail;
+      req.body.bookingDetail;
       const userId = req.user.id;
       const { paymentId } = req.params;
-      console.log("Checking", checkIn, checkOut, phone, price, placeId);
-      console.log("PAYEMNTID", paymentId);
-
       if (!checkIn || !checkOut || !phone || !price || !paymentId || !placeId) {
         return JsonResponse(res, {
           status: 400,
@@ -28,7 +29,49 @@ class BookingController {
           message: "All fields are required for booking",
         });
       }
-      console.log("paymentid", paymentId);
+      console.debug("Checking", checkIn, checkOut, phone, price, placeId);
+      console.debug("paymentid", paymentId);
+      
+      // Check if place is already locked
+      const lockValue = `${userId}-${Date.now()}`; // Unique identifier
+      const lockKey = `lock:place:${placeId}`;
+      let lockAcquired = false;
+      const isLocked = await redisConnect.get(lockKey);
+
+      // Add to priority queue
+      const queue = getOrCreateQueue(placeId);
+      const bookingRequest = new BookingRequest(
+        userId,
+        placeId,
+        checkIn,
+        checkOut,
+        price,
+        Date.now(),
+        price // Higher price = higher priority
+      );
+      queue.enqueue(bookingRequest);
+
+      console.log(`Booking request queued. Queue size: ${queue.size()}`);
+      // Try to acquire distributed lock with retry
+      const lockResult = await redisLockService.acquireLock(
+        lockKey,
+        lockValue,
+        300, // 5 minutes TTL
+        15,  // 15 retry attempts
+        200  // 200ms between retries
+      );
+
+      if (!lockResult.success) {
+        return JsonResponse(res, {
+          status: 409,
+          success: false,
+          message: "Place is currently being booked by another user. Please try again.",
+        });
+      }
+
+      lockAcquired = true;
+      console.log(`Lock acquired after ${lockResult.attempt} attempts`);
+
       //  Verify if payment exists and is successful
       const payment = await Payment.findOne({
         _id: new mongoose.Types.ObjectId(paymentId),
@@ -57,63 +100,33 @@ class BookingController {
         paymentId,
         bookingStatus: "booked",
       });
-      // need to check out the bookings
-      // increment the number of bookings for the place
-      const updatedPlace = await Place.findByIdAndUpdate(
-        new mongoose.Types.ObjectId(placeId),
-        {
-          $push: { numberOfBookings: booking._id },
-        },
-        { new: true }
-      ).populate("host");
+      // Release lock after booking creation
+      await redisConnect.del(lockKey);
+      // Update place and user
+      const [updatedPlace, user] = await Promise.all([
+        Place.findByIdAndUpdate(
+          placeId,
+          { $push: { numberOfBookings: booking._id } },
+          { new: true }
+        ).populate("host"),
+        User.findByIdAndUpdate(
+          userId,
+          { $push: { bookings: booking._id } },
+          { new: true }
+        )
+      ]);
+       // Add to recommendation graph
+      recommendationGraph.addInteraction(userId, placeId, 'booked');
+       // Generate receipt and send email (non-blocking)
+      this.sendBookingConfirmation(booking, user, updatedPlace, payment)
+        .catch(err => console.error('Error sending confirmation:', err));
 
-      // Add booking reference to user
-      const user = await User.findByIdAndUpdate(
-        new mongoose.Types.ObjectId(userId),
-        {
-          $push: { bookings: booking._id },
-        },
-        { new: true }
-      );
-      try {
-        // Generate PDF receipt
-        const receiptPath = await generateReceipt({
-          _id: booking._id,
-          user,
-          updatedPlace,
-          checkIn,
-          checkOut,
-          price,
-          paymentId,
-        });
-
-        // Send email with receipt
-        await mailSender(
-          user.email,
-          `Staysphere || Payment Received - Your Booking ID: ${booking._id}`,
-          paymentSuccessEmail(
-            `${user?.name}`,
-            payment?.amount,
-            payment?.orderId,
-            payment?._id
-          ),
-          [{ filename: "Receipt.pdf", path: receiptPath }] // Attach receipt
-        );
-
-        return JsonResponse(res, {
-          status: 201,
-          success: true,
-          message: "Booking created successfully",
-          data: booking,
-        });
-      } catch (error) {
-        console.error(error);
-        return JsonResponse(res, {
-          status: 500,
-          success: false,
-          message: "Error creating booking",
-        });
-      }
+      return JsonResponse(res, {
+        status: 201,
+        success: true,
+        message: "Booking created successfully",
+        data: booking,
+      });
     } catch (error) {
       console.error(error);
       return JsonResponse(res, {
@@ -121,6 +134,13 @@ class BookingController {
         success: false,
         message: "Error creating booking",
       });
+    }
+    finally {
+      // Always release lock
+      if (lockAcquired) {
+        await redisLockService.releaseLock(lockKey, lockValue);
+        console.log('Lock released');
+      }
     }
   }
   async getallUserBookings(req, res) {
@@ -247,7 +267,7 @@ class BookingController {
   }
 
   // Request for booking advance booking need to make good flow control request   need to check here
-  async RequestforAdvanceBooking(req, res) {
+  async requestforAdvanceBooking(req, res) {
     try {
       const { userId, bookingId } = req.body;
       const booking = await Booking.findById(bookingId).populate({
@@ -286,6 +306,120 @@ class BookingController {
         message: "Server Error in submitting booking request",
         success: false,
         error: err.message,
+      });
+    }
+  }
+
+  async sendBookingConfirmation(booking, user, place, payment) {
+    try {
+      const receiptPath = await generateReceipt({
+        _id: booking._id,
+        user,
+        updatedPlace: place,
+        checkIn: booking.checkIn,
+        checkOut: booking.checkOut,
+        price: booking.price,
+        paymentId: payment._id,
+      });
+
+      await mailSender(
+        user.email,
+        `Staysphere || Payment Received - Your Booking ID: ${booking._id}`,
+        paymentSuccessEmail(
+          user.name,
+          payment.amount,
+          payment.orderId,
+          payment._id
+        ),
+        [{ filename: "Receipt.pdf", path: receiptPath }]
+      );
+    } catch (error) {
+      console.error('Error sending booking confirmation:', error);
+    }
+  }
+
+  
+  // Get personalized recommendations for a user
+  async getRecommendations(req, res) {
+    try {
+      const userId = req.user.id;
+      const limit = parseInt(req.query.limit) || 10;
+
+      // Get recommendations from graph
+      const recommendations = recommendationGraph.recommendPlaces(userId, limit * 2);
+
+      // Fetch full place details
+      const placeIds = recommendations.map(r => r.placeId);
+      const places = await Place.find({
+        _id: { $in: placeIds },
+        isActive: true
+      })
+      .populate('host', 'name email')
+      .limit(limit);
+
+      // Merge scores with place data
+      const placesWithScores = places.map(place => {
+        const rec = recommendations.find(r => r.placeId === place._id.toString());
+        return {
+          ...place.toObject(),
+          recommendationScore: rec?.score || 0
+        };
+      });
+
+      return JsonResponse(res, {
+        status: 200,
+        success: true,
+        message: "Recommendations fetched successfully",
+        data: placesWithScores,
+      });
+    } catch (error) {
+      console.error('Recommendation error:', error);
+      return JsonResponse(res, {
+        status: 500,
+        success: false,
+        message: "Error fetching recommendations",
+        error: error.message
+      });
+    }
+  }
+
+  //  Get similar places
+  async getSimilarPlaces(req, res) {
+    try {
+      const { placeId } = req.params;
+      const limit = parseInt(req.query.limit) || 10;
+
+      const similarPlaces = recommendationGraph.findSimilarPlaces(placeId, limit * 2);
+
+      const placeIds = similarPlaces.map(p => p.placeId);
+      const places = await Place.find({
+        _id: { $in: placeIds },
+        isActive: true
+      })
+      .populate('host', 'name email')
+      .limit(limit);
+
+      const placesWithScores = places.map(place => {
+        const sim = similarPlaces.find(s => s.placeId === place._id.toString());
+        return {
+          ...place.toObject(),
+          similarityScore: sim?.score || 0
+        };
+      });
+
+      return JsonResponse(res, {
+        status: 200,
+        success: true,
+        message: "Similar places fetched successfully",
+        data: placesWithScores,
+      });
+    } catch (error) {
+      console.error('Similar places error:', error);
+      return JsonResponse(res, {
+        status: 500,
+        success: false,
+        message: "Error fetching similar places",
+        error: error.message
       });
     }
   }

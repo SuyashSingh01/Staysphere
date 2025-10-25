@@ -1,5 +1,7 @@
 import Place from "../../models/Place.model.js";
 import { JsonResponse } from "../../utils/jsonResponse.js";
+import {redisConnect} from "../../config/redis.js";
+import memoryCache from "../../data-structure/cache/lruCache.js";
 
 class ListingController {
   async getAllListings(req, res) {
@@ -9,6 +11,31 @@ class ListingController {
       const skip = (page - 1) * limit;
       const category = req.query.category || "all";
       const searchQuery = req.query.search || "";
+      const key = `listings:${page}:${limit}:${category}:${searchQuery}`;
+
+      //  Check LRU in-memory cache
+      let data = memoryCache.get(key);
+      if (data) {
+        return JsonResponse(res,{
+          status: 200,
+          success: true,
+          message: "Listings fetched successfully (from memory cache)",
+          data: data,
+        });
+      }
+
+      //  Check Redis cache
+      const cached = await redisConnect.get(key);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        memoryCache.put(key, parsed);
+        return JsonResponse(res,{
+          status: 200,
+          success: true,
+          message: "Listings fetched successfully (from Redis cache)",
+          data: parsed,
+        });
+      }
 
       let matchStage = {};
       if (category !== "all") {
@@ -30,15 +57,24 @@ class ListingController {
       ]);
 
       const totalPlaces = await Place.countDocuments(matchStage);
-
-      return res.status(200).json({
+      const responseData = {
         places: placesAggregation,
         totalPages: Math.ceil(totalPlaces / limit),
         currentPage: page,
+      };
+      await redisConnect.setEx(key, 3600, JSON.stringify(responseData)); // 1h TTL
+      memoryCache.put(key, responseData);
+      
+      return JsonResponse(res,{
+        status: 200,
+        success: true,
+        message: "Listings fetched successfully",
+        data: responseData,
       });
     } catch (err) {
       console.error(err);
-      return res.status(500).json({
+      return JsonResponse(res, {
+        status: 500,
         success: false,
         message: "Server error while fetching listings",
         error: err.message,
@@ -103,7 +139,20 @@ class ListingController {
           message: "Please provide a listing ID",
         });
       }
+       const key = `listing:${id}`;
+      let cached = memoryCache.get(key);
+      if (cached) return JsonResponse(res, { status: 200, success: true, data: cached });
+
+      const redisData = await redisConnect.get(key);
+      if (redisData) {
+        const parsed = JSON.parse(redisData);
+        memoryCache.put(key, parsed);
+        return JsonResponse(res, { status: 200, success: true, data: parsed });
+      }
       const listing = await Place.findById(id);
+
+      await redisConnect.setEx(key, 3600, JSON.stringify(listing));
+      memoryCache.put(key, listing);
 
       if (!listing) {
         return JsonResponse(res, {
