@@ -1,8 +1,5 @@
-// ============================================
-// Distributed lock implementation with retry mechanism
-// ============================================
 
-const redisConnect = require('../config/redis');
+import { redisConnect } from '../../config/redis.js';
 
 class RedisLockService {
   /**
@@ -112,5 +109,5 @@ class RedisLockService {
   }
 }
 
-const redisLockService=  new RedisLockService();
+const redisLockService = new RedisLockService();
 export default redisLockService;

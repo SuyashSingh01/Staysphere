@@ -1,6 +1,4 @@
-// ============================================
-// Graph-based recommendation system
-// ============================================
+
 
 class RecommendationGraph {
   constructor() {
@@ -44,11 +42,7 @@ class RecommendationGraph {
     placeUserMap.set(userId, (placeUserMap.get(userId) || 0) + weight);
   }
 
-  /**
-   * Find similar users using collaborative filtering
-   * @param {string} userId 
-   * @param {number} limit 
-   */
+  //  Find similar users using collaborative filtering
   findSimilarUsers(userId, limit = 10) {
     const userPlaces = this.userPlaces.get(userId);
     if (!userPlaces) return [];
@@ -80,8 +74,6 @@ class RecommendationGraph {
 
   /**
    * Recommend places for a user using collaborative filtering
-   * @param {string} userId 
-   * @param {number} limit 
    */
   recommendPlaces(userId, limit = 10) {
     const userPlaces = this.userPlaces.get(userId);
@@ -114,10 +106,8 @@ class RecommendationGraph {
       .map(([placeId, score]) => ({ placeId, score }));
   }
 
-  /**
-   * Find places similar to a given place
-   * @param {string} placeId 
-   * @param {number} limit 
+  /*
+   Find places similar to a given place
    */
   findSimilarPlaces(placeId, limit = 10) {
     const placeUserMap = this.placeUsers.get(placeId);
